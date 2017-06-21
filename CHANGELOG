@@ -1,1 +1,59 @@
-* creado repo y iniciado
+commit 0fd0dbfab3604d49ab14d02cd112f058624e9b44
+Author: PICCORO Lenz McKAY <mckaygerhard@gmail.com>
+Date:   Wed Jun 21 05:29:37 2017 -0430
+
+    Licencia y PAgina web ajustadas: https://venenux.github.io/gambasex/
+    * Licencia CC-BY-SS los autores estan nombre y correo en cada modulo propiedades
+    * se anunciara esto en la lista gambas y en el foro gambas, pero en español
+    * se tomara trabajo y ya se ha publicado cambios a sus authore, estan notificados
+    * se acota una excepcion, si el derivado produce dinero puede ser demandado si no hay retribuciones
+
+commit 9e34dfeef66cad8a06db344c2732c599f923bfbc
+Author: PICCORO Lenz McKAY <mckaygerhard@gmail.com>
+Date:   Tue Jun 20 22:58:38 2017 -0430
+
+    pagina web autogenerada desde archivos md en github, pero gitlab es master
+    * adicionado url web y url repositorio hacia gitlab
+    * autogeneracion de la web lista. es http://venenux.github.io/gambasex
+
+commit 127f98f7b6a9403844beae3bb41c27d1f42f3251
+Merge: afc0299 884c89f
+Author: PICCORO Lenz McKAY <mckaygerhard@gmail.com>
+Date:   Tue Jun 20 22:04:52 2017 -0430
+
+    actualizadon y sincronizando repositorios entre github y gitlab, gitlab es master..
+    * gitlab es mas software libre que github que no comparte su interfaz
+
+commit 884c89f1b2fb589c0a51d17833aff4360b2915b7
+Author: PICCORO Lenz McKAY <mckaygerhard@gmail.com>
+Date:   Wed Jun 21 05:56:19 2017 +0000
+
+    Add contribution guide
+
+commit 0da6da336e890bc8f156270cb2222ac3c59627c5
+Author: PICCORO Lenz McKAY <mckaygerhard@gmail.com>
+Date:   Wed Jun 21 05:55:34 2017 +0000
+
+    Add license
+
+commit da1e5bdb74af5ea3a088088798a11b4568615688
+Author: PICCORO Lenz McKAY <mckaygerhard@gmail.com>
+Date:   Wed Jun 21 05:54:48 2017 +0000
+
+    Add changelog
+
+commit afc0299f0150c17ef00a834b93f76847311090a8
+Author: PICCORO Lenz McKAY <mckaygerhard@gmail.com>
+Date:   Tue Jun 20 22:03:56 2017 -0430
+
+    directorio para pagina web autogenerada desde github---
+
+commit 421fa9441adc071aa184439e36904cce636714c0
+Author: PICCORO Lenz McKAY <mckaygerhard@gmail.com>
+Date:   Tue Jun 20 21:50:08 2017 -0430
+
+    Muevo repo de extensiones a gambas, archivo de lectura definido.
+    * aqui se metera muchos controles que aparecieron y que empece usar
+    * lastimosamente la comunidad gambas habla de modernidad pero estan atrasados
+    * no llevan un buen seguimiento del codigo y no lo documentan bien
+    * sus proyectos son muy orientado a pequeños entornos.. no hay vision..

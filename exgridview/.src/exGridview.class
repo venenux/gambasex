@@ -1,0 +1,508 @@
+' Gambas class file
+
+'' Un "Extended Gridview"<br>*Author* PICCORO Lenz McKAY, Jorge Carrión<br>un Gridview extendido, provee indexacion en ram, busqueda e integracion de exportacion, lo que hace su trabajo eficiente sin tener que ir varias veces a la fuente, que puede ser un resultado sql o una collecion o cualquier fuente indexada que tenda definidos los indices como alfanumericos
+
+Export
+
+Inherits GridView
+
+Public Const _Properties As String = "*,wordWrap=True,setHeads=True,expandCols=False,titles,widths,alternate=T"
+Public Const _Group As String = "View"                  ' no importa la fuente, no interactua con base de datos pero trata datos, se coloca en view con tranquilidad
+Public Const _Similar As String = "GridView"            ' extiende la capacidad de estos controles de los cuales hereda, solo gridview ya que tableview le falta o sobra propiedades
+Public Const _drawWith As String = "GridView"           ' se pinta basado en el gridview puesto hereda desde el mismo, usa sus propiedades para pintarse en forms
+Public Const licencia As String = "https://gitlab.com/venenux/gambasex/blob/master/LICENSE.md" '' Licencia especial CC-BY-SS con ecepciones, detalles https://gitlab.com/venenux/gambasex/blob/master/LICENSE.md
+
+Property source As Variant ''Fuente de datos como objeto *Collecion*, *Matrix* bidimensional o objeto *Result*. La clase lo maneja en su variable privada *[$source]*<br> ejemplo: <code>exGriview.source\=con.exec("SELECT \* FROM Tabla")</code> <br>Es necesario proporcionar una fuente de datos de matrix bidimensional, como lo son:<br>- En caso de matriz, de dos dimensiones de cadenas,<br>- o directo el resultado de una consulta,<br>- O n objeto collection con sus indices definidos.<br><br>*RETURNS*: objeto matrix de dos dimensiones, puede tratarse como collecion.
+Property wordWrap As Boolean ''if True, the wordWrap propery of cells is setted to True and the height of rows is fitted.
+Property setHeads As Boolean
+Property expandCols As Boolean
+Property titles As String[]
+Property alternate As Boolean
+Property widths As String[]
+Property Read Value As Collection '' arreglo completo de todos los valores de el gridview *incluyendo el filtro activo*<br>, para acceso directo segun su indice.<br>Ejemplo:<br> *exgridview.Value\["columname"\]* in event Click or DblClic accedera al valor de la columna "columname" en la posicion del click de la fila entera.
+Property Read Selection As Variant '' @{since 3.5} devuelve ofrece el arreglo completo de todo el grid *incluyendo el filtro activo*, es como una collecion de la *[cource]* pero ya filtrada.
+Property Read isShift As Boolean
+Property Read isControl As Boolean
+Property Read fieldtypes As Integer[]
+
+Private $wordWrap As Boolean
+Private $obs As Observer
+Private $source As Variant ''Variable interna de la Fuente de datos *[source]* como objeto *Collecion*, *Matrix* bidimensional o objeto *Result*.<br> ejemplo: <code>exGriview.source\=con.exec("SELECT \* FROM Tabla")</code> <br>Es necesario proporcionar una fuente de datos de matrix bidimensional, como lo son:<br>- En caso de matriz, de dos dimensiones de cadenas,<br>- o directo el resultado de una consulta,<br>- O un objeto collection con sus indices definidos.
+Private $setHeads As Boolean
+Private $atipos As Integer[]
+Private $expandCols As Boolean
+Private $widths As Integer[] 
+Private $titles As String[]
+Private $isShift As Boolean
+Private $isControl As Boolean
+Private $alternate As Boolean 
+Private $fila As Integer
+Private $columna As Integer
+
+'' Gridview extendido, provee indexacion en ram, lo que hace su trabajo eficiente sin tener que if varias veces a la fuente, que puede ser un resultado sql o una collecion o cualquier fuente indexada que tenda definidos los indices como alfanumericos
+Public Sub _new()
+    
+    $obs = New Observer(Me) As "grid"   'TODO: cuidar el observer respecto a la implementacion, para que sea mas facil al usuario, renombrar
+    $source = New Variant[]
+    $setHeads = True                    'TODO: raise exception si no hay columnas o el source no tiene la estructura esperada
+    $wordWrap = True                    ' TODO: https://www.gambas-es.org/show_post.php?p=38815
+    Me.Header = GridView.Both
+    $expandCols = False                 ' TODO: https://www.gambas-es.org/viewtopic.php?f=4&t=6454&start=0#_Single_Post_View
+    Me.Mode = Select.Multiple
+    $alternate = True
+    $widths = New Integer[]
+    $titles = New String[]              ' https://www.gambas-es.org/viewtopic.php?f=4&t=6454&start=0#_Single_Post_View
+    
+End
+
+Public Sub Clear()
+    
+    Super.Clear
+    Me.Rows.count = 0
+    Me.Columns.count = 0
+    $atipos = New Integer[]
+    $fila = -1
+    $columna = -1
+    $widths = New Integer[]
+    $titles = New String[]              ' https://www.gambas-es.org/viewtopic.php?f=4&t=6454&start=0#_Single_Post_View
+    
+End
+
+Public Sub grid_Data(row As Integer, col As Integer)
+    
+    If $source.count = 0 Then Return
+    Me[row, col].RichText = $source[row][col]
+    Me[row, col].WordWrap = $wordWrap
+    If $wordWrap Then
+        Me.Rows[row].Height = Max(Me.Rows[row].Height, Me[row, col].Font.RichTextHeight(Me[row, col].RichText, Me.Columns[col].width) + (Me.Rows.Height - Me.Font.Height - 1)) 
+    Endif
+    If $alternate Then Me[row, col].Background = IIf(Row Mod 2 = 0, Color.Lighter(Color.Background), Color.TextBackground)
+    
+End
+
+'' situa el valor en una fila completa al inicio de esta fila, la celda inicial de la fila actual
+Public Sub grid_RowClick(row As Integer)
+    
+    Me.MoveTo(row, 0)
+    grid_Click()
+    
+End
+
+'' al establecerce en la fila actual en su primera celda pinta al fila segunlas propiedades, y devuelve el valor de dicha fila
+Public Sub grid_Click()
+    
+    Dim n As Integer
+    
+    If $fila > -1 Then 
+        If $fila > Me.Rows.Max Then $fila = 0
+        If Me.mode <> Select.Multiple Then 
+            bgRow($fila)
+            For n = 0 To Me.Columns.Max
+                Me[Me.row, n].background = Color.Merge(Me[Me.row, n].background, Color.Lighter(Color.LightBackground))
+            Next
+        Else
+            If Not Me.Rows.Selection.Find($fila) Then Me[$fila, $columna].Background = IIf($fila Mod 2 = 0, Color.Lighter(Color.Background), Color.TextBackground)
+        Endif
+        If $fila <> Me.row Then Me[$fila, $columna].Background = IIf($fila Mod 2 = 0, Color.Lighter(Color.Background), Color.TextBackground)
+        Me[$fila, $columna].Foreground = Color.Foreground
+    Endif
+    Me[Me.row, Me.column].Background = Color.SelectedBackground
+    Me[Me.row, Me.column].Foreground = Color.SelectedForeground
+    $fila = Me.Row
+    $columna = Me.Column
+    
+End
+
+Private Sub bgRow(row As Integer)
+    
+    Dim n As Integer
+    
+    For n = 0 To Me.Columns.Max
+        If $alternate Then  
+            If ($fila Mod 2) = 0 Then
+                Me[row, n].Background = Color.Lighter(Color.Lighter(Color.Background))
+            Else
+                Me[row, n].Background = Color.Lighter(Color.Background)
+            Endif
+        Endif
+    Next
+    
+End
+
+Public Sub grid_ColumnClick(Col As Integer)
+    
+    If Not Me.sorted Then Me.Sorted = True
+    Me.Columns.sort = col
+    Sort(col)
+    
+End
+
+Public Sub grid_KeyPress()
+    
+    $isShift = Key.shift 
+    $isControl = Key.Control 
+    
+End
+
+Public Sub grid_KeyRelease()
+    
+    $isShift = Key.shift 
+    $isControl = Key.Control 
+    
+End
+
+Public Sub grid_Arrange()
+    
+    If $wordWrap Then calcHeights()  
+    
+End
+
+Public Sub calcHeights()
+    
+    Dim n, i, f As Integer
+    
+    If $source.count = 0 Then Return
+    For n = 0 To $widths.max
+        If $widths[n] = -2 Then 
+            Me.Columns[n].Expand = True
+        Else
+            Me.Columns[n].Expand = False
+            Me.Columns[n].Width = $widths[n]
+        Endif
+    Next
+    For n = $widths.count To $source[0].max
+        $widths.Add(-2)
+        Me.Columns[n].Expand = True
+    Next
+    For n = 0 To $source.Max
+        If Me.Rows[n].Height <> Me.Rows.Height Then
+            Me.Rows[n].Height = Me.Rows.Height
+            f = 0
+            For i = 0 To Me.Columns.Max
+                f = Max(f, Me[n, i].Font.RichTextHeight(Me[n, i].RichText, Me.Columns[i].width))
+            Next
+            Me.Rows[n].Height = f + (Me.Rows.Height - Me.Font.Height - 1)
+        Endif
+    Next
+    
+Catch
+    
+    Message("calcHeights:" & Error.Text & "-" & Error.Where)
+    
+End
+
+Public Sub grid_ColumnResize(Column As Integer)
+    
+    Dim n As Integer
+    
+    If $widths.Count < $source[0].max Then 
+        For n = $widths.count To $source[0].max
+            $widths.Add(-2)
+            Me.Columns[n].Expand = True
+        Next
+    Endif
+    $widths[column] = Me.Columns[column].Width
+    If $wordWrap Then calcHeights()
+    
+End
+
+Public Sub Sort(c As Integer)
+    
+    Dim Ordenados, linea As New String[]
+    Dim actual, cad As String
+    Dim n, f As Integer
+    
+    Inc Application.Busy
+    f = IIf(Me.Row = -1, 0, Me.row)
+    cad = Me[f, c].RichText
+    For n = 0 To $source.Max
+        actual = ""
+        Select Case $atipos[c]
+            Case gb.String
+                actual = String.lCase($source[n][c])
+                actual = Replace(actual, "á", "a")
+                actual = Replace(actual, "é", "e")
+                actual = Replace(actual, "í", "i")
+                actual = Replace(actual, "ó", "o")
+                actual = Replace(actual, "ú", "u") 
+                actual = Replace(actual, "ñ", "ny")
+            Case gb.integer, gb.byte, gb.long, gb.float
+                actual = String(10 - Len($source[n][c]), "0") & $source[n][c]
+            Case gb.Date
+                actual = $source[n][c]
+                If actual Then
+                    Try actual = Mid(actual, 7, 4) & Mid(actual, 4, 2) & Mid(actual, 1, 2) & Mid(actual, 12, 2) & Mid(actual, 15, 2) & Mid(actual, 17, 2)
+                Endif
+        End Select
+        If actual = "" Then actual = "  "
+        actual &= "|" & $source[n].join("|")
+        Ordenados.Add(actual)
+    Next
+    Ordenados.Sort(IIf(Me.Columns.Ascending, gb.Ascent, gb.Descent))
+    $source.Clear()
+    For n = 0 To Ordenados.Max
+        linea = Split(Ordenados[n], "|")
+        linea.Extract(0)
+        $source.Add(linea)
+    Next
+    Super.Clear()
+    Me.Rows.count = $source.count
+    Dec Application.Busy
+    
+Catch
+    
+    Message("Sort: " & Error.Text & "-" & Error.Where)
+    
+End
+
+Private Function wordWrap_Read() As Boolean
+    
+    Return $wordWrap
+    
+End
+
+Private Sub wordWrap_Write(Value As Boolean)
+    
+    $wordWrap = Value
+    Super.Clear
+    
+End
+
+Private Function source_Read() As Variant
+    
+    Return $source
+    
+End
+
+Private Sub source_Write(Value As Variant)
+    
+    Dim f, i As Integer
+    Dim s As String
+    Dim ar As String[]
+    Dim v As Variant
+    Dim col As Collection
+    
+    $source = New Variant[]
+    If Value Is Result Then
+        Value.movefirst
+        Me.Columns.count = Value.Fields.count
+        For f = 0 To value.Fields.count - 1
+            If $setHeads Then 
+                Me.Columns[f].Title = value.Fields[f].Name   
+            Endif
+            Me.Columns[f].Expand = $expandCols
+        Next
+        $atipos = New Integer[]
+        While Value.available
+            ar = New String[]
+            For f = 0 To Value.Fields.Count - 1
+                s = ""
+                $atipos.Add(value.Fields[f].type)
+                Select Case Value.Fields[f].type
+                    Case gb.Date
+                        If Value[Value.Fields[f].name] Then 
+                            s = Format(Value[Value.Fields[f].name], "dd-mm-yyyy hh:nn:ss")
+                            If Right(s, 8) = "00:00:00" Then
+                                s = Left(s, 10)
+                            Endif
+                        Endif
+                    Case gb.Boolean
+                        s = IIf(Value[Value.Fields[f].name], "SI", "NO")
+                    Case Else 
+                        s = Value[Value.Fields[f].Name]
+                End Select
+                ar.add(s)
+            Next
+            $source.add(ar)
+            Value.movenext
+        Wend
+    Else 
+        If value[0] Is Collection Then 
+            $atipos = New Integer[]
+            col = value[0]
+            Me.Columns.count = col.Count
+            For Each v In col
+                
+                $atipos.Add(TypeOf(v))
+                Me.Columns[f].Expand = $expandCols  
+                If $setHeads Then 
+                    Me.Columns[f].title = col.key
+                Endif
+                f += 1        
+            Next
+            For f = 0 To value.count - 1
+                col = value[f]
+                ar = New String[]
+                For Each v In col
+                    ar.Add(col[col.key])
+                Next
+                $source.Add(ar)
+            Next
+        Else If Value Is Variant[]
+            
+            ar = value[0]
+            Me.Columns.count = ar.Count
+            For f = i To ar.max
+                If $setHeads Then 
+                    i = 1
+                    Me.Columns[f].title = ar[f]
+                Endif     
+                Me.Columns[f].Expand = $expandCols
+            Next
+            For f = i To value.count - 1 
+                $source.Add(Value[f])
+            Next
+        Endif
+    Endif
+    
+    Super.Clear()
+    Me.Rows.count = $source.count
+    
+Catch
+    
+    Message("source_Write: " & Error.Text & "-" & Error.Where)
+    
+End
+
+Private Function Value_Read() As Collection
+    
+    Dim c As New Collection
+    Dim n As Integer
+
+    If Me.row > -1 Then 
+        For n = 0 To Me.Columns.Count - 1
+            c.Add(IIf(Me[Me.row, n].text, Me[Me.row, n].text, Me[Me.row, n].RichText), Me.Columns[n].Title)
+        Next
+    Endif
+    Return c
+    
+End
+
+Private Function setHeads_Read() As Boolean
+    
+    Return $setHeads
+    
+End
+
+Private Sub setHeads_Write(Value As Boolean)
+    
+    $setHeads = Value
+    
+End
+
+Private Function expandCols_Read() As Boolean
+    
+    Return $expandCols
+    
+End
+
+Private Sub expandCols_Write(Value As Boolean)
+    
+    Dim n As Integer
+    
+    $expandCols = value
+    For n = 0 To Me.Columns.Max
+        Me.Columns[n].Expand = Value
+    Next
+    
+End
+
+Private Function alternate_Read() As Boolean
+    
+    Return $alternate
+    
+End
+
+Private Sub alternate_Write(Value As Boolean)
+    
+    $alternate = Value
+    
+End
+
+Private Function titles_Read() As String[]
+    
+    Return $titles
+    
+End
+
+Private Sub titles_Write(Value As String[])
+    
+    $titles = Value
+    
+End
+
+Private Function widths_Read() As String[]
+    
+    Dim ar As New Integer[]
+    Dim n As Integer
+    
+    For Each n In $widths
+        ar.Add(CStr(n))
+    Next
+    Return ar
+    
+End
+
+Private Sub widths_Write(Value As String[])
+    
+    Dim n As Integer
+    
+    $widths = New Integer[]
+    If Not IsNull(value) Then
+        For n = 0 To Value.Count - 1
+            $widths.Add(CInt(value[n]))
+        Next
+    Endif
+    If $widths.count < Me.Columns.Count Then
+        For n = $widths.count To Me.Columns.Max
+            $widths.Add(IIf($expandCols, -2, -1))
+        Next
+    Endif
+    
+Catch
+    
+    Message("widths_Write: " & Error.Text & "-" & Error.Where)
+    
+End
+
+'' {@since 3.5}
+Private Function Selection_Read() As Variant
+    
+    Dim c As Collection
+    Dim v As New Variant[]
+    Dim n, i As Integer
+    Dim ar As Integer[]
+    
+    If Me.Rows.Selection.Count > 0 Then 
+        ar = Me.Rows.Selection
+    Else If Me.row > -1 Then 
+        ar.Add(Me.row)
+    Endif
+    For Each i In ar.Max
+        c = New Collection
+        For n = 0 To Me.Columns.Count - 1
+            c.Add(IIf(Me[i, n].text, Me[i, n].text, Me[i, n].RichText), Me.Columns[i].Title)
+        Next
+        v.Add(c)
+    Next
+    Return v
+    
+End
+
+Private Function isShift_Read() As Boolean
+    
+    Return $isShift
+    
+End
+
+Private Function isControl_Read() As Boolean
+    
+    Return $isControl
+    
+End
+
+Private Function fieldtypes_Read() As Integer[]
+    
+    Return $atipos
+    
+End

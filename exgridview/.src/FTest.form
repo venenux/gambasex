@@ -1,0 +1,8 @@
+# Gambas Form File 3.0
+
+{ Form Form
+  MoveScaled(0,0,50,50)
+  { exGridviewobj exGridview
+    MoveScaled(3,5,42,35)
+  }
+}

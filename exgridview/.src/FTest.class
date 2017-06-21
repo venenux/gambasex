@@ -1,0 +1,13 @@
+' Gambas class file
+
+Public Sub _new()
+
+End
+
+Public Sub Form_Open()
+
+Dim matrix As String[][]
+Dim eeue As New ExGridview(Me)
+eeue.source = matrix["pepe"]["hola"]
+
+End

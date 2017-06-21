@@ -1,6 +1,6 @@
-[DOCS](https://gitlab.com/venenux/gambasex/blob/master/docs/README.md) [GIT](https://gitlab.com/venenux/gambasex) [LICENSE](https://gitlab.com/venenux/gambasex/blob/master/LICENSE.md)
+- [DOCS](https://gitlab.com/venenux/gambasex/blob/master/docs/README.md) - [GIT](https://gitlab.com/venenux/gambasex) - [LICENSE](https://gitlab.com/venenux/gambasex/blob/master/LICENSE.md)
 
-:whale2: The Gambas 3 extended controllers and framework :whale2:
+![GEX](icon.png) The Gambas 3 extended controllers and framework :whale2:
 
 Extend the functionallity of Gambas controls and classes / Extiende funcionalidades de controles y clases Gambas.
 

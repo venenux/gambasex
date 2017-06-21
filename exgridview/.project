@@ -1,0 +1,15 @@
+# Gambas Project File 3.0
+# Compiled with Gambas 3.1.1
+Title=exgridview
+Startup=FTest
+Icon=.icon.png
+Version=1.0.0
+Component=gb.image
+Component=gb.gui
+Component=gb.form
+Component=gb.db
+Description="Un \"extended gridview\", con ordenamiento, data en memoria y busqueda indexada, la fuente se mantiene en ram, similar a tabletools.\nNo puede ser usado tan facilmente, debe ser instanciado con un contenedor y observado para los eventos.\nPara mejor implementacion vease \"exGridfilter\""
+Authors="PICCORO Lenz McKAY <mckaygerhard@gmail.com>\nJorge Carrión <shordi@gmail.com>"
+TabSize=4
+MakeComponent=1
+Packager=1

@@ -1,3 +1,5 @@
+![gambas extension icon](docs/icon.png)
+
 # Gambas 3.X Extended controls and modules
 
 due obtuse behavior of gambas community 
