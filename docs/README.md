@@ -1,3 +1,5 @@
+https://gitlab.com/venenux/gambasex
+
 # Gambas 3.X Extended controls and modules
 
 due obtuse behavior of gambas community 
@@ -26,3 +28,6 @@ ex + nombrecontrol o clase extendida
 
 ejemplo si a un grideview se le da capacidades de filtrado seria exGridviewFilter case-sensitive
 
+El repositorio maestro esta en gitlab, github es solo mirror para presencia:
+
+`git clone https://gitlab.com/venenux/gambasex.git`
