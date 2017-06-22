@@ -1,0 +1,13 @@
+# Gambas Action File 3.0
+
+{ Actions
+  { Action juan
+    Text = "Menu3"
+    Shortcut = ""
+  }
+  { Action pepe
+    Text = "Menu2"
+    Shortcut = ""
+  }
+}
+

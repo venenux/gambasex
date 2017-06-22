@@ -1,0 +1,38 @@
+# Gambas Form File 3.0
+
+{ Form Form
+  MoveScaled(0,0,100,61)
+  Expand = True
+  Arrangement = Arrange.Vertical
+  { Menu1 Menu
+    { Menu2 Menu
+      Action = "pepe"
+      Text = ("Menu2")
+    }
+    { Menu3 Menu
+      Action = "juan"
+      Text = ("Menu3")
+    }
+  }
+  { Panel1 Panel
+    MoveScaled(4,4,93,52)
+    Expand = True
+    Arrangement = Arrange.Fill
+    { exgridfilter1 exgridfilter
+      MoveScaled(2,2,88,47)
+    }
+  }
+}
+
+# Gambas Action File 3.0
+
+{ Actions
+  { Action juan
+    Text = "Menu3"
+    Shortcut = ""
+  }
+  { Action pepe
+    Text = "Menu2"
+    Shortcut = ""
+  }
+}

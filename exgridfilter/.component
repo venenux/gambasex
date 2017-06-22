@@ -1,0 +1,6 @@
+[Component]
+Key=exgridfilter
+Version=1.0.0
+Authors=PICCORO Lenz McKAY gerardo <mckaygerhard@gmail.com>,Jorge Carrion <shordi@gmail.com>
+Requires=gb.db,gb.qt4,gb.vb,gb.form
+

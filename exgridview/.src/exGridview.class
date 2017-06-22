@@ -8,7 +8,7 @@ Inherits GridView
 
 Public Const _Properties As String = "*,wordWrap=True,setHeads=True,expandCols=False,titles,widths,alternate=T"
 Public Const _Group As String = "View"                  ' no importa la fuente, no interactua con base de datos pero trata datos, se coloca en view con tranquilidad
-Public Const _Similar As String = "GridView"            ' extiende la capacidad de estos controles de los cuales hereda, solo gridview ya que tableview le falta o sobra propiedades
+Public Const _Similar As String = "GridView,TableView"            ' extiende la capacidad de estos controles de los cuales hereda, solo gridview ya que tableview le falta o sobra propiedades
 Public Const _drawWith As String = "GridView"           ' se pinta basado en el gridview puesto hereda desde el mismo, usa sus propiedades para pintarse en forms
 Public Const licencia As String = "https://gitlab.com/venenux/gambasex/blob/master/LICENSE.md" '' Licencia especial CC-BY-SS con ecepciones, detalles https://gitlab.com/venenux/gambasex/blob/master/LICENSE.md
 

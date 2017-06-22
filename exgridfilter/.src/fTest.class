@@ -1,0 +1,27 @@
+' Gambas class file
+
+  
+
+
+
+Public Sub exgridfilter1_DblClick()
+
+    Dim c As Collection
+    
+    c = exgridfilter1.Value
+
+
+End
+
+
+Public Sub Form_Open()
+
+    Dim r As Result
+    
+    Connections["Connection1"].Open
+    r = Connections["Connection1"].Exec("select * from Countries")
+    exgridfilter1.source = r
+    
+End
+
+
