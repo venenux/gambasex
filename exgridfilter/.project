@@ -14,6 +14,5 @@ Description="Un \"extended gridview\", con ordenamiento, data en memoria y busqu
 Authors="PICCORO Lenz McKAY gerardo <mckaygerhard@gmail.com>\nJorge Carrion <shordi@gmail.com>"
 TabSize=4
 MakeComponent=1
-SourcePath=/home/general/Devel
 Vendor=gambasex
 Packager=1
