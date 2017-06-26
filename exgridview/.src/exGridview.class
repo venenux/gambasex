@@ -70,7 +70,7 @@ End
 
 Public Sub grid_Data(row As Integer, col As Integer)
     
-    If $source.count = 0 Then Return
+    If $source.count < 1 Then Return
     Me[row, col].RichText = $source[row][col]
     Me[row, col].WordWrap = $wordWrap
     If $wordWrap Then
@@ -131,9 +131,11 @@ End
 
 Public Sub grid_ColumnClick(Col As Integer)
     
-    If Not Me.sorted Then Me.Sorted = True
-    Me.Columns.sort = col
-    Sort(col)
+    If Me.Rows.Count > 0 Then
+        If Not Me.sorted Then Me.Sorted = True
+        Me.Columns.sort = col
+        Sort(col)
+    Endif
     
 End
 
@@ -212,42 +214,44 @@ Public Sub Sort(c As Integer)
     Dim actual, cad As String
     Dim n, f As Integer
     
-    Inc Application.Busy
-    f = IIf(Me.Row = -1, 0, Me.row)
-    cad = Me[f, c].RichText
-    For n = 0 To $source.Max
-        actual = ""
-        Select Case $atipos[c]
-            Case gb.String
-                actual = String.lCase($source[n][c])
-                actual = Replace(actual, "á", "a")
-                actual = Replace(actual, "é", "e")
-                actual = Replace(actual, "í", "i")
-                actual = Replace(actual, "ó", "o")
-                actual = Replace(actual, "ú", "u") 
-                actual = Replace(actual, "ñ", "ny")
-            Case gb.integer, gb.byte, gb.long, gb.float
-                actual = String(10 - Len($source[n][c]), "0") & $source[n][c]
-            Case gb.Date
-                actual = $source[n][c]
-                If actual Then
-                    Try actual = Mid(actual, 7, 4) & Mid(actual, 4, 2) & Mid(actual, 1, 2) & Mid(actual, 12, 2) & Mid(actual, 15, 2) & Mid(actual, 17, 2)
-                Endif
-        End Select
-        If actual = "" Then actual = "  "
-        actual &= "|" & $source[n].join("|")
-        Ordenados.Add(actual)
-    Next
-    Ordenados.Sort(IIf(Me.Columns.Ascending, gb.Ascent, gb.Descent))
-    $source.Clear()
-    For n = 0 To Ordenados.Max
-        linea = Split(Ordenados[n], "|")
-        linea.Extract(0)
-        $source.Add(linea)
-    Next
-    Super.Clear()
-    Me.Rows.count = $source.count
-    Dec Application.Busy
+    If $source.Count > 0 Then
+        Inc Application.Busy
+        f = IIf(Me.Row = -1, 0, Me.row)
+        cad = Me[f, c].RichText
+        For n = 0 To $source.Max
+            actual = ""
+            Select Case $atipos[c]
+                Case gb.String
+                    actual = String.lCase($source[n][c])
+                    actual = Replace(actual, "á", "a")
+                    actual = Replace(actual, "é", "e")
+                    actual = Replace(actual, "í", "i")
+                    actual = Replace(actual, "ó", "o")
+                    actual = Replace(actual, "ú", "u") 
+                    actual = Replace(actual, "ñ", "ny")
+                Case gb.integer, gb.byte, gb.long, gb.float
+                    actual = String(10 - Len($source[n][c]), "0") & $source[n][c]
+                Case gb.Date
+                    actual = $source[n][c]
+                    If actual Then
+                        Try actual = Mid(actual, 7, 4) & Mid(actual, 4, 2) & Mid(actual, 1, 2) & Mid(actual, 12, 2) & Mid(actual, 15, 2) & Mid(actual, 17, 2)
+                    Endif
+            End Select
+            If actual = "" Then actual = "  "
+            actual &= "|" & $source[n].join("|")
+            Ordenados.Add(actual)
+        Next
+        Ordenados.Sort(IIf(Me.Columns.Ascending, gb.Ascent, gb.Descent))
+        $source.Clear()
+        For n = 0 To Ordenados.Max
+            linea = Split(Ordenados[n], "|")
+            linea.Extract(0)
+            $source.Add(linea)
+        Next
+        Super.Clear()
+        Me.Rows.count = $source.count
+        Dec Application.Busy
+    Endif
     
 Catch
     
