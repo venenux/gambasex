@@ -284,11 +284,12 @@ Private Sub source_Write(Value As Variant)
     
     $source = New Variant[]
     If Value Is Result Then
+        $titles = New String[]
         Value.movefirst
         Me.Columns.count = Value.Fields.count
         For f = 0 To value.Fields.count - 1
             If $setHeads Then 
-                Me.Columns[f].Title = value.Fields[f].Name   
+                $titles.Add(value.Fields[f].Name)
             Endif
             Me.Columns[f].Expand = $expandCols
         Next
@@ -320,13 +321,14 @@ Private Sub source_Write(Value As Variant)
         If value[0] Is Collection Then 
             $atipos = New Integer[]
             col = value[0]
+            $titles = New String[]
             Me.Columns.count = col.Count
             For Each v In col
                 
                 $atipos.Add(TypeOf(v))
                 Me.Columns[f].Expand = $expandCols  
                 If $setHeads Then 
-                    Me.Columns[f].title = col.key
+                    $titles.Add(col.key)
                 Endif
                 f += 1        
             Next
@@ -345,7 +347,7 @@ Private Sub source_Write(Value As Variant)
             For f = i To ar.max
                 If $setHeads Then 
                     i = 1
-                    Me.Columns[f].title = ar[f]
+                    If $titles.Count = 0 Then Me.Columns[f].title = ar[f]
                 Endif     
                 Me.Columns[f].Expand = $expandCols
             Next
@@ -354,7 +356,9 @@ Private Sub source_Write(Value As Variant)
             Next
         Endif
     Endif
-    
+    For i = 0 To Me.Columns.Max
+       Me.Columns[i].title = $titles[i]
+    Next
     Super.Clear()
     Me.Rows.count = $source.count
     
