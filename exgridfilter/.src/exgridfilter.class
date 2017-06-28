@@ -26,7 +26,7 @@ Property subMenu As String ''nombre del menu definido popup con el botón derech
 Property menuDefault As Boolean ''Si cierto aparecerá el menú por defecto. Si se ha establecido  subMenu éste aparecerá debajo del menu por defecto. Si falso y hay subMenu sólo aparecerá subMenu. Si falso y no hay subMenu, no aparecerá nada.
 Property grid As ExGridview  '' exGridFilter extiende de ExGridview un extended gridView con capacidades de ordenamiento y recursividad en memoria a partir de fuente de datos matricial (colleccion o arreglo bidimensional o Result)
 Property showButtons As Boolean ''Especifica si la botonera es visible o no
-Property posButtons As Integer ''Posición de la Botonera 0=debajo,2=derecha
+Property posButtons As Integer ''Posición de la Botonera 0=debajo, 1=encima,2=Izquierda,3=derecha
 Property showExportMenu As Boolean ''Especifica si la opción de exportar los datos a CSV en el menú por defecto es visible o no. 
 Property Read value As Collection ''Collección con los valores de la fila seleccionadas
 Property Read selection As Collection[] ''Collección con los valores de la fila seleccionadas

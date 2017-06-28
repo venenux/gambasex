@@ -1,30 +1,26 @@
 # Gambas Form File 3.0
 
 { Form Form
-  MoveScaled(0,0,92,44)
+  MoveScaled(0,0,90,42)
   Arrangement = Arrange.Vertical
   Padding = 10
   { mDefault Menu
     { mFiltrar Menu
       Action = "mFiltrar"
       Text = ("Filtrar por este valor")
-      Picture = Picture["dbGridFilter_stuff/stock_autofilter.png"]
     }
     { mFiltro Menu
       Action = "mFiltro"
       Text = ("Filtro Avanzado")
-      Picture = Picture["dbGridFilter_stuff/stock_advanced-filter.png"]
       Visible = False
     }
     { mNofiltrar Menu
       Action = "mNofiltrar"
       Text = ("Eliminar Filtro")
-      Picture = Picture["dbGridFilter_stuff/stock_delete-autofilter.png"]
     }
     { mVerFiltro Menu
       Action = "mVerFiltro"
       Text = ("Ver Filtros Activos")
-      Picture = Picture["dbGridFilter_stuff/verfiltro.png"]
     }
     { mOrdenar Menu
       Action = "mOrdenar"
@@ -102,17 +98,14 @@
   { Action mFiltrar
     Text = "Filtrar por este valor"
     Shortcut = ""
-    Picture = "dbGridFilter_stuff/stock_autofilter.png"
   }
   { Action mFiltro
     Text = "Filtro Avanzado"
     Shortcut = ""
-    Picture = "dbGridFilter_stuff/stock_advanced-filter.png"
   }
   { Action mNofiltrar
     Text = "Eliminar Filtro"
     Shortcut = ""
-    Picture = "dbGridFilter_stuff/stock_delete-autofilter.png"
   }
   { Action mOrdenar
     Text = "Ordenar"
@@ -122,6 +115,5 @@
   { Action mVerFiltro
     Text = "Ver Filtros Activos"
     Shortcut = ""
-    Picture = "dbGridFilter_stuff/verfiltro.png"
   }
 }

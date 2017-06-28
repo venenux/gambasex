@@ -1,3 +1,129 @@
+commit b1f718e9b2c5379583f033363b37b61f77ec57b8
+Author: PICCORO Lenz McKAY <mckaygerhard@gmail.com>
+Date:   Mon Jun 26 11:38:42 2017 -0400
+
+    verificacion de fuentes validas, si al menos tiene una fila/row arregla #3
+    * el metodo ordenar o sort no verifica si hay fuentes, por lo que no puede ordenar..
+    * verifica que antes count tenga datos que ordenar, sino no realiza ordenamiento
+    * una vez tiene fuentes verifica antes de click si los elementos existe mas de uno
+
+:100644 100644 e72cb6a... d47361a... M	exgridview/.component
+:100644 100644 4c620bf... a1c7deb... M	exgridview/.project
+:100644 100644 399f071... c3836e6... M	exgridview/.src/exGridview.class
+
+commit 3de337b52176c423f293b36ef36fb5235ef25ac2
+Author: PICCORO Lenz McKAY <mckaygerhard@gmail.com>
+Date:   Mon Jun 26 11:20:07 2017 -0400
+
+    arrego issue #4 fixed #4 perdida de columnas cuando remueve filtro
+    * se usaban los nombres de campo con source como un result, al remover filtro
+    se usa como source es un Varian[][], la primera fila del array.
+    * modificado para siempre en cualquier fuente, asigne columnas en propiedad $titles
+    y sea éste $titles el que se usa de cabeceras siempre.
+    * contribucion de shordi closes #4 fixed #4
+
+:100644 100644 496855d... c74e1d8... M	exgridview/.icon.png
+:100644 100644 22a8d62... 4c620bf... M	exgridview/.project
+:100644 100644 8ec600d... 399f071... M	exgridview/.src/exGridview.class
+
+commit a0bb4ee5e26d049b3be88ea6e495cffb82a74f88
+Author: PICCORO Lenz McKAY <mckaygerhard@gmail.com>
+Date:   Thu Jun 22 15:14:14 2017 -0400
+
+    nuevo modulo exfuntions, documento sobre notas de gambasweb
+    * nuevo module exfuntions, new module to made csv, covert to odt, get system info
+    * documento de notas sobre gambas web, despues se organiza
+
+:000000 100644 0000000... 37f7d35... A	docs/GAMBASWEBEX.md
+:000000 100644 0000000... c05acb0... A	exfuntions/.component
+:000000 100644 0000000... 06dab1c... A	exfuntions/.directory
+:000000 100644 0000000... cb95c3b... A	exfuntions/.gitignore
+:000000 100644 0000000... 399e015... A	exfuntions/.hidden/icons/search-x-info.png
+:000000 100644 0000000... 0e2485c... A	exfuntions/.hidden/icons/text-x-texinfo.png
+:000000 100644 0000000... edb8191... A	exfuntions/.hidden/icons/view-refresh.png
+:000000 100644 0000000... 0e2485c... A	exfuntions/.icon.png
+:000000 100644 0000000... 2d35531... A	exfuntions/.project
+:000000 100644 0000000... 150dc15... A	exfuntions/.src/exModSysInfo.module
+:100644 100644 5fb4618... 36e6983... M	exgridfilter/.project
+
+commit 8dc493625353d770f80ad9381d74051f07b64ab7
+Author: PICCORO Lenz McKAY <mckaygerhard@gmail.com>
+Date:   Wed Jun 21 20:40:11 2017 -0430
+
+    nuevos componentes controles: ExGridview y ExGridfilter, Gridview extendido
+    * exgridview es un gridview estendido a ordenamiento y fuente en memoria
+    * exgridfilter es la implementacion, permite busquedas, emplea indexacion del exgridview
+    * archivo de listado de componetnes y librerias en docs iniciado.. no es documentacion.
+    * iconos de presentacion flat y despliege en la barra de controles de gambas
+    * iconos de panel de busqueda flat o planos barra de buscar y acciones por defecto
+    * documentacion de codigo fuente minima para finciona
+    * por ahora solo funciona en gambas 3.9 pero hare funcione en gambas 3.5 y 3.1
+
+:000000 100644 0000000... c3dbea9... A	docs/LIBRERIASYCOMPONENTES.md
+:000000 100644 0000000... bd4bfe0... A	exgridfilter/.action/exgridfilterf.action
+:000000 100644 0000000... ce808a8... A	exgridfilter/.action/fMain.action
+:000000 100644 0000000... ce808a8... A	exgridfilter/.action/fTest.action
+:000000 100644 0000000... bd4bfe0... A	exgridfilter/.action/fwGridFilter.action
+:000000 100644 0000000... c58ab16... A	exgridfilter/.component
+:000000 100644 0000000... 06dab1c... A	exgridfilter/.directory
+:000000 100644 0000000... 9cd7eeb... A	exgridfilter/.hidden/control/exgridfilter.png
+:000000 100644 0000000... 48f14b9... A	exgridfilter/.hidden/control/exgridview.png
+:000000 100644 0000000... 2406ea3... A	exgridfilter/.hidden/icons/multipart-encrypted.png
+:000000 100644 0000000... 399e015... A	exgridfilter/.hidden/icons/search-x-info.png
+:000000 100644 0000000... 31f4733... A	exgridfilter/.hidden/icons/search-x-play.png
+:000000 100644 0000000... ed43950... A	exgridfilter/.hidden/icons/search-x-restart.png
+:000000 100644 0000000... 211b927... A	exgridfilter/.hidden/icons/search-x-search.png
+:000000 100644 0000000... 0e2485c... A	exgridfilter/.hidden/icons/text-x-texinfo.png
+:000000 100644 0000000... edb8191... A	exgridfilter/.hidden/icons/view-refresh.png
+:000000 100644 0000000... 995b64b... A	exgridfilter/.icon.png
+:000000 100644 0000000... 3547f34... A	exgridfilter/.info
+:000000 100644 0000000... f68ea81... A	exgridfilter/.list
+:000000 100644 0000000... 5fb4618... A	exgridfilter/.project
+:000000 100644 0000000... e84a1f6... A	exgridfilter/.settings
+:000000 120000 0000000... 82c390d... A	exgridfilter/.src/exGridview.class
+:000000 100644 0000000... 4c755e2... A	exgridfilter/.src/exgridfilter.class
+:000000 100644 0000000... 2e1d1fa... A	exgridfilter/.src/exgridfilterf.class
+:000000 100644 0000000... 220c8be... A	exgridfilter/.src/exgridfilterf.form
+:000000 100644 0000000... ee7494d... A	exgridfilter/.src/fTest.class
+:000000 100644 0000000... 1326639... A	exgridfilter/.src/fTest.form
+:000000 100644 0000000... 0f936ea... A	exgridfilter/.startup
+:100644 100644 882ab7a... e72cb6a... M	exgridview/.component
+:100644 100644 596108c... 70b37d8... M	exgridview/.info
+:100644 100644 5a6f1df... 22a8d62... M	exgridview/.project
+:100644 100644 1143bc7... 8ec600d... M	exgridview/.src/exGridview.class
+:100644 100644 e27d60b... 52d7862... M	exgridview/.startup
+
+commit a66f09adb08ba7a813b8204424ba42715f760c99
+Author: PICCORO Lenz McKAY <mckaygerhard@gmail.com>
+Date:   Wed Jun 21 09:53:05 2017 -0430
+
+    nuevo control exGridview extiende el gridview a carga en ram desde DB Result o colleccion
+    * control y representacion en el panel de controles bajo "view"
+    * cargable como componente o libreria, solo compilar y despues adjuntar localmente sin instalar
+    * no es usable facilmente, debo implementar el gridfilter de shordi para ello
+    
+    Actualizado el README y la pagina web, el doc de contribucion y LICENCIA y CHANGELOG
+
+:000000 100644 0000000... cb95c3b... A	.gitignore
+:100644 100644 cc9ac07... 38779bb... M	CHANGELOG
+:100644 100644 8c6e645... c9f2ea1... M	CONTRIBUTING.md
+:100644 100644 2d460e0... 629d437... M	README.md
+:100644 100644 a24d585... 4a8f57d... M	docs/README.md
+:000000 100644 0000000... c8b84fb... A	docs/icon.png
+:000000 100644 0000000... e69de29... A	exgridview/.action/.hiddengit
+:000000 100644 0000000... 882ab7a... A	exgridview/.component
+:000000 100644 0000000... 06dab1c... A	exgridview/.directory
+:000000 100644 0000000... 2a8dc05... A	exgridview/.hidden/control/exgridview.png
+:000000 100644 0000000... 496855d... A	exgridview/.icon.png
+:000000 100644 0000000... 596108c... A	exgridview/.info
+:000000 100644 0000000... 1138118... A	exgridview/.list
+:000000 100644 0000000... 5a6f1df... A	exgridview/.project
+:000000 100644 0000000... a7fe63c... A	exgridview/.settings
+:000000 100644 0000000... cc26869... A	exgridview/.src/FTest.class
+:000000 100644 0000000... 0aea96d... A	exgridview/.src/FTest.form
+:000000 100644 0000000... 1143bc7... A	exgridview/.src/exGridview.class
+:000000 100644 0000000... e27d60b... A	exgridview/.startup
+
 commit 0fd0dbfab3604d49ab14d02cd112f058624e9b44
 Author: PICCORO Lenz McKAY <mckaygerhard@gmail.com>
 Date:   Wed Jun 21 05:29:37 2017 -0430
@@ -8,6 +134,10 @@ Date:   Wed Jun 21 05:29:37 2017 -0430
     * se tomara trabajo y ya se ha publicado cambios a sus authore, estan notificados
     * se acota una excepcion, si el derivado produce dinero puede ser demandado si no hay retribuciones
 
+:100644 100644 f6f8b4e... c10d31e... M	LICENSE
+:000000 100644 0000000... c10d31e... A	LICENSE.md
+:100644 100644 d8fff55... a24d585... M	docs/README.md
+
 commit 9e34dfeef66cad8a06db344c2732c599f923bfbc
 Author: PICCORO Lenz McKAY <mckaygerhard@gmail.com>
 Date:   Tue Jun 20 22:58:38 2017 -0430
@@ -16,13 +146,7 @@ Date:   Tue Jun 20 22:58:38 2017 -0430
     * adicionado url web y url repositorio hacia gitlab
     * autogeneracion de la web lista. es http://venenux.github.io/gambasex
 
-commit 127f98f7b6a9403844beae3bb41c27d1f42f3251
-Merge: afc0299 884c89f
-Author: PICCORO Lenz McKAY <mckaygerhard@gmail.com>
-Date:   Tue Jun 20 22:04:52 2017 -0430
-
-    actualizadon y sincronizando repositorios entre github y gitlab, gitlab es master..
-    * gitlab es mas software libre que github que no comparte su interfaz
+:100644 100644 2d460e0... d8fff55... M	docs/README.md
 
 commit 884c89f1b2fb589c0a51d17833aff4360b2915b7
 Author: PICCORO Lenz McKAY <mckaygerhard@gmail.com>
@@ -30,11 +154,15 @@ Date:   Wed Jun 21 05:56:19 2017 +0000
 
     Add contribution guide
 
+:000000 100644 0000000... 8c6e645... A	CONTRIBUTING.md
+
 commit 0da6da336e890bc8f156270cb2222ac3c59627c5
 Author: PICCORO Lenz McKAY <mckaygerhard@gmail.com>
 Date:   Wed Jun 21 05:55:34 2017 +0000
 
     Add license
+
+:000000 100644 0000000... f6f8b4e... A	LICENSE
 
 commit da1e5bdb74af5ea3a088088798a11b4568615688
 Author: PICCORO Lenz McKAY <mckaygerhard@gmail.com>
@@ -42,11 +170,15 @@ Date:   Wed Jun 21 05:54:48 2017 +0000
 
     Add changelog
 
+:000000 100644 0000000... cc9ac07... A	CHANGELOG
+
 commit afc0299f0150c17ef00a834b93f76847311090a8
 Author: PICCORO Lenz McKAY <mckaygerhard@gmail.com>
 Date:   Tue Jun 20 22:03:56 2017 -0430
 
     directorio para pagina web autogenerada desde github---
+
+:000000 100644 0000000... 2d460e0... A	docs/README.md
 
 commit 421fa9441adc071aa184439e36904cce636714c0
 Author: PICCORO Lenz McKAY <mckaygerhard@gmail.com>
@@ -57,3 +189,5 @@ Date:   Tue Jun 20 21:50:08 2017 -0430
     * lastimosamente la comunidad gambas habla de modernidad pero estan atrasados
     * no llevan un buen seguimiento del codigo y no lo documentan bien
     * sus proyectos son muy orientado a pequeños entornos.. no hay vision..
+
+:000000 100644 0000000... 2d460e0... A	README.md

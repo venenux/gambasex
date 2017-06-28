@@ -20,6 +20,8 @@
 ' Foundation, Inc., 51 Franklin St, Fifth Floor,
 ' Boston, MA  02110-1301  USA
 '
+Export
+
 
 '' modulo para funciones de informacion del sistema, depende de lsb (lsb-release en debian)
 
@@ -30,7 +32,7 @@ Public Function Resume() As String
     strResume = "<b>So: </b>" & Distro()
     strResume &= " <b>Arquitectura.So: </b>" & ArqSO()
     strResume &= " <b>Arquitectura.Proc: </b>" & ArqMicro()
-    strResume &= " <b>Procesador: </b>" & MicroType()
+    strResume &= " <b>Procesador: </b>" & Micro()
     strResume &= " <b>Ram: </b>" & Ram()
     strResume &= " <b>Nombre.PC: </b>" & ComputerName()
     strResume &= " <b>Usuario: </b>" & CurrentUser()
@@ -44,7 +46,8 @@ Public Function Resume() As String
     
 End
 
-Public Function Distro() As String 'devuelve la distribución instalada xmi
+'' devuelve la distribución instalada xmi <br> @return String
+Public Function Distro() As String
     
     Dim sDis As String
     
@@ -55,45 +58,42 @@ Public Function Distro() As String 'devuelve la distribución instalada xmi
     
 End
 
+'' devuelve la distribución madre como nombre corto xmi <br> @return String
 Public Function DistroShort() As String
     
     Dim strDistro As String
     Dim strDistroShort As String
     Dim intN As Integer
     
-    Shell "lsb_release -sd" To strDistro
+    Shell "lsb_release -si | cut -d' ' -f1" To strDistro
     strDistro = Trim(strDistro)
-    
     strDistroShort = strDistro
-    
     If Comp(strDistro, "") = 0 Then
         strDistroShort = "Desconocida"
     Endif
-    
     Return strDistroShort
     
 End
 
-Public Function ArqSO() As String 'devuelve la Arquitecura del Sistema Operativo
+Public Function ArqSO() As String ''alias de System.Arquitecture, Arquitecura/tipo de maquina del Sistema Operativo <br> @return String
     
     Return System.Architecture
     
 End
 
-Public Function ArqMicro() As String 'devuelve la Arquitecura del Procesador
+Public Function ArqMicro() As String ''alias de System.Arquitecture, Arquitecura/tipo de maquina del Sistema Operativo <br> @return String
     
     Dim sArqPro As String
-    
-    Exec ["uname", "-p"] To sArqPro 'Almacenamos la Arquitectura del Procesador
+    Shell "uname -a | cut -d' ' -f8" To sArqPro 'usar mejor el string completo porque a veces -p o -i da unkonw
     Return Replace(sArqPro, "\n", "")
     
 End
 
-Public Function MicroType() As String 'devuelve el tipo de Procesador
+Public Function Micro() As String 'devuelve el tipo de Procesador
     
     Dim sPro As String
     
-    Shell "cat /proc/cpuinfo | grep -i ghz | uniq | cut -f2 -d" & ":" To sPro
+    Shell "cat /proc/cpuinfo | grep -i 'model name'  | cut -f2 -d':'" To sPro
     Return LTrim(Replace(sPro, "\n", ""))
     
 End
@@ -120,19 +120,19 @@ Public Function Ram() As String 'devuelve cantidad de Ram en MB tambien con free
     
 End
 
-Public Function ComputerName() As String 'devuelve el nombre del pc
+Public Function ComputerName() As String '' alias de *system.host* devuelve el nombre del pc
     
     Return System.Host
     
 End
 
-Public Function CurrentUser() As String 'devuelve el usuario activo
+Public Function CurrentUser() As String '' alias de *system.user.name* devuelve el usuario activo
     
     Return System.User.Name
     
 End
 
-Public Function AllUsers() As String 'Devuelve los usuarios que hemos creado
+Public Function AllUsers() As String '' Devuelve los usuarios nivel normal via unix registro (passwd/shadow)
     
     Dim sUser As String
     
@@ -146,7 +146,7 @@ Public Function DskType() As String 'devuelve el entorno del escritorio
     
     Dim sEscritorio As String
     'Shell "env | grep DESKTOP_SESSION= | cut -d '=' -f 2" To sEscritorio
-    sEscritorio = Desktop.Type
+    'sEscritorio = Desktop.Type
     
     Return Replace(sEscritorio, "\n", "")
     
@@ -177,7 +177,7 @@ Public Function ProjInfo(Optional strPath As String) As String[] ''Devuelve una 
     Dim stxTmp As New String[]
     Dim stxTag As New String[]
     Dim stxVal As New String[]
-    Dim int As Integer
+    Dim inten As Integer
     Dim intKey As Integer
     Dim intTag As Integer
     Dim strVal As String
@@ -210,12 +210,12 @@ Public Function ProjInfo(Optional strPath As String) As String[] ''Devuelve una 
     If Exist(strPath) Then
         strProject = File.Load(strPath)
         stxTmp = Split(strProject, "\n")
-        For int = 0 To stxTmp.Max
-            If InStr(stxTmp[int], "=") > 0 Then
-                Select Split(stxTmp[int], "=")[0]
+        For inten = 0 To stxTmp.Max
+            If InStr(stxTmp[inten], "=") > 0 Then
+                Select Split(stxTmp[inten], "=")[0]
                     Case "Title", "Startup", "Icon", "Version", "Component", "Description", "Authors", "Language", "Vendor"
-                        stxTag.Add(Split(stxTmp[int], "=")[0])
-                        strVal = Replace(Split(stxTmp[int], "=")[1], Chr(34), "")
+                        stxTag.Add(Split(stxTmp[inten], "=")[0])
+                        strVal = Replace(Split(stxTmp[inten], "=")[1], Chr(34), "")
                         strVal = Replace(strVal, "\n", ":")
                         stxVal.Add(strVal)
                 End Select
