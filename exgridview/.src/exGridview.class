@@ -281,8 +281,8 @@ End
 Private Sub source_Write(Value As Variant)
     
     Dim f, i As Integer
-    Dim s As String
-    Dim ar As String[]
+    Dim s, tn As String
+    Dim ar, tns As String[]
     Dim v As Variant
     Dim col As Collection
     
@@ -293,7 +293,9 @@ Private Sub source_Write(Value As Variant)
         Me.Columns.count = Value.Fields.count
         For f = 0 To value.Fields.count - 1
             If $setHeads Then 
-                $titles.Add(value.Fields[f].Name)
+                tn = value.Fields[f].Name
+                tns = Split(value.Fields[f].Name, ".")
+                $titles.Add(tns[tns.max])
             Endif
             Me.Columns[f].Expand = $expandCols
         Next
