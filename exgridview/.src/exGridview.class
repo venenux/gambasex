@@ -332,10 +332,10 @@ Private Sub source_Write(Value As Variant)
             $source.add(ar)
             Value.movenext
         Wend
-    Else 
-        $titles = New String[]                              ' titles debe ser declarada para ambos casos, no solo collection
+    Else If Not IsNull(Value[0])
         If value[0] Is Collection Then 
             $atipos = New Integer[]                         ' usamos el primer elemento como indice de titulos
+            $titles = New String[]                          ' solo se declara para collecion, el resto del tiempo se asume variant y existe
             col = value[0]                                  ' una coleccion es bidimensional
             Me.Columns.count = col.Count
             For Each v In col
@@ -358,12 +358,15 @@ Private Sub source_Write(Value As Variant)
             If value.dim = 1 Then   ' arreglo bidimensional
                 ar = value[0]                           ' si no, el catch abajo atrapara el problema aqui
                 Me.Columns.count = ar.Count             ' titulos tomados de la primera fila
+                If IsNull($titles) And $titles.Count < Me.Columns.Count Then
+                    $titles = New String[]              ' cuando se reinicia el filtro se intenta rellenar titulos, a menos ya existan
+                Endif
                 For f = 0 To ar.max
-                    If $titles.Count < Me.Columns.Count Then 
+                    If $setHeads And $titles.Count < Me.Columns.Count Then 
                         $titles.Add(ar[f])              ' si aun no se ve todas las columnas de la fila
                         autedetectedtitle = True        ' indico que tome los titulos de la primera fila
                     Endif
-                    If $setHeads And autedetectedtitle And $titles.Count = Me.Columns.Count Then 
+                    If autedetectedtitle And $titles.Count = Me.Columns.Count Then 
                         i = 1
                     Else                                ' si los tome de la primera, no se agrega repetida?¡
                         i = 0                           ' setheads se toma en cuenta solo para autodeteccion

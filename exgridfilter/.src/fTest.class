@@ -19,7 +19,7 @@ Public Sub Form_Open()
     Dim r As Result
     
     Connections["Connection1"].Open
-    r = Connections["Connection1"].Exec("select * from Countries")
+    r = Connections["Connection1"].Exec("select * from sys_descripcion")
     exgridfilter1.source = r
     
 End

@@ -16,6 +16,7 @@ Private $Export As Boolean
 Private $posButtons As Integer
 Private $obs As Observer
 Private $original As Variant[]
+Private $origtitl As Variant[]
 Private $filtro As Variant[]
 
 Public Sub Form_Open()
@@ -43,6 +44,8 @@ Public Sub bAutofiltro_Click()
             For n = 0 To grid.Columns.Max
                 c.Add(grid.Columns[n].Title)
             Next
+            ' ar.Add(c) ' la primera tiene los titulos, no agregar si settitles es true
+        Else
             ar.Add(c)
         Endif
         For n = 0 To $original.Max
@@ -105,17 +108,19 @@ Private Sub source_Write(Value As Variant)
     Dim c As String[]
     
     grid.source = Value
+    $origtitl = grid.titles               ' fix set header after reset filters
     For n = 0 To grid.source.Count - 1
         c = grid.source[n]
         $original.Add(c.Copy())
-    Next  
+    Next
     
 End
 
 Public Sub bTodos_Click()
     
-    grid.source = $original
-    $filtro = New Variant[]
+    grid.source = $original ' al reiniciar los filtros simplemente volvemos rellenar con una copia original
+    grid.titles = $origtitl ' esta puede evitarse pero para fines educativos, para optimizar quitar
+    $filtro = New Variant[] ' y borramos todos los filtros con una nueva variable interna privada de ellos
     
 End
 
@@ -168,7 +173,8 @@ Public Sub bBuscar_Click()
             For n = 0 To grid.Columns.Max
                 c.Add(grid.Columns[n].Title)
             Next
-            ar.Add(c)
+        Else
+            ar.Add(c)   ' cuando esta source ya listo, la primera linea es el titulos
         Endif
         For n = 0 To $original.Max
             If lineOk(n) Then
