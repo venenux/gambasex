@@ -33,16 +33,15 @@ si no se puede iterar aleatoriamente en los resultados no se puede llenar rapido
 Extiende de `Gridview` usa una propiedad `source` para manejar los datos todos en ram:
 
 ``` java
-Dim titulos as new String[]
-Dim filas as new Variant[]
-
-titulos = ["til1", "til2"]
-filas.add(titulos)
-filas.add(["cel1", "cel2"])
-filas.add(["cel3", "cel4"])
-filas.add(["cel5", "cel6"])
-
-exGridview1.source = filas
+' elformato de la fuente source si es matrix, es primera linea titulos, resto filas
+titulos = ["tcel1", "tcel2"]
+filas.Add(titulos, 0)
+filas.Add(["cel1", "cel2"], 1)
+filas.Add(["cel3", "cel4"], 1)
+' exGridviewobj esta pegado en el form, la fuente puede ser un Result desde db
+exGridviewobj.source = filas
+' titulos se pueden sobreescribir por defecto son detectados de la fuente source
+exGridviewobj.titles = titulos
 ```
 
 #### Menus 
