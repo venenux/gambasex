@@ -6,8 +6,14 @@ End
 
 Public Sub Form_Open()
 
-Dim matrix As String[][]
-Dim eeue As New ExGridview(Me)
-eeue.source = matrix["pepe"]["hola"]
+Dim filas As New Variant[]
+Dim titulos As New String[]
+
+titulos = ["til1", "til2"]
+filas.Add(titulos, 0)
+filas.Add(["cel1", "cel2"], 1)
+filas.Add(["cel3", "cel4"], 1)
+' exGridviewobj esta pegado en el form, la fuente puede ser un Result desde db
+exGridviewobj.source = filas
 
 End

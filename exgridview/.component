@@ -1,5 +1,5 @@
 [Component]
 Key=exgridview
-Version=1.0.2
+Version=1.1.0
 Authors=PICCORO Lenz McKAY <mckaygerhard@gmail.com>,Jorge Carrión <shordi@gmail.com>
-Requires=gb.db,gb.vb,gb.form,gb.qt4
+Requires=gb.db,gb.vb,gb.form,gb.gui
