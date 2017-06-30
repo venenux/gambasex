@@ -14,9 +14,14 @@ titulos = ["tcel1", "tcel2"]
 filas.Add(titulos, 0)
 filas.Add(["cel1", "cel2"], 1)
 filas.Add(["cel3", "cel4"], 1)
-' exGridviewobj esta pegado en el form, la fuente puede ser un Result desde db
-exGridviewobj.source = filas
+
 ' titulos se pueden sobreescribir por defecto son detectados de la fuente source
-exGridviewobj.titles = titulos
+titulos = ["colum1", "colum2"]          ' para eso hay que ponerlos primero de las fuentes
+exGridviewobj.setHeads = True           ' forzar la habilitacion
+exGridviewobj.titles = titulos          ' entonces coloco los titulos, despues desabilitarlos
+
+' exGridviewobj esta pegado en el form, la fuente puede ser un Result desde db
+exGridviewobj.setHeads = False          ' si quiero todas las filas, primero sin titulo
+exGridviewobj.source = filas            ' entonces añade todo incluso la primera fila
 
 End

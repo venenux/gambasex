@@ -20,7 +20,9 @@ Property titles As String[] ''' cabeceras del gridview, si no asignadas, autodet
 Property alternate As Boolean ''' si debe cada fila alternar su color para diferenciarse
 Property widths As String[] ''' arreglo de anchos de columnas, cada indice es la columna correspondiente, indice no definido es columna automatica de ese indice en adelante:<br> *a.* Si definido una sola columna, ese ancho se respeta siempre<br> *b.* Si indefinido para una columna y expandcols es True, esa columna se adaptara<br> *c.* Si indefinido para una columna y expandcols es False, esa columna pero el resto automatica
 Property Read Value As Collection '' arreglo completo de todos los valores de el gridview *incluyendo el filtro activo*<br>, para acceso directo segun su indice.<br>Ejemplo:<br> *exgridview.Value\["columname"\]* in event Click or DblClic accedera al valor de la columna "columname" en la posicion del click de la fila entera.
+#If Version > "3.4"
 Property Read Selection As Variant '' @{since 3.5} devuelve ofrece el arreglo completo de todo el grid *incluyendo el filtro activo*, es como una collecion de la *[cource]* pero ya filtrada.
+#Endif
 Property Read isShift As Boolean ''' notifica si tecla shift esta activa/presionada para combinaciones de menu
 Property Read isControl As Boolean ''' notifica si tecla control esta activa/presionada para combinaciones de menu
 Property Read fieldtypes As Integer[] ''' @{experimental} almacena los tipos de campos detectados o determina los tipos de celdas de los datos
@@ -102,7 +104,9 @@ Public Sub grid_Click()
                 Me[Me.row, n].background = Color.Merge(Me[Me.row, n].background, Color.Lighter(Color.LightBackground))
             Next
         Else                                        ' o solo sombrear uno solo seleccionado
+#If Version > "3.4"
             If Not Me.Rows.Selection.Find($fila) Then Me[$fila, $columna].Background = IIf($fila Mod 2 = 0, Color.Lighter(Color.Background), Color.TextBackground)
+#Endif
         Endif
         If $fila <> Me.row Then Me[$fila, $columna].Background = IIf($fila Mod 2 = 0, Color.Lighter(Color.Background), Color.TextBackground)
         Me[$fila, $columna].Foreground = Color.Foreground
@@ -162,6 +166,7 @@ Public Sub grid_Arrange()
 
 End
 
+''' calculo de celda altura para ajustes
 Public Sub calcHeights()
 
     Dim n, i, f As Integer
@@ -298,7 +303,7 @@ Private Sub source_Write(Value As Variant)
             Value.movefirst                         ' esto no es soportado por odbc, TODO cambia a available
         Endif                                       ' en odbc el cursor esta en 0 y avanza solo hacia adelante
         Me.Columns.count = Value.Fields.count
-        For f = 0 To value.Fields.Max               ' detecto titulos desde el result db
+        For f = 0 To value.Fields.count - 1          ' detecto titulos desde el result db, .Max esta desde 3.7
             If $setHeads Then
                 tn = value.Fields[f].Name
                 tns = Split(value.Fields[f].Name, ".") ' si es sqlite o join remuevo tablas y dejo solo titulos
@@ -311,6 +316,7 @@ Private Sub source_Write(Value As Variant)
             Value.movefirst                         ' esto no es soportado por odbc, TODO cambia a available
         Endif                                       ' en odbc el cursor esta en 0 y avanza solo hacia adelante
         While Value.available
+            ar = New String[]
             For f = 0 To Value.Fields.Count - 1
                 $atipos.Add(value.Fields[f].type)   ' dado source es una matrix, aqui se guarda el tipo de valor
                 s = CString(Value[Value.Fields[f].Name]) ' TODO: en futuro valuedetecttype
@@ -352,6 +358,9 @@ Private Sub source_Write(Value As Variant)
                 For f = 0 To ar.max
                     If $setHeads And $titles.Count < Me.Columns.Count Then
                         i = 1
+                        $titles.Add(ar[f])              ' si aun no se ve todas las columnas de la fila
+                    Else If $titles.Count < Me.Columns.Count Then
+                        i = 0
                         $titles.Add(ar[f])              ' si aun no se ve todas las columnas de la fila
                     Endif
                     Me.Columns[f].Expand = $expandCols
@@ -511,6 +520,7 @@ Catch
 
 End
 
+#If Version > "3.4"
 Private Function Selection_Read() As Variant
 
     Dim c As Collection
@@ -533,6 +543,7 @@ Private Function Selection_Read() As Variant
     Return v
 
 End
+#Endif
 
 Private Function isShift_Read() As Boolean
 
