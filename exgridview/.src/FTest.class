@@ -9,11 +9,14 @@ Public Sub Form_Open()
 Dim filas As New Variant[]
 Dim titulos As New String[]
 
-titulos = ["til1", "til2"]
+' elformato de la fuente source si es matrix, es primera linea titulos, resto filas
+titulos = ["tcel1", "tcel2"]
 filas.Add(titulos, 0)
 filas.Add(["cel1", "cel2"], 1)
 filas.Add(["cel3", "cel4"], 1)
 ' exGridviewobj esta pegado en el form, la fuente puede ser un Result desde db
 exGridviewobj.source = filas
+' titulos se pueden sobreescribir por defecto son detectados de la fuente source
+exGridviewobj.titles = titulos
 
 End

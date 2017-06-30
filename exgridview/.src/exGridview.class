@@ -31,17 +31,17 @@ Private $source As Variant ''Variable interna de la Fuente de datos *[source]* c
 Private $setHeads As Boolean
 Private $atipos As Integer[]
 Private $expandCols As Boolean
-Private $widths As Integer[] 
+Private $widths As Integer[]
 Private $titles As String[]
 Private $isShift As Boolean
 Private $isControl As Boolean
-Private $alternate As Boolean 
+Private $alternate As Boolean
 Private $fila As Integer '' fila a tratar
 Private $columna As Integer '' columna a tratar
 
 '' Gridview extendido, provee indexacion en ram, lo que hace su trabajo eficiente sin tener que if varias veces a la fuente, que puede ser un resultado sql o una collecion o cualquier fuente indexada que tenda definidos los indices como alfanumericos
 Public Sub _new()
-    
+
     $obs = New Observer(Me) As "grid"
     $source = New Variant[]             ' cuidado, source asume existe "count" valido, por ahora no se usa Reault asi que soporta odbc
     $setHeads = True                    ' se autodetectara las columnas
@@ -52,11 +52,11 @@ Public Sub _new()
     $alternate = True                   ' pintara de colores alternos para diferenciar lineas
     $widths = New Integer[]             ' no definido anchos, por tanto se autoajusta
     $titles = New String[]              ' autodetectara los titulos desde la fuente, si es un arreglo matrix, colocara numeros o su indice
-    
+
 End
 
 Public Sub Clear()
-    
+
     Super.Clear
     Me.Rows.count = 0
     Me.Columns.count = 0
@@ -65,33 +65,33 @@ Public Sub Clear()
     $columna = -1
     $widths = New Integer[]
     $titles = New String[]
-    
+
 End
 
 ' aqui se llena la matrix, por ahora no sirve con odbc porque $source.count no lo ofrece
 Public Sub grid_Data(row As Integer, col As Integer)
-    
+
     If $source.count < 1 Then Return            ' determinar si hay datos primero, aqui ya elobj result ha desaparecido asi que hay disponibilidad de count
     Me[row, col].RichText = $source[row][col]   ' llenar la celda actual con el dato desde la fuente
     Me[row, col].WordWrap = $wordWrap           ' determinar si autoajusta el contenido
     If $wordWrap Then                           ' autoajustar el contenido basado en el contenido
-        Me.Rows[row].Height = Max(Me.Rows[row].Height, Me[row, col].Font.RichTextHeight(Me[row, col].RichText, Me.Columns[col].width) + (Me.Rows.Height - Me.Font.Height - 1)) 
+        Me.Rows[row].Height = Max(Me.Rows[row].Height, Me[row, col].Font.RichTextHeight(Me[row, col].RichText, Me.Columns[col].width) + (Me.Rows.Height - Me.Font.Height - 1))
     Endif                                       ' si colorizar alterno, pintar fila impares
     If $alternate Then Me[row, col].Background = IIf(Row Mod 2 = 0, Color.Lighter(Color.Background), Color.TextBackground)
-    
+
 End
 
 '' situa el valor en una fila completa al inicio de esta fila, la celda inicial de la fila actual
 Public Sub grid_RowClick(row As Integer)
-    
+
     Me.MoveTo(row, 0)
     grid_Click()
-    
+
 End
 
 '' al establecerce en la fila actual en su primera celda pinta al fila segunlas propiedades, y devuelve el valor de dicha fila
 Public Sub grid_Click()
-    
+
     Dim n As Integer
     ' determina que filas/celdas sombrear segun el tipo de seleccion
     If $fila > -1 Then                              ' si esta en una posicion valida...
@@ -112,15 +112,16 @@ Public Sub grid_Click()
     ' actualiza las propiedades
     $fila = Me.Row
     $columna = Me.Column
-    
+
 End
 
+''' establece el color de fondo alterno y normal de la fila indice **row**
 Private Sub bgRow(row As Integer)
-    
+
     Dim n As Integer
-    
+
     For n = 0 To Me.Columns.Max
-        If $alternate Then  
+        If $alternate Then
             If ($fila Mod 2) = 0 Then
                 Me[row, n].Background = Color.Lighter(Color.Lighter(Color.Background))
             Else
@@ -128,46 +129,46 @@ Private Sub bgRow(row As Integer)
             Endif
         Endif
     Next
-    
+
 End
 
 Public Sub grid_ColumnClick(Col As Integer)
-    
+
     If Me.Rows.Count > 0 Then
         If Not Me.sorted Then Me.Sorted = True
         Me.Columns.sort = col
         Sort(col)
     Endif                   ' determinar que columna selecciono para ordenar despues
-    
+
 End
 
 Public Sub grid_KeyPress()
-    
-    $isShift = Key.shift 
-    $isControl = Key.Control 
-    
+
+    $isShift = Key.shift
+    $isControl = Key.Control
+
 End
 
 Public Sub grid_KeyRelease()
-    
-    $isShift = Key.shift 
-    $isControl = Key.Control 
-    
+
+    $isShift = Key.shift
+    $isControl = Key.Control
+
 End
 
 Public Sub grid_Arrange()
-    
-    If $wordWrap Then calcHeights()  
-    
+
+    If $wordWrap Then calcHeights()
+
 End
 
 Public Sub calcHeights()
-    
+
     Dim n, i, f As Integer
-    
+
     If $source.count = 0 Then Return
     For n = 0 To $widths.max
-        If $widths[n] = -2 Then 
+        If $widths[n] = -2 Then
             Me.Columns[n].Expand = True
         Else
             Me.Columns[n].Expand = False
@@ -188,18 +189,18 @@ Public Sub calcHeights()
             Me.Rows[n].Height = f + (Me.Rows.Height - Me.Font.Height - 1)
         Endif
     Next
-    
+
 Catch
-    
+
     Message("calcHeights:" & Error.Text & "-" & Error.Where)
-    
+
 End
 
 Public Sub grid_ColumnResize(Column As Integer)
-    
+
     Dim n As Integer
-    
-    If $widths.Count < $source[0].max Then 
+
+    If $widths.Count < $source[0].max Then
         For n = $widths.count To $source[0].max
             $widths.Add(-2)
             Me.Columns[n].Expand = True
@@ -207,16 +208,16 @@ Public Sub grid_ColumnResize(Column As Integer)
     Endif
     $widths[column] = Me.Columns[column].Width
     If $wordWrap Then calcHeights()
-    
+
 End
 
 '' ordenamiento por el valor seleccionado de columna usando el indice de sus posiciones
 Public Sub Sort(c As Integer)
-    
+
     Dim Ordenados, linea As New String[]
     Dim actual, cad As String
     Dim n, f As Integer
-    
+
     If $source.Count > 0 Then
         Inc Application.Busy
         f = IIf(Me.Row = -1, 0, Me.row)
@@ -230,7 +231,7 @@ Public Sub Sort(c As Integer)
                     actual = Replace(actual, "é", "e")
                     actual = Replace(actual, "í", "i")
                     actual = Replace(actual, "ó", "o")
-                    actual = Replace(actual, "ú", "u") 
+                    actual = Replace(actual, "ú", "u")
                     actual = Replace(actual, "ñ", "ny")
                 Case gb.integer, gb.byte, gb.long, gb.float
                     actual = String(10 - Len($source[n][c]), "0") & $source[n][c]
@@ -255,121 +256,103 @@ Public Sub Sort(c As Integer)
         Me.Rows.count = $source.count
         Dec Application.Busy
     Endif
-    
+
 Catch
-    
+
     Message("Sort: " & Error.Text & "-" & Error.Where)
-    
+
 End
 
 Private Function wordWrap_Read() As Boolean
-    
+
     Return $wordWrap
-    
+
 End
 
 Private Sub wordWrap_Write(Value As Boolean)
-    
+
     $wordWrap = Value
     Super.Clear
-    
+
 End
 
 Private Function source_Read() As Variant
-    
+
     Return $source
-    
+
 End
 
 Private Sub source_Write(Value As Variant)
-    
+
     Dim f, i As Integer
     Dim s, tn As String
     Dim ar, tns As String[]
     Dim v As Variant
     Dim col As Collection
     Dim autedetectedtitle As Boolean = False
-    
-    $source = New Variant[]                             ' source es los datos, en norma de matrix
-    If Value Is Result Then                             ' el caso comun es un resultado desde db
-        $titles = New String[]                          ' se autodetetara los nombres de campos
+
+    $source = New Variant[]                         ' source es los datos, en norma de matrix
+    If Value Is Result Then                         ' el caso comun es un resultado desde db
+        $titles = New String[]                      ' se autodetetara los nombres de campos
         If Value.Connection.type <> "odbc" Then
-            Value.movefirst                                 ' esto no es soportado por odbc, TODO cambia a available
-        Endif
+            Value.movefirst                         ' esto no es soportado por odbc, TODO cambia a available
+        Endif                                       ' en odbc el cursor esta en 0 y avanza solo hacia adelante
         Me.Columns.count = Value.Fields.count
-        For f = 0 To value.Fields.count - 1
-            If $setHeads Then 
+        For f = 0 To value.Fields.Max               ' detecto titulos desde el result db
+            If $setHeads Then
                 tn = value.Fields[f].Name
-                tns = Split(value.Fields[f].Name, ".")
+                tns = Split(value.Fields[f].Name, ".") ' si es sqlite o join remuevo tablas y dejo solo titulos
                 $titles.Add(tns[tns.max])
             Endif
             Me.Columns[f].Expand = $expandCols
         Next
         $atipos = New Integer[]
         If Value.Connection.type <> "odbc" Then
-            Value.movefirst                                 ' esto no es soportado por odbc, TODO cambia a available
-        Endif
+            Value.movefirst                         ' esto no es soportado por odbc, TODO cambia a available
+        Endif                                       ' en odbc el cursor esta en 0 y avanza solo hacia adelante
         While Value.available
-            ar = New String[]
             For f = 0 To Value.Fields.Count - 1
-                s = ""
-                $atipos.Add(value.Fields[f].type)
-                Select Case Value.Fields[f].type
-                    Case gb.Date
-                        If Value[Value.Fields[f].name] Then 
-                            s = Format(Value[Value.Fields[f].name], "dd-mm-yyyy hh:nn:ss")
-                            If Right(s, 8) = "00:00:00" Then
-                                s = Left(s, 10)
-                            Endif
-                        Endif
-                        ' Case gb.Boolean                                       ' puede confundirse
-                        '     s = IIf(Value[Value.Fields[f].name], "SI", "NO")  ' mejor no detectar
-                    Case Else 
-                        s = Value[Value.Fields[f].Name]
-                End Select
+                $atipos.Add(value.Fields[f].type)   ' dado source es una matrix, aqui se guarda el tipo de valor
+                s = CString(Value[Value.Fields[f].Name]) ' TODO: en futuro valuedetecttype
                 ar.add(s)
             Next
             $source.add(ar)
             Value.movenext
         Wend
-    Else If Not IsNull(Value[0])
-        If value[0] Is Collection Then 
-            $atipos = New Integer[]                         ' usamos el primer elemento como indice de titulos
-            $titles = New String[]                          ' solo se declara para collecion, el resto del tiempo se asume variant y existe
-            col = value[0]                                  ' una coleccion es bidimensional
+    Else If value Is Array And value.count > 0 Then
+        If value[0] Is Collection Then
+            $atipos = New Integer[]                     ' usamos el primer elemento como indice de titulos
+            $titles = New String[]                      ' solo se declara para collecion, el resto del tiempo se asume variant y existe
+            col = value[0]                              ' una coleccion es bidimensional
             Me.Columns.count = col.Count
             For Each v In col
-                $atipos.Add(TypeOf(v))
-                Me.Columns[f].Expand = $expandCols  
-                If $setHeads Then 
+                $atipos.Add(TypeOf(v))                  ' dado source es una matrix, aqui se guarda el tipo de valor
+                Me.Columns[f].Expand = $expandCols
+                If $setHeads Then
                     $titles.Add(col.key)
                 Endif
-                f += 1        
+                f += 1
             Next
-            For f = 0 To value.count - 1
+            For f = 0 To value.count - 1                ' desglose de elementos de coleccion
                 col = value[f]
                 ar = New String[]
-                For Each v In col
-                    ar.Add(col[col.key])
+                For Each v In col                       ' TODO: en futuro valuedetecttype
+                    ar.Add(col[col.key])                ' desglose de cada elemento de coleccion
                 Next
-                $source.Add(ar)
+                $source.Add(ar)                         ' armado el arreglo fuente source para el grid
             Next
-        Else If Not IsNull(Value.dim) Then
+        Else
             If value.dim = 1 Then   ' arreglo bidimensional
                 ar = value[0]                           ' si no, el catch abajo atrapara el problema aqui
                 Me.Columns.count = ar.Count             ' titulos tomados de la primera fila
                 If IsNull($titles) And $titles.Count < Me.Columns.Count Then
                     $titles = New String[]              ' cuando se reinicia el filtro se intenta rellenar titulos, a menos ya existan
                 Endif
+                i = 0
                 For f = 0 To ar.max
-                    If $setHeads And $titles.Count < Me.Columns.Count Then 
-                        $titles.Add(ar[f])              ' si aun no se ve todas las columnas de la fila
-                        autedetectedtitle = True        ' indico que tome los titulos de la primera fila
-                    Endif
-                    If autedetectedtitle And $titles.Count = Me.Columns.Count Then 
+                    If $setHeads And $titles.Count < Me.Columns.Count Then
                         i = 1
-                    Else                                ' si los tome de la primera, no se agrega repetida?¡
-                        i = 0                           ' setheads se toma en cuenta solo para autodeteccion
+                        $titles.Add(ar[f])              ' si aun no se ve todas las columnas de la fila
                     Endif
                     Me.Columns[f].Expand = $expandCols
                 Next
@@ -381,9 +364,9 @@ Private Sub source_Write(Value As Variant)
                 Try ar = value[0][0]                ' si no, el catch abajo atrapara el problema aqui
                 Try Me.Columns.count = ar.Count     'TODO: autodetectar titulos
                 For f = 0 To ar.max
-                    If $setHeads And $titles.Count < Me.Columns.Count Then 
+                    If $setHeads And $titles.Count < Me.Columns.Count Then
                         Try $titles.Add(ar[f])
-                    Endif     
+                    Endif
                     Try Me.Columns[f].Expand = $expandCols
                 Next                            ' TODO verificar el arr3eglo en todas sus rowms tenga igual cantidad de elementos
                 Try $source.Insert(Value)           'array in array, purrfact
@@ -395,96 +378,121 @@ Private Sub source_Write(Value As Variant)
     Next
     Super.Clear()
     Me.Rows.count = $source.count                       ' aqui ya $course es distinto y esta count disponible
-    
+
 Catch
-    
+
     Message("source_Write: " & Error.Text & "-" & Error.Where)
-    
+
 End
 
 Private Function Value_Read() As Collection
-    
+
     Dim c As New Collection
     Dim n As Integer
-    
-    If Me.row > -1 Then 
+
+    If Me.row > -1 Then
         For n = 0 To Me.Columns.Count - 1
             c.Add(IIf(Me[Me.row, n].text, Me[Me.row, n].text, Me[Me.row, n].RichText), Me.Columns[n].Title)
         Next
     Endif
     Return c
-    
+
+End
+
+''' en futuro segun $atipos tipo de valor seter campos segun su naturaleza, pues si el dato esta podrido detectara muy mal
+Private Function valuedetecttype(valor As Variant) As Variant
+
+    ' Select Case Value.Fields[f].type
+    '     Case gb.Date                    ' TODO: esto revisar no siempre se cumple/desea
+    '         If Value[Value.Fields[f].name] Then
+    '             s = Format(Value[Value.Fields[f].name], "dd-mm-yyyy hh:nn:ss")
+    '             If Right(s, 8) = "00:00:00" Then
+    '                 s = Left(s, 10)
+    '             Endif
+    '         Endif
+    '         ' Case gb.Boolean                                       ' puede confundirse
+    '         '     s = IIf(Value[Value.Fields[f].name], "SI", "NO")  ' mejor no detectar
+    '     Case gb.Float
+    '         s = CFloat(Value[Value.Fields[f].name])
+    '     Case gb.Integer
+    '         s = CFloat(Value[Value.Fields[f].name])
+    '     Case gb.Long
+    '         s = CFloat(Value[Value.Fields[f].name])
+    '     Case Else
+    '         s = CString(Value[Value.Fields[f].Name])
+    ' End Select
+
 End
 
 Private Function setHeads_Read() As Boolean
-    
+
     Return $setHeads
-    
+
 End
 
 Private Sub setHeads_Write(Value As Boolean)
-    
+
     $setHeads = Value
-    
+
 End
 
 Private Function expandCols_Read() As Boolean
-    
+
     Return $expandCols
-    
+
 End
 
 Private Sub expandCols_Write(Value As Boolean)
-    
+
     Dim n As Integer
-    
+
     $expandCols = value
     For n = 0 To Me.Columns.Max
         Me.Columns[n].Expand = Value
     Next
-    
+
 End
 
 Private Function alternate_Read() As Boolean
-    
+
     Return $alternate
-    
+
 End
 
 Private Sub alternate_Write(Value As Boolean)
-    
+
     $alternate = Value
-    
+
 End
 
 Private Function titles_Read() As String[]
-    
+
     Return $titles
-    
+
 End
 
 Private Sub titles_Write(Value As String[])
-    
+
     $titles = Value
-    
+
 End
 
 Private Function widths_Read() As String[]
-    
+
     Dim ar As New Integer[]
     Dim n As Integer
-    
+
     For Each n In $widths
         ar.Add(CStr(n))
     Next
     Return ar
-    
+
 End
 
 Private Sub widths_Write(Value As String[])
-    
+
     Dim n As Integer
-    
+
     $widths = New Integer[]
     If Not IsNull(value) Then
         For n = 0 To Value.Count - 1
@@ -496,24 +504,23 @@ Private Sub widths_Write(Value As String[])
             $widths.Add(IIf($expandCols, -2, -1))
         Next
     Endif
-    
+
 Catch
-    
+
     Message("widths_Write: " & Error.Text & "-" & Error.Where)
-    
+
 End
 
-'' {@since 3.5}
 Private Function Selection_Read() As Variant
-    
+
     Dim c As Collection
     Dim v As New Variant[]
     Dim n, i As Integer
     Dim ar As Integer[]
-    
-    If Me.Rows.Selection.Count > 0 Then 
+
+    If Me.Rows.Selection.Count > 0 Then
         ar = Me.Rows.Selection
-    Else If Me.row > -1 Then 
+    Else If Me.row > -1 Then
         ar.Add(Me.row)
     Endif
     For Each i In ar.Max
@@ -524,23 +531,23 @@ Private Function Selection_Read() As Variant
         v.Add(c)
     Next
     Return v
-    
+
 End
 
 Private Function isShift_Read() As Boolean
-    
+
     Return $isShift
-    
+
 End
 
 Private Function isControl_Read() As Boolean
-    
+
     Return $isControl
-    
+
 End
 
 Private Function fieldtypes_Read() As Integer[]
-    
+
     Return $atipos
-    
+
 End
