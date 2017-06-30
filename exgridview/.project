@@ -1,5 +1,5 @@
 # Gambas Project File 3.0
-# Compiled with Gambas 3.5.4
+# Compiled with Gambas 3.1.1
 Title=exGridview
 Startup=FTest
 Icon=.hidden/control/exgridview.png
@@ -13,4 +13,5 @@ Authors="PICCORO Lenz McKAY <mckaygerhard@gmail.com>\nJorge Carrión <shordi@gma
 TabSize=4
 KeepDebugInfo=0
 Type=Component
+MakeComponent=1
 Packager=1
