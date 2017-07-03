@@ -90,6 +90,19 @@ Public Function ResumeCollec() As Collection
     
 End
 
+Public Function itsRunIDE() As Integer ''retorna 0 si esta ejecutando le programa en si como aplicaicon o como cgi, -1 si esta ejecutando en el IDE que puede emplearse como True si ejecuta en el IDE
+    
+    Dim strProcess As String
+    
+    strProcess = File.Load("/proc" &/ CStr(Application.Id) &/ "comm")
+    If Left(strProcess, 4) = "gbx3" Then
+        Return -1
+    Else
+        Return 0
+    Endif
+    
+End
+
 '' devuelve la distribución instalada xmi <br> @return String
 Public Function Distro() As String
     

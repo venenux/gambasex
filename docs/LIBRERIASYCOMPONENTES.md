@@ -4,6 +4,8 @@
  
 Funciones utilitarias de informacion del sistema instalado ejecutandose.
 
+* itsRunIDE() As Integer : retorna 0 si esta ejecutando elprograma como cgi o aplication, -1 si en el ide. 
+
 ## exModSysNet
 
 Se detecta toda informacion de red usando `/sbin/ifconfig` esto es estandar en linux y mac 
