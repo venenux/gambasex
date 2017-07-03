@@ -1,0 +1,10 @@
+' Gambas module file
+
+
+Public Function main()
+    
+    Print exModSysNet.getIpall()
+    Print exModSysInfo.ProjInfo()
+    
+End
+

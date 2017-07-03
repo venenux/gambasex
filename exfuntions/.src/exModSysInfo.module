@@ -22,26 +22,70 @@
 '
 Export
 
+''' modulo para funciones de informacion del sistema, depende de lsb (lsb-release en debian)
 
-'' modulo para funciones de informacion del sistema, depende de lsb (lsb-release en debian)
+''' print a call to all the info functions of the module in formatted html
+Public Function ResumeHuman() As String
+    
+    Dim strResume As String = ""
+    ' ram make os able to install, OS depends, of processor/arch, processor depens on arch, and gambas depends of OS installed
+    strResume &= "<b>Arch.Mach: </b>" & ArqSO()
+    strResume &= "<b>Arch.Proc: </b>" & ArqMicro()
+    strResume &= "<b>Processor: </b>" & Micro()
+    strResume &= "<b>OS: </b>" & Distro()
+    strResume &= "<b>Ram: </b>" & Ram()
+    strResume &= "<b>Gambas.Vers: </b>" & System.Version
+    strResume &= "<b>Gambas.Date: </b>" & LastUpgrade()
+    strResume &= "<b>Hostname: </b>" & ComputerName()   ' this are not static to the OS
+    strResume &= "<b>Desktop: </b>" & DskType()         ' this can change respect user
+    strResume &= "<b>User: </b>" & CurrentUser()        ' this change respect who exec the prog
+    strResume &= "<b>Users: </b>" & AllUsers()          ' this change ithe th euser are the admin
+    strResume &= "<b>Usergroups: </b>" & WGroup()       ' this can be few or many if user are no winbuntu user
+    ' the non static info respect gambas and OS are filled to the last..
+    Return strResume
+    
+End
 
-Public Function Resume() As String
+''' print a call to all the info functions of the module in Array form
+Public Function ResumeArray() As Variant[]
     
-    Dim strResume As String
+    Dim strResume As New Variant[]
+    ' ram make os able to install, OS depends, of processor/arch, processor depens on arch, and gambas depends of OS installed
+    strResume.Add(ArqSO())
+    strResume.Add(ArqMicro())
+    strResume.Add(Micro())
+    strResume.Add(Distro())
+    strResume.Add(Ram())
+    strResume.Add(System.Version)
+    strResume.Add(LastUpgrade())
+    strResume.Add(ComputerName())                       ' this are not static to the OS
+    strResume.Add(DskType())                            ' this can change respect user
+    strResume.Add(CurrentUser())                        ' this change respect who exec the prog
+    strResume.Add(AllUsers())                           ' this change ithe th euser are the admin
+    strResume.Add(WGroup())                             ' this can be few or many if user are no winbuntu user
+    ' the non static info respect gambas and OS are filled to the last..
+    Return strResume
     
-    strResume = "<b>So: </b>" & Distro()
-    strResume &= " <b>Arquitectura.So: </b>" & ArqSO()
-    strResume &= " <b>Arquitectura.Proc: </b>" & ArqMicro()
-    strResume &= " <b>Procesador: </b>" & Micro()
-    strResume &= " <b>Ram: </b>" & Ram()
-    strResume &= " <b>Nombre.PC: </b>" & ComputerName()
-    strResume &= " <b>Usuario: </b>" & CurrentUser()
-    strResume &= " <b>Usuarios: </b>" & AllUsers()
-    strResume &= " <b>Escritorio: </b>" & DskType()
-    strResume &= " <b>Grupo: </b>" & WGroup()
-    strResume &= " <b>Gambas: </b>" & System.Version
-    strResume &= " <b>Actualizado: </b>" & LastUpgrade()
+End
+
+''' print a call to all the info functions of the module in Array collection with key names form
+Public Function ResumeCollec() As Collection
     
+    Dim strResume As New Collection
+    ' ram make os able to install, OS depends, of processor/arch, processor depens on arch, and gambas depends of OS installed
+    strResume.Add(Distro(), "SO")
+    strResume.Add(ArqSO(), "Arch.Mach")
+    strResume.Add(ArqMicro(), "Arch.Proc")
+    strResume.Add(Micro(), "Processor")
+    strResume.Add(Ram(), "Ram")
+    strResume.Add(System.Version, "Gambas.Vers")
+    strResume.Add(LastUpgrade(), "Gambas.Date")
+    strResume.Add(ComputerName(), "Hostname")           ' this are not static to the OS
+    strResume.Add(DskType(), "Desktop")                  ' this can change respect user
+    strResume.Add(CurrentUser(), "User")                ' this change respect who exec the prog
+    strResume.Add(AllUsers(), "Users")                  ' this change ithe th euser are the admin
+    strResume.Add(WGroup(), "Usersgroups")              ' this can be few or many if user are no winbuntu user
+    ' the non static info respect gambas and OS are filled to the last..
     Return strResume
     
 End
@@ -268,17 +312,17 @@ Public Function AddressIP() As String 'devuelve las Ips configuradas en el equip
     
     Dim sIPs As String
     
-    Shell "ifconfig | grep inet: |cut -d ':' -f2|cut -d ' ' -f1" To sIPs
+    sIPs = exModSysNet.getIpdef(exModSysNet.getIfdef())
     Return RTrim(Replace(sIPs, "\n", " "))
     
 End
 
 Public Function LastNIP() As String 'devuelve el último digito de la Ip
     
-    Dim sIPs As String
+    Dim sIPs As String[]
     
-    Shell "ifconfig | grep inet: | grep Difus.|cut -d '.' -f5|cut  -d ' ' -f1" To sIPs
-    Return RTrim(Replace(sIPs, "\n", " "))
+    sIPs = Split(exModSysNet.getIpdef(exModSysNet.getIfdef()), ".")
+    Return RTrim(Replace(sIPs[sIPs.Max], "\n", " "))
     
 End
 
