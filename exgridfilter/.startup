@@ -9,5 +9,6 @@ gb.qt4
 gb.form
 gb.db
 gb.db.sqlite3
+gb.qt4.ext
 gb.vb
 

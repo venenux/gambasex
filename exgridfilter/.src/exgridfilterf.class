@@ -204,7 +204,7 @@ Public Sub bVerfiltro_Click()
     
     Dim filtro, s As String
     Dim i As Integer
-
+    
     If $filtro.count = 0 Then
         Balloon("No hay filtros activos sobre el original", bVerfiltro)
         Return

@@ -9,6 +9,7 @@ Component=gb.qt4
 Component=gb.form
 Component=gb.db
 Component=gb.db.sqlite3
+Component=gb.qt4.ext
 Component=gb.vb
 Description="Un \"extended gridview\", con ordenamiento, data en memoria y busqueda indexada, la fuente se mantiene en ram, similar a tabletools.\nA diferencia de exGridfilter este implementa su manejo de formulario, integra una barra de capacidades de busqueda y permite definir un menu de exportacion y acciones customizadas. Esta es la implementacion de exGridview."
 Authors="PICCORO Lenz McKAY gerardo <mckaygerhard@gmail.com>\nJorge Carrion <shordi@gmail.com>"

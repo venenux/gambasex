@@ -20,7 +20,7 @@ GridView
 licencia
 C
 s
-https://gitlab.com/venenux/gambasex/blob/master/LICENSE.md
+CC-BY-NC-SS con ecepciones, detalles https://gitlab.com/venenux/gambasex/blob/master/LICENSE.md
 source
 p
 v
@@ -52,10 +52,6 @@ String[]
 Value
 r
 Collection
-
-Selection
-r
-v
 
 isShift
 r

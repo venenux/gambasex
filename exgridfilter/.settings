@@ -16,11 +16,45 @@ Geometry=[10,12,666,760]
 [DebugWindow/$Grid.titles]
 Geometry=[4,6,666,760]
 
+[DebugWindow/$filtro]
+Geometry=[0,28,210,210]
+
+[DebugWindow/$filtro[0]]
+Geometry=[14,42,210,210]
+
+[DebugWindow/$original]
+Geometry=[0,28,210,210]
+
+[DebugWindow/$titles]
+Geometry=[0,28,210,210]
+
+[DebugWindow/Value]
+Geometry=[0,28,210,210]
+
 [DebugWindow/align]
 Geometry=[-10,-8,224,280]
 
+[DebugWindow/ar]
+Geometry=[0,28,210,210]
+
 [DebugWindow/c]
 Geometry=[-10,-8,875,708]
+
+[DebugWindow/exgridfilter1.Value]
+Geometry=[0,28,210,210]
+
+[DebugWindow/grid.source]
+Geometry=[0,28,210,210]
+
+[DebugWindow/value]
+ShowHidden=True
+Geometry=[0,28,210,210]
+
+[DebugWindow/value.Bounds]
+Geometry=[14,42,210,210]
+
+[DebugWindow/value.Fields]
+Geometry=[0,28,210,210]
 
 [OpenFile]
 Count=0

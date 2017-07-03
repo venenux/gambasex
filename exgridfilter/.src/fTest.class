@@ -1,27 +1,43 @@
 ' Gambas class file
 
-  
-
-
-
-Public Sub exgridfilter1_DblClick()
-
-    Dim c As Collection
-    
-    c = exgridfilter1.Value
-
-
-End
-
-
 Public Sub Form_Open()
-
-    Dim r As Result
     
-    Connections["Connection1"].Open
-    r = Connections["Connection1"].Exec("select * from sys_descripcion")
-    exgridfilter1.source = r
+    Dim titulos As Variant[]
+    Dim filas As New Variant[]
+    
+    ' elformato de la fuente source si es matrix, es primera linea titulos, resto filas
+    titulos = ["tcel1", "tcel2", "teee"]
+    filas.Add(titulos, 0)
+    filas.Add(["cel1", "cel2", "teee"], 1)
+    filas.Add(["cel3", "cel4", "teee"], 2)
+    
+    ' titulos se pueden sobreescribir por defecto son detectados de la fuente source
+    titulos = ["colum1", "colum2", "teee"]          ' para eso hay que ponerlos primero de las fuentes
+    exgridfilter1.titles = titulos          ' entonces coloco los titulos, despues desabilitarlos
+    exgridfilter1.source = filas            ' entonces añade todo incluso la primera fila
+    exgridfilter1.menuDefault = True        ' hay un menu definodo, se muestra si no se define uno
+    
+    ' para bases de datos es muy facil solo pasar el objeto resultado del query
+    ' Dim con As new connection
+    ' Dim rs As Result
+    ' con.Host = Application.Path
+    ' con.Name = "dbtest.sqlite"
+    ' rs = con.exec(selet * from table")
+    ' exgridfilter1.source = rs
     
 End
 
+'' ejemplo de como se obtiene la fila completa en el grid extendido
+Public Sub exgridfilter1_DblClick()
+    
+    Dim fila As Collection
+    Dim celdas, valores As String = ""
+    
+    fila = exgridfilter1.Value
+    For Each celdas In fila
+        valores = valores & celdas
+    Next
+    Message("Valoes escogido de la fila: " & valores)
+    
+End
 
