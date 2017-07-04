@@ -1,3 +1,18 @@
+#exModSysFile
+
+C
+_requisites
+V
+s
+
+'modulo de utilidades respecto el sistema de ficheros, requiere `libreoffice` para conversiones, `openoffice` solo para visor
+'variable interna para manejar el comando ejecutado en la rutina invocada
+'variable interna para resultado del comando ejecutado en la rutina invocada
+csvtoods
+M
+s
+[(namefile)s(pathfile)s]
+'exporta un archivo csv a ods en donde se ejecute el modulo, @return: ruta de donde se guarda el resultado
 #exModSysInfo
 
 C
