@@ -1,10 +1,8 @@
-- [OVERALL](LIBRERIASYCOMPONENTES.md) [DOCS](https://gitlab.com/venenux/gambasex/blob/master/docs/README.md) - [GIT](https://gitlab.com/venenux/gambasex) - [LICENSE](https://gitlab.com/venenux/gambasex/blob/master/LICENSE.md)
+- [DOCS](exdocu.md) - [GIT](https://gitlab.com/venenux/gambasex) - [LICENSE](https://gitlab.com/venenux/gambasex/blob/master/LICENSE.md)
 
 ![GEX](icon.png) The Gambas 3 extended controllers and framework :whale2:
 
 Extend the functionallity of Gambas controls and classes / Extiende funcionalidades de controles y clases Gambas.
-
-![Image of dbcontroles original in action](https://www.gambas-es.org/files/images/38/dbcontroles.png)
 
 # Gambas 3.X Extended controls and modules
 
@@ -23,6 +21,8 @@ also the code will be mostly documented and no obscure usage will be as possible
 Actually the work started the June 20th in 2017, as the 30th will be able to use in production.
 Actualmente el trabajo empezo el 20 de junio del 2017, para el 30 estara para uso de produccion.
 
+[Documentacion: exdocu.md](exdocu.md)
+
 Updates and news will be minimun each 15 days, the commits will be code source or documentation.
 Se haran actualizaciones minimo cada 15 dias, el commit sera de codigo o de documentacion.
 
@@ -37,3 +37,9 @@ ejemplo si a un grideview se le da capacidades de filtrado seria exGridviewFilte
 El repositorio maestro esta en gitlab, github es solo mirror para presencia:
 
 `git clone https://gitlab.com/venenux/gambasex.git`
+
+
+## Screeshots
+
+![Image of dbcontroles original in action](https://www.gambas-es.org/files/images/38/dbcontroles.png)
+
