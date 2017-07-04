@@ -3,7 +3,8 @@
 
 Public Function main()
     
-    Print exModSysNet.getIpall()
+    Print exModSysNet.getIfdef()
+    Print exModSysNet.getIpall()[1]
     Print exModSysInfo.ProjInfo()
     
 End

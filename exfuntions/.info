@@ -1,6 +1,7 @@
 #exModSysInfo
 
 C
+'modulo para funciones de informacion del sistema, depende de lsb (lsb-release en debian)
 ResumeHuman
 M
 s
@@ -21,6 +22,7 @@ Distro
 M
 s
 
+'devuelve la distribución instalada xmi <br> @return String
 Ram
 M
 s
@@ -33,6 +35,7 @@ ComputerName
 M
 s
 
+'alias de *system.host* devuelve el nombre del pc
 DskType
 M
 s
@@ -41,10 +44,12 @@ CurrentUser
 M
 s
 
+'alias de *system.user.name* devuelve el usuario activo
 AllUsers
 M
 s
 
+'Devuelve los usuarios nivel normal via unix registro (passwd/shadow)
 WGroup
 M
 s
@@ -57,10 +62,15 @@ ResumeCollec
 M
 Collection
 
+itsRunIDE
+M
+i
+
 DistroShort
 M
 s
 
+'devuelve la distribución madre como nombre corto xmi <br> @return String
 SysFile
 M
 s
@@ -93,26 +103,34 @@ XDGFolder
 M
 String[]
 
+'Devuelve una matriz de texto con las rutas de las carpetas de musica, imagenes, documentos etc. del directorio /home/user
 #exModSysNet
 
 C
+'Se detecta toda informacion de red usando `/sbin/ifconfig` y `netstat` esto es estandar en Linux, FreeBSD y MacOS por ende es seguro usar ruta absoluta `/sbin/` y los comandos aqui son unix agnostic. Las llamadas de las funciones necesitan `netstat`, `ifconfig`, `awk`, `grep` y `head`.
 _requisites
 V
 s
 
+'variable interna para manejar el comando ejecutado en la rutina invocada
+'variable interna para resultado del comando ejecutado en la rutina invocada
 getIfdef
 M
 s
 
+'obtener la interfaz que se usa para enviar y recibir datos en la red/internet de todas las activas
 getIpdef
 M
 s
 [(defIf)s]
+'obtener la ip que se usa para enviar y recibir datos en la red/internet de todas las activas<br> si @param defif se provee se usara este dispositivo de red como el activo para optener la ip
 getIfall
 M
-s
+String[]
 
+'obtener todas las interfaces de red activas de las disponibles
 getIpall
 M
-s
+String[]
 
+'obtener todas las ip/direcciones de red activas de las configuradas

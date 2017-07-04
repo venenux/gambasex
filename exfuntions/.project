@@ -20,5 +20,6 @@ TabSize=4
 Translate=1
 Language=es
 MakeComponent=1
+Type=Component
 Vendor=gambasex
 Packager=1
