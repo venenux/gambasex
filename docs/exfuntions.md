@@ -1,21 +1,29 @@
-- [DOCS](exdocu.md) - [GIT](https://gitlab.com/venenux/gambasex) - [LICENSE](htt
-ps://gitlab.com/venenux/gambasex/blob/master/LICENSE.md)
+ [DOCS](exdocu.md) - [DIFF](exdiferenciasoriginal.md) - [GIT](https://gitlab.com/venenux/gambasex) - [LICENSE](https://gitlab.com/venenux/gambasex/blob/master/LICENSE.md)
 
 # exModulos documentacion
 
-Se pueden invocar directametne (estaticos) sus funciones.
+Este documento solo documenta los modules estaticos, consulte [exdocu.md](exdocu.md).
+Se pueden invocar directamente (estaticos) sus funciones en los "exModulos".
+
+* [exModSysInfo] (#exmodsysinfo) : funciones de informacion del sistema
+* [exModSysFile] (#exmodsysfile) : funciones de manejo de archivos
+* [exModSysNet] (#exmodsysnet) : funciones e informacion de red
+* [exModUtil] (#exmodutil) : manejo y manipulacion de variables
 
 ## exModSysInfo
  
 Funciones utilitarias de informacion del sistema instalado ejecutandose.
 
-* itsRunIDE() As Integer : retorna 0 si esta ejecutando elprograma como cgi o aplication, -1 si en el ide. 
+* `itsRunIDE() As Boolean` : retorna `True` si esta ejecutando elprograma como cgi o aplication, -1 si en el ide. 
 
 ## exModSysFile
  
 Funciones utilitarias de manipulacion de archivos
 
-* caltoods(file) As String : convierte `file` a ods, mismo nombre, ruta siempre /tmp
+* `getFileDev(Optional ruta As String = "") As String` : devuelve el dispositivo o 
+disco, segun ruta, sino el del sistema de ficheros raiz, si es mapeado no devuelve 
+el dispositivo real, solo el mapa
+* `caltoods(file) As String` : convierte `file` a ods, mismo nombre, ruta siempre /tmp
 
 ## exModSysNet
 
@@ -30,3 +38,16 @@ asi como **nawk/gawk** (`awk`), **grep** (`grep`) y **sed** (`sed`), en mac todo
 * los paquetes **coreutils** y **net-tools** siempre estaran tanto en linux como en mac.
 * los paquetes **nawk/gawk**, **sed**, **grep**, se exige esten instalados en ***modSysInfo*** rutina.
 
+* `getImdef(Optional defIf As String = Me.getIfdef()) As String` : obtener la mac que se usa para enviar y recibir datos en la red/internet de todas las activas<br> si @param defif se provee se usara este dispositivo de red como el activo para optener la ip
+* `getIfdef() As String` : obtener la interfaz que se usa para enviar y recibir datos en la red/internet de todas las activas
+* `getIpdef(Optional defIf As String = Me.getIfdef()) As String` : obtener la ip que se usa para enviar y recibir datos en la red/internet de todas las activas<br> si @param defif se provee se usara este dispositivo de red como el activo para optener la ip
+* `getIfall() As String[]` : obtener todas las interfaces de red activas de las disponibles
+* `getIpall() As String[]` : obtener todas las ip/direcciones de red activas de las configuradas
+
+## exModUtil
+
+Se trabaja con manipulacion de variables, comunmente cadenas de texto y enteros.
+
+* `ucfirst(strInput As String) As String` : Devuelve un texto con la primera letra en mayusculas y todas las siguientes en minúsculas.
+* `ucwords(strInput As String) As String` : Devuelve un texto con la primera letra en mayusculas de cada una de las palabras, removiendo espacios extra
+ 
