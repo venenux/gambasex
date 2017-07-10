@@ -9,6 +9,28 @@ Private outputfunction As String    '' variable interna para resultado del coman
 Public _requisites As String = "awk,ifconfig,sh,bash,less,head,tail"
 
 
+Public Function getFileDev(Optional ruta As String = "") As String '' devuelve el dispositivo o disco, segun ruta, sino el del sistema de ficheros raiz, si es mapeado no devuelve el dispositivo real, solo el mapa
+    
+    Dim outputfunction2 As String
+    If Comp(Trim(ruta), "", gb.IgnoreCase) = 0 Then ruta = "/"
+    Shell "df -h " & ruta & " | cut -d' ' -f1" To outputfunction 'Almacenamos caracteristicas del Sistema de Ficheros pasado en ruta
+    Try outputfunction2 = Scan(outputfunction, "*\n*")[1] 'Ocultamos el Error si no encuentra la cadena
+    If Error Then outputfunction2 = outputfunction
+    Return Replace(outputfunction2, "\n", "")
+    
+End
+
+
+Public Function getFileSys(Optional directorio As String = "") As String '' devuelve el sistema de ficheros, segun `directorio`, sino el sistema de ficheros raiz, si no es valido/montado no devuelve nada
+    
+    If Comp(Trim(directorio), "", gb.IgnoreCase) = 0 Then directorio = "on / "
+    If Comp(Trim(directorio), "/", gb.IgnoreCase) = 0 Then directorio = "on / "
+    Shell "mount | grep \"" & directorio & "\" | cut -d' ' -f5" To outputfunction 'Almacenamos caracteristicas del Sistema de Ficheros pasado en ruta
+    Return Replace(outputfunction, "\n", "")
+    
+End
+
+
 Public Sub caltoods(Optional namefile As String = "", Optional pathfile As String = "") As String '' exporta un archivo csv o excel a ods en donde se ejecute el modulo, @return: ruta de donde se guarda el resultado
   
   Dim entorno As String = "/tmp/LibreOffice_Conversion_" & User.Name

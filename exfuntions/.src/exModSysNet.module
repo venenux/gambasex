@@ -16,6 +16,16 @@ Public _requisites As String = "awk,ifconfig,sh,bash,less,head,tail"
 ' * los paquetes **nawk/gawk**, **sed**, **grep**, se exige esten instalados en ***modSysInfo*** rutina.
 
 
+Public Function getImdef(Optional defIf As String = Me.getIfdef()) As String    '' obtener la mac que se usa para enviar y recibir datos en la red/internet de todas las activas<br> si @param defif se provee se usara este dispositivo de red como el activo para optener la ip
+    
+    commandshelltmp = "/sbin/ifconfig " & defIf & " | grep 'Link ' -A 2 -B 2|grep 'Link' | head -1 | awk -F 'HWaddr ' '{print $2}'"
+    ' TODO: verificar compatibilidad con freebsd y mac
+    Shell commandshelltmp To outputfunction
+    Return Replace(outputfunction, "\n", "")
+    
+End
+
+
 Public Function getIfdef() As String    '' obtener la interfaz que se usa para enviar y recibir datos en la red/internet de todas las activas
     
     commandshelltmp = "netstat -rn | awk '/^0.0.0.0/ {thif=substr($0,74,10); print thif;} /^default.*UG/ {thif=substr($0,65,10); print thif;}' | head -1"

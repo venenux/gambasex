@@ -8,11 +8,21 @@ s
 'modulo de utilidades respecto el sistema de ficheros, requiere `libreoffice` para conversiones, `openoffice` solo para visor
 'variable interna para manejar el comando ejecutado en la rutina invocada
 'variable interna para resultado del comando ejecutado en la rutina invocada
-csvtoods
+getFileDev
+M
+s
+[(ruta)s]
+'devuelve el dispositivo o disco, segun ruta, sino el del sistema de ficheros raiz, si es mapeado no devuelve el dispositivo real, solo el mapa
+getFileSys
+M
+s
+[(directorio)s]
+'devuelve el sistema de ficheros, segun `directorio`, sino el sistema de ficheros raiz, si no es valido/montado no devuelve nada
+caltoods
 M
 s
 [(namefile)s(pathfile)s]
-'exporta un archivo csv a ods en donde se ejecute el modulo, @return: ruta de donde se guarda el resultado
+'exporta un archivo csv o excel a ods en donde se ejecute el modulo, @return: ruta de donde se guarda el resultado
 #exModSysInfo
 
 C
@@ -90,6 +100,7 @@ SysFile
 M
 s
 (ruta)s
+'migrado: alias de [exModSysFile.getFileSys]
 ProjInfo
 M
 String[]

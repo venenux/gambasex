@@ -215,14 +215,9 @@ Public Function WGroup() As String 'devuelve el Grupo de trabajo del pc
     
 End
 
-Public Function SysFile(ruta As String) As String 'devuelve el sistema de ficheros
+Public Function SysFile(ruta As String) As String '' migrado: alias de [exModSysFile.getFileSys]
     
-    Dim sSF As String
-    
-    Exec ["df", "-h", ruta] To sSF 'Almacenamos caracteristicas del Sistema de Ficheros pasado en ruta
-    Try sSF = Scan(sSF, "*\n*")[1] 'Ocultamos el Error si no encuentra la cadena
-    If Error Then sSF = ""
-    Return Replace(sSF, "\n", "")
+    Return exModSysFile.getFileSys(ruta)
     
 End
 
