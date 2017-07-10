@@ -2,15 +2,18 @@
 
 # Gambas 3.X Extended controls and modules
 
-due obtuse behavior of gambas community 
+Due obtuse behavior of "gambas community" 
 (they all are very modern and up to date, but still uses ftp to distribute software and svn to revision system)
 here we i made a special work with public changes that can be tracked and follow..
 also the code will be mostly documented and no obscure usage will be as possible..
 
-debido a el comportamiento obtuso de los gamberos
+Debido a el comportamiento obtuso de los "gamberos"
 (todos son muy modernos y al dia, pero aun usan ftp para distribuir y subversion para versionado los que versionan)
 aqui hemos realizado un trabajo especial con cambios publicos que si se pueden seguir...
 tambien el codigo sera en lo posible documentado y ningun uso obcuro ocurrira en lo posible..
+
+*Fue inspirado en gambas-extra-functions pero estas tienen un monton de errores, vease
+: [Diferencias respecto original](docs/exdiferenciasoriginal.md) y corroborelo.
 
 ## Estatus / Estado
 

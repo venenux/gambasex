@@ -1,5 +1,4 @@
-- [DOCS](exdocu.md) - [GIT](https://gitlab.com/venenux/gambasex) - [LICENSE](htt
-ps://gitlab.com/venenux/gambasex/blob/master/LICENSE.md)
+ [DOCS](exdocu.md) - [DIFF](exdiferenciasoriginal.md) - [GIT](https://gitlab.com/venenux/gambasex) - [LICENSE](https://gitlab.com/venenux/gambasex/blob/master/LICENSE.md)
 
 # Controls Grids
 

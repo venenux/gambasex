@@ -1,4 +1,4 @@
-- [DOCS](exdocu.md) - [GIT](https://gitlab.com/venenux/gambasex) - [LICENSE](https://gitlab.com/venenux/gambasex/blob/master/LICENSE.md)
+ [DOCS](exdocu.md) - [DIFF](exdiferenciasoriginal.md) - [GIT](https://gitlab.com/venenux/gambasex) - [LICENSE](https://gitlab.com/venenux/gambasex/blob/master/LICENSE.md)
 
 ![GEX](icon.png) The Gambas 3 extended controllers and framework :whale2:
 
@@ -16,12 +16,16 @@ due obtuse behavior of gambas community
 here we i made a special work with public changes that can be tracked and follow..
 also the code will be mostly documented and no obscure usage will be as possible..
 
+*Fue inspirado en gambas-extra-functions pero estas tienen un monton de errores, vease: [Diferencias respecto original](exdiferenciasoriginal.md) y corroborelo.
+
+
 ## Estatus / Estado
 
 Actually the work started the June 20th in 2017, as the 30th will be able to use in production.
 Actualmente el trabajo empezo el 20 de junio del 2017, para el 30 estara para uso de produccion.
 
-[Documentacion: exdocu.md](exdocu.md)
+* [Documentacion: exdocu.md](exdocu.md) : documentacion minima, referencial, completa en el codigo, revisar Mtest.class.
+* [Diferencias respecto original](exdiferenciasoriginal.md) : fue inspirado en gambas-extra-functions pero este tiene un monton de errores.
 
 Updates and news will be minimun each 15 days, the commits will be code source or documentation.
 Se haran actualizaciones minimo cada 15 dias, el commit sera de codigo o de documentacion.

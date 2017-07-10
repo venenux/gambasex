@@ -1,5 +1,4 @@
-[INDEX](README.md)  - [GIT](https://gitlab.com/venenux/gambasex) - [LIC
-ENSE](https://gitlab.com/venenux/gambasex/blob/master/LICENSE.md)
+ [README](README.md) - [DIFF](exdiferenciasoriginal.md) - [GIT](https://gitlab.com/venenux/gambasex) - [LICENSE](https://gitlab.com/venenux/gambasex/blob/master/LICENSE.md)
 
 Indice de documentacion
 
