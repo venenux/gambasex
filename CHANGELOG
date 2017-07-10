@@ -1,3 +1,267 @@
+commit aad67daccbefa8938dc74cd8e61ff337b37c47f7
+Author: PICCORO Lenz McKAY <mckaygerhard@gmail.com>
+Date:   Mon Jul 10 02:15:59 2017 -0400
+
+    nueva funciones de archivo filesistem y nueva de red para saber la mac
+    * getFileDev  getFileSys obtinee el sistema de ficheros y el dispositivo de la ruta dada
+    * getImDef  obtiene la mac address del dispositivo de red usandose para la red
+    * corregido y extraido funcion no correspondiente de exmodsysinfo
+
+:100644 100644 ec9d7f4... 3e7b990... M	exfuntions/.info
+:100644 100644 5321500... 7ed478f... M	exfuntions/.src/exModSysFile.module
+:100644 100644 858b316... fb17484... M	exfuntions/.src/exModSysInfo.module
+:100644 100644 cb095df... da1af52... M	exfuntions/.src/exModSysNet.module
+:100644 100644 8a20dcb... a518cc5... M	exfuntions/.src/exMtest.module
+
+commit 4152e21df3d745257dd5bac40b3dfa394ef37ee1
+Author: PICCORO Lenz McKAY <mckaygerhard@gmail.com>
+Date:   Tue Jul 4 14:11:35 2017 -0400
+
+    actualizada la informacion para https://venenux.github.io/gambasex/
+    + cada pagina documentacion sera igual al projecto que refiere
+    + cada pagina/archivo documentacion tendra la misma cabecera
+    + actualizado el readme index de https://venenux.github.io/gambasex/
+    + actualizado el readme index con nueva link de documentacion
+    + gitlab es el repo maaaaain, github carga la web https://venenux.github.io
+    + la web en github soporta mismos enlaces que archivos markdown
+
+:100644 000000 d89eddf... 0000000... D	docs/LIBRERIASYCOMPONENTES.md
+:100644 100644 3b6ebe5... cda5d75... M	docs/README.md
+:000000 100644 0000000... d921030... A	docs/exdocu.md
+:000000 100644 0000000... 0f7ffc9... A	docs/exfuntions.md
+:000000 100644 0000000... ed9c1c3... A	docs/exgridview.md
+
+commit f2f429719b6bc4cfa9d55656dbcf87da7726916d
+Author: PICCORO Lenz McKAY <mckaygerhard@gmail.com>
+Date:   Tue Jul 4 13:45:14 2017 -0400
+
+    modulo de utilidades de archivos, pro ahora conversion a ods, closes #13
+    + convertir de csv a ods, convertir de excel a ods
+    + TODO: retornar todos los archivos/ejecutables que sean "office"
+    + TODO: hay que buscar en `/usr/bin` un ejecutable "office"
+    ++ TODO: si encuentra `openoffice` no hay conversion
+    ++ TODO: si encuentra `libreoffice` se convierte el archivo
+    + **Openoffice** al mudarse a **Libreoffice** ya tenia el `-headless`
+    + El modo `-headles` esta presente dede openoffice 3.2
+    + El modo conversion `-convert-to` solo esta presente en **libreoffice**
+    + La funcion usa un nombre de archivo y una ruta opcional
+    + si el nombre tiene ruta absoluta o no igual se devuelve en /tmp
+
+:100644 100644 97de043... ec9d7f4... M	exfuntions/.info
+:100644 100644 63133ef... 8b9c448... M	exfuntions/.list
+:000000 100644 0000000... 5321500... A	exfuntions/.src/exModSysFile.module
+
+commit d0e81279051032b285ed2fe0a38d5c4df590d9e8
+Author: PICCORO Lenz McKAY <mckaygerhard@gmail.com>
+Date:   Tue Jul 4 10:08:32 2017 -0400
+
+    finalizado funciones de interfaces e ip's pro ahora solo ipv4 despues ipv6
+    * getIfXXX y getIpXXX obtiene las nombres de interfaces y direcciones respectivamente
+    * son distro agnostic, independientes del sistema, funcionan en MacOS, FreeBSD y Linux
+    * no garantizo funcionen eb UNIX dado no accedo ni se el formato pero lo asumo si
+    * getIxAll obt6iene en un arreglo string interfaces o direcciones activas
+    * getIxDef obtiene un string con la interfaz activa o la direccion ip v4 activa
+    * modificado el ejemplo y documentado en el codigo funete,c ompatible gambas 3.1
+    * compatible linux viejos, se cambio el comando que emplea sed por uno mas estandar
+    * closes #12 soluciona correctamtne el issue #12 ahora si funciona
+
+:100644 100644 15c8d0c... 4b0ae8b... M	exfuntions/.component
+:100644 100644 9869fe1... 97de043... M	exfuntions/.info
+:100644 100644 1dc8c4e... 3f41300... M	exfuntions/.project
+:100644 100644 157745a... cb095df... M	exfuntions/.src/exModSysNet.module
+:100644 100644 92ff73a... 8a20dcb... M	exfuntions/.src/exMtest.module
+
+commit 84e683bf09f2fe0c5766ed6d09da4c1019871b73
+Author: PICCORO Lenz McKAY <mckaygerhard@gmail.com>
+Date:   Mon Jul 3 13:40:08 2017 -0400
+
+    agregada nueva funcion itsRunIDE: si la aplicacion que la llama ejecuta en el ide
+    * agregada a exModSysInfo la funcion itsRunIDE retorna -1 si ide o 0 si app/cgi
+    * documentada en [docs/LIBRERIASYCOMPONENTES.md]
+
+:100644 100644 a14bd02... d89eddf... M	docs/LIBRERIASYCOMPONENTES.md
+:100644 100644 4a8f57d... 3b6ebe5... M	docs/README.md
+:100644 100644 e59a92f... 858b316... M	exfuntions/.src/exModSysInfo.module
+
+commit a0075c40d1711424c627f92cd2ea05fb7ce59396
+Author: PICCORO Lenz McKAY <mckaygerhard@gmail.com>
+Date:   Mon Jul 3 08:14:59 2017 -0430
+
+    reorganizado funciones de redes y mejorada deteccion de ip, reoganizado de informacion
+    * exModsysinfo: -> exModSysNet optencion de las ip de manera correcta, closes #12
+    * exModsysinfo: mejorado de las funciones de entorno, deteccion de informacion en orden
+    * exModSYsInfo: reorganizado, funciones de red extraidas y dejado solo equivalentes. #9
+
+:100644 100644 93ea3ec... a14bd02... M	docs/LIBRERIASYCOMPONENTES.md
+:100644 100644 c05acb0... 15c8d0c... M	exfuntions/.component
+:100644 100644 0e2485c... 8748600... M	exfuntions/.icon.png
+:000000 100644 0000000... 9869fe1... A	exfuntions/.info
+:000000 100644 0000000... 63133ef... A	exfuntions/.list
+:100644 100644 2d35531... 1dc8c4e... M	exfuntions/.project
+:000000 100644 0000000... 4e5fac9... A	exfuntions/.settings
+:100644 100644 05b40eb... e59a92f... M	exfuntions/.src/exModSysInfo.module
+:000000 100644 0000000... 157745a... A	exfuntions/.src/exModSysNet.module
+:000000 100644 0000000... 92ff73a... A	exfuntions/.src/exMtest.module
+:000000 100644 0000000... 6d9451c... A	exfuntions/.startup
+
+commit 99ca770bbc0c59e6f12b9b289d534cb8801f6a57
+Author: PICCORO Lenz McKAY <mckaygerhard@gmail.com>
+Date:   Mon Jul 3 08:10:14 2017 -0430
+
+    mejorado el ejemplo e implementacion de gridfilter, actualizado projecto con versiones de gambas
+    * el componente exgridfilter necesita qt4 ya que en gtk no exiten los controles
+    * el control y pruebas y ejemplo necesita sqlite como dependencia
+
+:100644 100644 c58ab16... a6598ac... M	exgridfilter/.component
+:100644 100644 3547f34... 4ee5a34... M	exgridfilter/.info
+:100644 100644 36e6983... eacfa94... M	exgridfilter/.project
+:100644 100644 e84a1f6... 3c6c35d... M	exgridfilter/.settings
+:100644 100644 4ea5968... bd341f2... M	exgridfilter/.src/exgridfilterf.class
+:100644 100644 e881a3b... 238698b... M	exgridfilter/.src/fTest.class
+:100644 100644 0f936ea... ff2eea9... M	exgridfilter/.startup
+:100644 100644 853e0c4... 0ef1fda... M	exgridview/.component
+
+commit e64ca89fa10ca9248a92af5461681199f258eb1f
+Author: PICCORO Lenz McKAY <mckaygerhard@gmail.com>
+Date:   Fri Jun 30 04:18:25 2017 -0430
+
+    compatibilidad gambas 3.1 a 3.9 y correcion deteccion de titulos en result o matrix
+    * si es objeto result, determinar si ya estan los titulos o estan desabilitados
+    * si es objeto matrix determinar titulos provisionales y si estan asignados
+    * desabilitar selections si no esta soportado en gambas viejos con preprocesor
+    * soporte de gambas 3.1 y 3.5 por defecto esto es un componente que extiende gridview
+    * mejorado ejemplo en ftest main del componente
+
+:100644 100644 94ffb74... 7b38030... M	exgridview/.src/FTest.class
+:100644 100644 ecd53c7... 8700e43... M	exgridview/.src/exGridview.class
+
+commit f17ba1248f1795ffe2cdb14371da7fe8865156ca
+Author: PICCORO Lenz McKAY <mckaygerhard@gmail.com>
+Date:   Fri Jun 30 03:48:30 2017 -0430
+
+    * arreglado ejemplo correcto con matrixes, titulos va primero, despues fuentes
+
+:100644 100644 9291c9f... 93ea3ec... M	docs/LIBRERIASYCOMPONENTES.md
+
+commit 974bc73bd955710f7180cfeef1649cf8ff91e194
+Author: PICCORO Lenz McKAY <mckaygerhard@gmail.com>
+Date:   Fri Jun 30 03:24:34 2017 -0430
+
+    arreglado forma y deteccion para source directo desde matrixes, closes #11
+    * detecta primer columna como titulos y resto lo adiciona..
+    * si detecta primer columna como titulos no se adiciona en el grid, solo en titulo
+    * para que la primera tambien sea parte del gri, hay que desabilitar titulos
+    * despues de asignar sources se re-habilita los titulos y se setean
+    * ejemplo:
+    ```
+    ' elformato de la fuente source si es matrix, es primera linea titulos, resto filas
+    titulos = ["tcel1", "tcel2"]
+    filas.Add(titulos, 0)
+    filas.Add(["cel1", "cel2"], 1)
+    filas.Add(["cel3", "cel4"], 1)
+    exGridviewobj.setTitles = False
+    ' exGridviewobj esta pegado en el form, la fuente puede ser un Result desde db
+    exGridviewobj.source = filas
+    ' titulos se pueden sobreescribir por defecto son detectados de la fuente source
+    exGridviewobj.setTitles = True
+    exGridviewobj.titles = titulos
+    
+    ```
+
+:100644 100644 a2d6dec... 94ffb74... M	exgridview/.src/FTest.class
+:100644 100644 882289e... ecd53c7... M	exgridview/.src/exGridview.class
+
+commit fc459244dccf606492fc85a0f6407eea51441cb0
+Author: PICCORO Lenz McKAY <mckaygerhard@gmail.com>
+Date:   Fri Jun 30 03:20:41 2017 -0430
+
+    haciendo exgridview la definicion proyecto compatible con gambas 3.1 a 3.9
+    * ajustado un ejemplo mejorado en la documentacion principal rapida
+    * en gambas 3.1 la definicion de projecto solo usa "makecomponet" si es o no es
+    * en gambas 3.4 en adelante ya se diferencia componentes de librerias
+
+:100644 100644 25d2d35... fd0bdc6... M	exgridview/.project
+
+commit d9d5e4c3068ece0248f95622e5385c4e5fbd9669
+Author: PICCORO Lenz McKAY <mckaygerhard@gmail.com>
+Date:   Fri Jun 30 02:27:54 2017 -0430
+
+    mejorado el ejemplo con una matrix en el documento
+
+:100644 100644 1e5185a... 9291c9f... M	docs/LIBRERIASYCOMPONENTES.md
+
+commit 60473a542ae6cec5663f7bbe82523e8f2fc79e39
+Author: PICCORO Lenz McKAY <mckaygerhard@gmail.com>
+Date:   Fri Jun 30 18:29:35 2017 -0400
+
+    intento de nuevo dsolucionar #11 ahora no filtra, aun falta verificar fuente
+
+:100644 100644 2e1d1fa... 4ea5968... M	exgridfilter/.src/exgridfilterf.class
+:100644 100644 ee7494d... e881a3b... M	exgridfilter/.src/fTest.class
+:100644 100644 6415ea6... 882289e... M	exgridview/.src/exGridview.class
+
+commit 51c4a6f383db58bd985303a1e4db52331578a797
+Author: PICCORO Lenz McKAY <mckaygerhard@gmail.com>
+Date:   Fri Jun 30 17:44:47 2017 -0400
+
+    gridview documentado y ajustado soporte para varian matrixes dimensionales
+    * arreglado asignacion automatica de titulos
+    * arreglado matrixes y asignacion de titulos, closes #11
+    * documentado correctamentamente para que lo detecte el ide
+
+:100644 100644 d47361a... 853e0c4... M	exgridview/.component
+:100644 100644 70b37d8... fd8ce7f... M	exgridview/.info
+:100644 100644 a1c7deb... 25d2d35... M	exgridview/.project
+:100644 100644 cc26869... a2d6dec... M	exgridview/.src/FTest.class
+:100644 100644 0aea96d... 969ccbd... M	exgridview/.src/FTest.form
+:100644 100644 14d6524... 6415ea6... M	exgridview/.src/exGridview.class
+:100644 100644 2bc68ba... 5741466... M	exgridview/.startup
+
+commit 966183ff9aa84dc5ab18a7c9524711d2b6c66e5f
+Author: PICCORO Lenz McKAY <mckaygerhard@gmail.com>
+Date:   Fri Jun 30 17:33:25 2017 -0400
+
+    documentacion en archivo de explicacion rapida para la web
+
+:100644 100644 c3dbea9... 1e5185a... M	docs/LIBRERIASYCOMPONENTES.md
+
+commit dcf70d8a14b23ea40eaadd6469353d4c97400ae7
+Author: PICCORO Lenz McKAY <mckaygerhard@gmail.com>
+Date:   Thu Jun 29 13:42:15 2017 -0400
+
+    autoteteccion de nombre de columnas de sqlite/tabla.name a solo name
+    * agregado gitignore por cada directorio
+    * se realiza split y depues depende lo que viene se extrae el ultimo elemento
+
+:000000 100644 0000000... cb95c3b... A	exgridfilter/.gitignore
+:000000 100644 0000000... cb95c3b... A	exgridview/.gitignore
+:100644 100644 c3836e6... 14d6524... M	exgridview/.src/exGridview.class
+:100644 100644 52d7862... 2bc68ba... M	exgridview/.startup
+
+commit 01838eb5219a6b61add31e5801d4fef5616941f6
+Author: PICCORO Lenz McKAY <mckaygerhard@gmail.com>
+Date:   Wed Jun 28 13:18:04 2017 -0400
+
+    ajustado enlace simbolico a ruta relativa.. en futuro se fusiona segun #10
+
+:120000 120000 82c390d... e622a0e... M	exgridfilter/.src/exGridview.class
+
+commit 8d2780553b430eafafce03c0972f1a075419d8f8
+Author: PICCORO Lenz McKAY <mckaygerhard@gmail.com>
+Date:   Wed Jun 28 13:11:26 2017 -0400
+
+    exfuntions:xmodInfo: ajustadas funciones de identificacion de cpu
+    * cambio de variable local como palabra reservada, closes #7
+    * llamadas de sistema ajustada, trae modelo correcto y arch, closes #8
+    * ajustada llamada a ver nombre distro y nombre corto distro, closes #8
+    * iniciada documentacion de funciones.
+
+:100644 100644 38779bb... 85829b2... M	CHANGELOG
+:100644 100644 150dc15... 05b40eb... M	exfuntions/.src/exModSysInfo.module
+:100644 100644 bd4bfe0... 173ac56... M	exgridfilter/.action/exgridfilterf.action
+:100644 100644 4c755e2... cdf8e05... M	exgridfilter/.src/exgridfilter.class
+:100644 100644 220c8be... c548f74... M	exgridfilter/.src/exgridfilterf.form
+
 commit b1f718e9b2c5379583f033363b37b61f77ec57b8
 Author: PICCORO Lenz McKAY <mckaygerhard@gmail.com>
 Date:   Mon Jun 26 11:38:42 2017 -0400
