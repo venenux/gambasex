@@ -2,4 +2,4 @@
 Key=exfuntions
 Version=0.0.1
 Authors=PICCORO Lenz McKAY <mckaygerhard@gmail.com>
-Requires=gb.db,gb.db.mysql,gb.db.odbc,gb.db.postgresql,gb.db.sqlite3,gb.gui,gb.image,gb.net,gb.net.curl,gb.vb,gb.xml,gb.web
+Requires=gb.db,gb.db.mysql,gb.db.odbc,gb.db.postgresql,gb.db.sqlite3,gb.gui,gb.image,gb.net,gb.net.curl,gb.vb,gb.xml,gb.web,gb.util.web,gb.util

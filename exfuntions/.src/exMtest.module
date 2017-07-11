@@ -5,9 +5,10 @@ Public Function main()
     
     Print exModSysNet.getIfdef()
     Print exModSysNet.getIpall()[1]
-    Print exModSysFile.getFileDev("datamega")
-    Print exModSysFile.getFileSys("datamega")
+    Print exModSysFile.getFileDev("/")
+    Print exModSysFile.getFileSys("/")
     Print exModSysInfo.ProjInfo()
+    Print exModUtil.gethttpbuf("http://google.com")
     
 End
 

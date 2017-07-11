@@ -140,6 +140,11 @@ s
 
 'variable interna para manejar el comando ejecutado en la rutina invocada
 'variable interna para resultado del comando ejecutado en la rutina invocada
+getImdef
+M
+s
+[(defIf)s]
+'obtener la mac que se usa para enviar y recibir datos en la red/internet de todas las activas<br> si @param defif se provee se usara este dispositivo de red como el activo para optener la ip
 getIfdef
 M
 s
@@ -160,3 +165,21 @@ M
 String[]
 
 'obtener todas las ip/direcciones de red activas de las configuradas
+#exModUtil
+
+C
+'Se trabaja con manipulacion de variables
+ucfirst
+M
+s
+(strInput)s
+'variable interna para resultado ofrecido por cada funcion
+ucwords
+M
+s
+(strInput)s
+gethttpbuf
+M
+s
+[(urltogetinfo)s]
+'obtiene todo el contenido de una url en una cadena/buffer para analizar **en crudo**, util para json, xml o para descargar binarios<br>@parameter url : la uri<br>@return string html de la respuesta, o string "" si invalido o no hay nada, string "-1" si invalido o agotado en server

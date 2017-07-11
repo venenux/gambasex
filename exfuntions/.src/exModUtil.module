@@ -6,10 +6,11 @@ Export
 
 Private outputfunction As String    '' variable interna para resultado ofrecido por cada funcion
 
-Public Function ucfirst(strInput As String) As String ''Devuelve un texto con la primera letra en mayusculas y todas las siguientes en minúsculas.
+''Devuelve un texto con la primera letra en mayusculas y todas las siguientes en minúsculas.
+Public Function ucfirst(strInput As String) As String
     
     outputfunction = strInput
-    If Comp(Replace(strInput, " ", ""), "") = 0 Then
+    If Comp(Replace(strInput, " ", ""), "") <> 0 Then
         outputfunction = String.UCase(String.Mid(strInput, 1, 1))
         outputfunction &= String.LCase(String.Mid(strInput, 2, String.len(strInput) - 1))
     Endif
@@ -17,14 +18,44 @@ Public Function ucfirst(strInput As String) As String ''Devuelve un texto con la
     
 End
 
-Public Function ucwords(strInput As String) As String ''Devuelve un texto con la primera letra en mayusculas de cada una de las palabras, removiendo espacios extra
+''Devuelve un texto con la primera letra en mayusculas de cada una de las palabras, removiendo espacios extra
+Public Function ucwords(strInput As String) As String
     
-    outputfunction = ""
     Dim strtmp As String[]
     Dim strtp As String
+
+    outputfunction = ""
     strtmp = Split(strtmp, " ")
     For Each strtp In strtmp
         outputfunction = outputfunction & " " & ucfirst(strtmp)
     Next
     Return outputfunction
+
+End
+
+'' obtiene todo el contenido de una url en una cadena/buffer para analizar **en crudo**, util para json, xml o para descargar binarios<br>@parameter url : la uri<br>@return string html de la respuesta, o string "" si invalido o no hay nada, string "-1" si invalido o agotado en server
+Public Function gethttpbuf(Optional urltogetinfo As String = "") As String
+    
+    Dim gethttpobj As New HttpClient
+    Dim tiempoespera As Integer = 5
+    Dim tiempoquepas As Integer = 0
+    Dim Buffer As String
+    
+    If Comp(Replace(urltogetinfo, " ", ""), "") = 0 Then Return ""
+    gethttpobj.url = urltogetinfo
+    gethttpobj.Get()
+    
+    While (Lof(gethttpobj) = False And tiempoquepas < tiempoespera)
+        tiempoquepas = tiempoquepas + 1 'espero 1 segundo o que llegue a>5
+        Try Wait 1
+    Wend
+    If tiempoquepas >= tiempoespera Or Lof(gethttpobj) = False Then
+        Return "-1"
+    Endif
+    If Lof(gethttpobj) Then
+        Read #gethttpobj, Buffer, Lof(gethttpobj)
+    End If
+    gethttpobj.Close()
+    Return buffer
+    
 End
