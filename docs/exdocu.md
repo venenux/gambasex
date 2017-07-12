@@ -12,5 +12,5 @@ Indice de documentacion
 
 # Framework
 
-+ [gb.ex.dbconfig](gb.ex.dbconfig.md) Parte del framework para manejo de configuracion inicial
-+ [gb.ex.dbmanage](gb.ex.dbmanage.md) Parte del framework para manejo de base de datos
++ [gb.ex.dbconfig](exmanager.md) Parte del framework para manejo de configuracion inicial
++ [gb.ex.dbmanage](exmanager.md) Parte del framework para manejo de base de datos
