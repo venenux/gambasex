@@ -1,3 +1,78 @@
+commit 4d28fea8f58150f2ef8e762daf0309c389d511d7
+Author: PICCORO Lenz McKAY <mckaygerhard@gmail.com>
+Date:   Tue Jul 11 21:54:00 2017 -0430
+
+    pequeño aseguramiento closes #11 aunque el issue es invalido (adicion de filas)
+    * asegurar se reinicie la cuenta de filas segun la nueva fuente.
+
+:100644 100644 bd341f2... 9049777... M	exgridfilter/.src/exgridfilterf.class
+
+commit 6be42f4db2f57176bd2af82ad9066b413a79eb0d
+Author: PICCORO Lenz McKAY <mckaygerhard@gmail.com>
+Date:   Tue Jul 11 21:47:48 2017 -0430
+
+    compatibilidad con gambas 3.1 en parte, ya qye gb.web en 3.5+ implica gb.util.web
+    * elimina gb.util.web
+    * depende de gb.web, este en versiones futuras ya depende de gb.util.web
+
+:100644 100644 8b9c448... ee55145... M	exfuntions/.list
+:100644 100644 92e0c5e... 9fd2301... M	exfuntions/.project
+:100644 100644 6d9451c... 7938438... M	exfuntions/.startup
+
+commit a1bf6fe3f91bc0dc4c277109dbd8554ccc81d4a8
+Author: PICCORO Lenz McKAY <mckaygerhard@gmail.com>
+Date:   Tue Jul 11 11:06:26 2017 -0400
+
+    fix ucase y gethttpbuf para obtiener contenido de una url en una cadena/buffer
+    * corregido error en ucase, dim estaba despues y va de primero
+    * para analizar **en crudo**, util para json, xml o para descargar binarios
+    * firma es gethttpbuf(Optional urltogetinfo As String = "") As String
+    * datos es @parameter url : la uri, @return string html de la respuesta,
+    * string "" si invalido o no hay nada, string "-1" si invalido o agotado en server
+
+:100644 100644 cb34fa8... 71f2aac... M	docs/exfuntions.md
+:100644 100644 4b0ae8b... 678a76e... M	exfuntions/.component
+:100644 100644 8748600... 604e895... M	exfuntions/.icon.png
+:100644 100644 3e7b990... 41fe900... M	exfuntions/.info
+:100644 100644 3f41300... 92e0c5e... M	exfuntions/.project
+:100644 100644 cdc8628... d007375... M	exfuntions/.src/exModUtil.module
+:100644 100644 a518cc5... df6f869... M	exfuntions/.src/exMtest.module
+
+commit fb5f0e793cb510e328772243747a3706393999af
+Author: PICCORO Lenz McKAY <mckaygerhard@gmail.com>
+Date:   Mon Jul 10 11:07:22 2017 -0400
+
+    actualizadas referencias en documentacion/web
+    * el directorio docs genera la pagina web github con mirror gitlab
+    * se actualizo y ordeno las referencias y enlaces
+
+:100644 100644 629d437... 7c6fb90... M	README.md
+:100644 100644 cda5d75... b2df0ea... M	docs/README.md
+:000000 100644 0000000... 06adf22... A	docs/exdiferenciasoriginal.md
+:100644 100644 d921030... eb0a518... M	docs/exdocu.md
+:100644 100644 ed9c1c3... 868ce76... M	docs/exgridview.md
+
+commit aace4f53fd3c03621597695b28e19ddc3b11862d
+Author: PICCORO Lenz McKAY <mckaygerhard@gmail.com>
+Date:   Mon Jul 10 11:06:20 2017 -0400
+
+    nuevo modulo de manipulacino de variables
+    * comenzado cn dos funciones, ucwords and ucfirts
+    * iguales a las de php, una para cada palabra y otra para la primera letra
+    * coloca en mayuscula la primera letra, u=upper, c=case, words/firts= letras/primera
+    * documentacion colocada en docs/exfuntions.md
+
+:100644 100644 0f7ffc9... cb34fa8... M	docs/exfuntions.md
+:000000 100644 0000000... cdc8628... A	exfuntions/.src/exModUtil.module
+
+commit ed5cd870cce1046ebe0fcbd44757ec6c5bf2426e
+Author: PICCORO Lenz McKAY <mckaygerhard@gmail.com>
+Date:   Mon Jul 10 02:18:57 2017 -0400
+
+    Actualizado archivo de cambios
+
+:100644 100644 85829b2... 1f9883f... M	CHANGELOG
+
 commit aad67daccbefa8938dc74cd8e61ff337b37c47f7
 Author: PICCORO Lenz McKAY <mckaygerhard@gmail.com>
 Date:   Mon Jul 10 02:15:59 2017 -0400
