@@ -59,3 +59,28 @@ Public Function gethttpbuf(Optional urltogetinfo As String = "") As String
     Return buffer
     
 End
+
+''Devuelve el segmento ultimo o parte segun de un uri o ruta dada de archivos
+Public Function urisegment(strInput As String, Optional segment As Integer = 999) As String
+    
+    Dim strtmp As String[]
+    Dim index As Integer
+    outputfunction = ""
+    strtmp = Split(strInput, "/")
+    index = segment
+    If strtmp.Count < segment Then
+        index = strtmp.Count - 1
+    Endif
+    outputfunction = strtmp[index]
+    Return outputfunction
+End
+
+''Devuelve la ruta absoluta de un uri que termina en un archivo
+Public Function urifilepath(strInput As String) As String
+    
+    Dim strtp As String
+    outputfunction = ""
+    strtp = Mid(strInput, 1, RInStr(strInput, "/"))
+    'strtp = String.Left(strtp, String.Len(strtp) - 1) 
+    Return strtp
+End
