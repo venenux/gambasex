@@ -50,6 +50,8 @@ Se trabaja con manipulacion de variables, comunmente cadenas de texto y enteros.
 
 * `ucfirst(strInput As String) As String` : Devuelve un texto con la primera letra en mayusculas y todas las siguientes en minúsculas.
 * `ucwords(strInput As String) As String` : Devuelve un texto con la primera letra en mayusculas de cada una de las palabras, removiendo espacios extra
+* `urisegment(strInput As String, Optional segment As Integer = 999) As String` : Devuelve el segmento ultimo o parte segun de un uri o ruta dada de archivos
+* `urifilepath(strInput As String) As String` : Devuelve la ruta absoluta de un uri que termina en un archivo
 * `gethttpbuf(Optional urltogetinfo As String = "") As String`: obtiene todo el contenido de una url en una cadena/buffer para analizar **en crudo**, util para json, xml o para descargar binarios, @parameter url: la uri, @return string html de la respuesta, o string "" si invalido o no hay nada, string "-1" si invalido o agotado en server
 
 

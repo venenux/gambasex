@@ -1,0 +1,18 @@
+' Gambas module file
+
+
+Private $datadesdedb As Connection[]
+Private $configurado As Collection
+
+
+Public Function main()
+    
+  Dim objconfs As New ExCfgManage
+  Dim objdbcon As New ExDbManage
+
+  $configurado = objconfs.configuracion
+  Print "creacion/lectura archivo configuracion: " & objconfs.configurado
+  $datadesdedb = objdbcon.conexciones
+  Print "creacion/conesciones a bases de datos: " & objdbcon.conectados
+    
+End

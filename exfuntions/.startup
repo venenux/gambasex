@@ -14,8 +14,6 @@ gb.db.postgresql
 gb.db.sqlite3
 gb.net
 gb.net.curl
-gb.util
-gb.util.web
 gb.vb
 gb.web
 gb.xml

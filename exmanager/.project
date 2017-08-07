@@ -1,0 +1,20 @@
+# Gambas Project File 3.0
+# Compiled with Gambas 3.1.1
+Title=exmanager
+Startup=MTest
+Version=0.0.1
+Component=gb.db
+Component=gb.db.mysql
+Component=gb.db.odbc
+Component=gb.db.postgresql
+Component=gb.db.sqlite3
+Component=gb.settings
+Component=gb.net
+Component=gb.net.curl
+Component=gb.vb
+Description="parte principal del framework, inicia configuracion y conexciones a db memoria/ocal y remota/dbms"
+TabSize=4
+MakeComponent=1
+ControlPublic=1
+ModulePublic=1
+Packager=1

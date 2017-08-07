@@ -107,6 +107,7 @@ Private Sub source_Write(Value As Variant)
     Dim n As Integer
     Dim c As String[]
     
+    grid.Columns.Count = 0
     grid.source = Value
     $origtitl = grid.titles               ' fix set header after reset filters
     For n = 0 To grid.source.Count - 1
