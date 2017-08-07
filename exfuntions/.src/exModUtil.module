@@ -10,6 +10,7 @@ Private outputfunction As String    '' variable interna para resultado ofrecido 
 Public Function ucfirst(strInput As String) As String
     
     outputfunction = strInput
+    strInput = LTrim(outputfunction)
     If Comp(Replace(strInput, " ", ""), "") <> 0 Then
         outputfunction = String.UCase(String.Mid(strInput, 1, 1))
         outputfunction &= String.LCase(String.Mid(strInput, 2, String.len(strInput) - 1))
@@ -25,9 +26,14 @@ Public Function ucwords(strInput As String) As String
     Dim strtp As String
 
     outputfunction = ""
-    strtmp = Split(strtmp, " ")
+    strInput = LTrim(outputfunction)
+    strtmp = Split(strInput, " ")
     For Each strtp In strtmp
-        outputfunction = outputfunction & " " & ucfirst(strtmp)
+        If Comp(Replace(strtp, " ", ""), "", gb.IgnoreCase) = 0 Then
+            Continue
+        Else
+            outputfunction = outputfunction & " " & ucfirst(strtp)
+        Endif
     Next
     Return outputfunction
 

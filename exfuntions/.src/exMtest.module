@@ -8,6 +8,8 @@ Public Function main()
     Print exModSysFile.getFileDev("/")
     Print exModSysFile.getFileSys("/")
     Print exModSysInfo.ProjInfo()
+    Print exModUtil.ucfirst(" pepepep     adadasd   qoiehqopwiehoq aasa        aklsjbndka asada      asldaj")
+    Print exModUtil.ucwords(" pepepep     adadasd   qoiehqopwiehoq aasa        aklsjbndka asada      asldaj")
     Print exModUtil.gethttpbuf("http://google.com")
     
 End

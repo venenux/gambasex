@@ -11,7 +11,9 @@ Geometry=[522,197,575,240]
 Geometry=[515,176,575,240]
 
 [OpenFile]
-Count=0
+Count=1
+Active=1
+File[1]=".src/exMtest.module:27.12"
 
 [Watches]
 Count=0
