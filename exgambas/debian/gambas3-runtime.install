@@ -1,0 +1,17 @@
+usr/bin/gbx3
+usr/lib/gambas3/gb.component
+usr/lib/gambas3/gb.eval.component
+usr/lib/gambas3/gb.eval.so*
+usr/lib/gambas3/gb.debug*
+usr/lib/gambas3/gb.draw*
+usr/lib/gambas3/gb.geom*
+usr/lib/gambas3/gb.gui*
+usr/share/gambas3/info/gb.info
+usr/share/gambas3/info/gb.list
+usr/share/gambas3/info/gb.eval.info
+usr/share/gambas3/info/gb.eval.list
+usr/share/gambas3/info/gb.debug.*
+usr/share/gambas3/info/gb.gui*
+../../main/mime/application-x-gambas3.png usr/share/gambas3/icons
+../../main/mime/application-x-gambas3.xml usr/share/gambas3/mime
+/usr/share/appdata/gambas3.appdata.xml

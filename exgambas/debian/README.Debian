@@ -1,0 +1,73 @@
+gambas3 for Debian
+------------------
+
+* compatibility
+* package dependencies
+* component issues
+* database data dump issues
+* web cgi computing procesing
+
+
+The 3.X release of packages on VenenuX and massenkoh are patches with many bugfixeds. 
+also, the 3.X VenenuX releases of packages are patches with all main fixeds mades 
+over 3.X.90 release so then u can use for production also.
+
+==== compatibility =====================
+
+If u plan to made some software in gambas we recommend to use our 3.4.0 versions, so then 
+all generated software components will be forward compatible and also backguard with all 3.4 series.
+
+Otherwise, if u plan to use with 3.5+ u must repack and recompile u'r project.
+
+==== package dependencies ==============
+
+The VenenuX gambas packages has important defferences, are build agains MariaDB event Mysql, 
+also agains newer gstreamer of 0.10 series, event up to date like 1.0 due performance reasons.
+
+Gambas3 need update curl modules patched with security fixed, only VenenuX has this newer packages.
+Currently can install gambas3 on any lenny debian release, but for some curl specific 
+features need updated version of curl software, please use venenux packages instead.
+
+Please note that if u not have a keyring management wallet, pgconnect, odbc or mariadb
+related store and save connection password not work when are using different desktop 
+out of the most popular knowed.
+
+==== component issues: =================
+
+The media componente (gstreamer implementation) are disabled due lacks of implementation, 
+seem that uses too updated API for simple rutines, also are experimental and incomplete.
+
+There's non-sense to backport/build and enable-it due the featured are not accordly to 
+requeriments to build and enable it.
+
+Versions of gambas 3.5, 3.6 and 3.8 have some terrible bugs that made not good for production 
+also the releases from 3.5 to 3.7 does not have odbc right support and buggy openssl support.
+
+==== database data dump issues =========
+
+Gambas3 has some issues with blob dump using data.save method, the sqlite and postgresql 
+managers use scaped strings to stored the binary data, so when gambas try to retrieve and 
+dump the data dump only the header (a 'X' in sqlite, and ' in postgres). 
+This errors are common with people that only know use stupid DB such mysql.. real 
+powered databases are common as Postgresql, Sqlite are a little management that 
+conforms SQL standars, mysql do not conform standar seems..
+For solv this, use the venenux sarisarinama mail list archives about that problem.
+
+==== web cgi computing procesing ========
+
+The gambas web components have two ways: form gui desing and code non-gui desing, this 
+are since the 3.9.0 release and have good support and stability. Both can be used by cgi 
+or inside the gambas web interpreter. A gambas application its a cgi if the application 
+can process and respond to the request of a html.
+
+The VenenuX lighttpd and Apache2 packages already have cgi support only for gambas
+webpages extension outside of cgi dir as php does. U only have to install and enable it 
+such as php does, and start develop.. take in considerations that static contents must 
+be locale in "Public" dir and dinamic into "Source" dir in the project and manage as u can.
+Of course, u must handle how this will be distribued into webserver in final release of code.
+For enable it onto other server only added a cgi handler such perl or python does, due 
+as mentioned a gambas application its a cgi if the application can process and respond 
+to the request of a html, like php does!.
+
+
+ -- PICCORO Lenz McKAY <mckaygerhard@gmail.com>  Sat, 23 Mar 2013 16:38:52 -0430

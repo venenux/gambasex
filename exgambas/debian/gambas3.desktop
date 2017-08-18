@@ -1,0 +1,12 @@
+[Desktop Entry]
+Name=Gambas3 VNX IDE
+Comment=Gambas3 Integrated Development Environment for VNX
+Comment[es]=Gambas3 Entorno Desarrollo Integrado para VNX
+Exec=gambas3
+Type=Application
+Categories=Development;
+Encoding=UTF-8
+Version=1.0
+Icon=/usr/share/pixmaps/gambas3.xpm
+Terminal=false
+StartupNotify=true

@@ -1,0 +1,5 @@
+usr/bin/gambas3.gambas usr/share/gambas3
+../gambas3.desktop usr/share/applications
+../../app/desktop/gambas3.png usr/share/icons/hicolor/48x48/apps
+usr/share/gambas3/template
+../gambas3.xpm usr/share/pixmaps

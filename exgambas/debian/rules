@@ -1,0 +1,78 @@
+#!/usr/bin/make -f
+
+export DH_OPTION
+
+configure: configure-stamp
+
+configure-stamp: configure-stamp
+	dh_autoreconf
+	LLVM_CONFIG=/usr/bin/llvm-config-3.2 CFLAGS="$(shell dpkg-buildflags --get CFLAGS)" CPPFLAGS="$(shell dpkg-buildflags --get CPPFLAGS)" CXXFLAGS="$(shell dpkg-buildflags --get CXXFLAGS)" LDFLAGS="$(shell dpkg-buildflags --get LDFLAGS)" ./configure --host=$(shell dpkg-architecture -qDEB_HOST_GNU_TYPE) --build=$(shell dpkg-architecture -qDEB_BUILD_GNU_TYPE) -C --prefix=/usr --with-sdl-includes=/usr/include/SDL --with-sdl-libraries=/usr/lib --with-libxml-includes=/usr/include/libxml2 --with-xslt-includes=/usr/include/libxslt
+	touch configure-stamp
+
+build: build-stamp
+
+build-stamp: configure-stamp
+	dh_testdir
+	$(MAKE) prefix=$(CURDIR)/debian/tmp/usr
+	touch build-stamp
+
+clean:
+	rm -f build-stamp configure-stamp config.log gb.media/src/Makefile gb.media/DISABLED.gb.media
+	[ ! -f Makefile ] || $(MAKE) distclean
+	find . -name .action -print0 | xargs -0r rm -rf
+	find . -name .gambas -print0 | xargs -0r rm -rf
+	find . -name "*.gambas" -delete
+	find . -name DISABLED -delete
+	find . -name warnings.log -delete
+	find . -name .info -delete
+	find . -name .list -delete
+	find . -name .startup -delete
+	dh_autoreconf_clean
+	dh_clean
+
+install: build
+	dh_prep
+	XDG_UTILS_INSTALL_MODE=user $(MAKE) install prefix=$(CURDIR)/debian/tmp/usr
+	find debian/tmp/usr -name "*.la" -delete
+	find debian/tmp/usr -name "*.png" -perm /ugo+x -exec chmod -x \{} \;
+
+binary-indep: build install
+	dh_install --sourcedir=debian/tmp -XCOPYING -XLicense -XLicence -i
+	dh_installmime -i
+	dh_installman debian/gambas3-ide.1 -p gambas3-ide
+	dh_installman debian/gambas3.1 -p gambas3
+	dh_installman debian/gbs3.1 -p gambas3-scripter
+	dh_installman debian/gbw3.1 -p gambas3-scripter
+	dh_link -i
+	dh_fixperms -i
+	dh_gencontrol -i
+	dh_installdocs -i
+	dh_installchangelogs -i
+	dh_lintian -i
+	dh_compress -i
+	dh_builddeb -i
+
+binary-arch: build install
+	dh_install --sourcedir=debian/tmp -a
+	dh_installmime -a
+	dh_installman debian/gbi3.1 -p gambas3-dev
+	dh_installman debian/gbx3.1 -p gambas3-runtime
+	dh_installman debian/gbr3.1 -p gambas3-runtime
+	dh_installman debian/gba3.1 -p gambas3-dev
+	dh_installman debian/gbc3.1 -p gambas3-dev
+	dh_installman debian/gbh3.1 -p gambas3-dev
+	dh_strip -a
+	dh_link -a
+	dh_compress -a
+	dh_fixperms -a
+	dh_shlibdeps -a
+	dh_gencontrol -a
+	dh_installdocs -a
+	dh_installchangelogs -a
+	dh_lintian -a
+	dh_compress -a
+	dh_builddeb -a
+
+binary: binary-indep binary-arch
+
+.PHONY: configure build clean install binary-indep binary-arch binary

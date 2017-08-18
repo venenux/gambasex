@@ -1,0 +1,5 @@
+usr/bin/gbs3.gambas usr/share/gambas3
+../../app/mime/application-x-gambasscript.png usr/share/gambas3/icons
+../../app/mime/application-x-gambasserverpage.png usr/share/gambas3/icons
+../../app/mime/application-x-gambasscript.xml usr/share/gambas3/mime
+../../app/mime/application-x-gambasserverpage.xml usr/share/gambas3/mime

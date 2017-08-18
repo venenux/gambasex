@@ -1,0 +1,4 @@
+?package(gambas3-ide):needs="X11" section="Applications/Programming" \
+  hints="IDE" \
+  icon="/usr/share/pixmaps/gambas3.xpm" \
+  title="Gambas3 IDE VenenuX" command="/usr/bin/gambas3.gambas"
