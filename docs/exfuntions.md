@@ -48,6 +48,7 @@ asi como **nawk/gawk** (`awk`), **grep** (`grep`) y **sed** (`sed`), en mac todo
 
 Se trabaja con manipulacion de variables, comunmente cadenas de texto y enteros.
 
+* `substr_count(strInput As String, pattern As String, Optional compare As Integer = gb.Binary) As Integer` : Count the number of substring occurrences, default is case sensitive
 * `ucfirst(strInput As String) As String` : Devuelve un texto con la primera letra en mayusculas y todas las siguientes en minúsculas.
 * `ucwords(strInput As String) As String` : Devuelve un texto con la primera letra en mayusculas de cada una de las palabras, removiendo espacios extra
 * `urisegment(strInput As String, Optional segment As Integer = 999) As String` : Devuelve el segmento ultimo o parte segun de un uri o ruta dada de archivos
