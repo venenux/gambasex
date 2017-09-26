@@ -15,14 +15,17 @@ Se pueden invocar directamente (estaticos) sus funciones en los "exModulos".
 Funciones utilitarias de informacion del sistema instalado ejecutandose.
 
 * `itsRunIDE() As Boolean` : retorna `True` si esta ejecutando elprograma como cgi o aplication, -1 si en el ide. 
+* `cmd_checks(aCommands As String[], Optional bDisplayDialog As Boolean = False) As Boolean` : retorna verdadero si todo lo requerido en array esta instalado o presente
+* `cmd_exits(sCommand As String) As Boolean` : devuelve el nombre del comando si existe, sino null
 
 ## exModSysFile
  
 Funciones utilitarias de manipulacion de archivos
 
-* `getFileDev(Optional ruta As String = "") As String` : devuelve el dispositivo o 
-disco, segun ruta, sino el del sistema de ficheros raiz, si es mapeado no devuelve 
-el dispositivo real, solo el mapa
+* `CharacterSets() As String[]` : deveulve un arreglo con los tipos de codificaciones soportadas por el sistemaoperativo y su softwareinstalado
+* `getMimeEncoding(sFilePath As String) As String` : devuelve el tipo de archivo si es texto plano o binario
+* `getMimeType(sFilePath As String, Optional ruta As String = "") As String` : devuelve el tipo de archivo en forma mime ambito/tipo la ruta debe ser absoluta, sino entonces asume raiz dcel proyecto
+* `getFileDev(Optional ruta As String = "") As String` : devuelve el dispositivo o disco, segun ruta, sino el del sistema de ficheros raiz, si es mapeado no devuelve el dispositivo real, solo el mapa
 * `caltoods(file) As String` : convierte `file` a ods, mismo nombre, ruta siempre /tmp
 
 ## exModSysNet

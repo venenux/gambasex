@@ -429,3 +429,38 @@ Public Function XDGFolder() As String[] '' Devuelve una matriz de texto con las 
     
 End
 
+
+Public Function cmd_checks(aCommands As String[], Optional bDisplayDialog As Boolean = False) As Boolean '' retorna verdadero si todo lo requerido en array esta instalado o presente
+    
+    Dim aDependencyCheck As New String[]
+    Dim sCommand As String
+    Dim bResult As Boolean
+    
+    For Each sCommand In aCommands
+        If Not cmd_exits(sCommand) Then aDependencyCheck.Add(sCommand)
+    Next
+    If aDependencyCheck.Length > 0 Then
+        Print "Dependency not satisfied, please install " & aDependencyCheck.Join(", ")
+        If bDisplayDialog Then
+            Message.Title = ("Error")
+            Message.Error(Subst(("Dependency not satisfied, please install\n&1."), aDependencyCheck.Join(", ")))
+        Else
+            Print "Dependency not satisfied, please install " & aDependencyCheck.Join(", ")
+        Endif
+        bResult = False
+    Else
+        bResult = True
+    Endif
+    Return bResult
+    
+End
+
+Public Function cmd_exits(sCommand As String) As Boolean '' devuelve el nombre del comando si existe, sino null
+    
+    Dim sResult As String
+    
+    Shell "which " & sCommand To sResult
+    Return sResult
+    
+End
+
