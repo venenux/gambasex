@@ -15,6 +15,12 @@ tambien el codigo sera en lo posible documentado y ningun uso obcuro ocurrira en
 *Fue inspirado en gambas-extra-functions pero estas tienen un monton de errores, vease
 : [Diferencias respecto original](docs/exdiferenciasoriginal.md) y corroborelo.
 
+## Documentacion
+
+Lease [docs/README.md](docs/README.md) o visite en linea https://venenux.github.io/gambasex/
+
+Read [docs/README.md](docs/README.md) or visit onlyne at https://venenux.github.io/gambasex/
+
 ## Estatus / Estado
 
 Updates and news will be minimun each 15 days, the commits will be code source or documentation.
