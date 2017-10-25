@@ -18,7 +18,7 @@
     MoveScaled(4,4,93,52)
     Expand = True
     Arrangement = Arrange.Fill
-    { exgridfilter1 exgridfilter
+    { egf1 egf
       MoveScaled(2,2,88,47)
     }
   }
