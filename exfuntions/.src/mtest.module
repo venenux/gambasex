@@ -1,0 +1,18 @@
+' Gambas module file
+
+
+Public Function main()
+    
+    Print MSN.getIfdef()
+    Print MSN.getIpall()[1]
+    Print msf.getFileDev("/")
+    Print msf.getFileSys("/")
+    Print msi.ProjInfo()
+    Print msu.substr_count(" pepepep     adaadaasd   qoiehqopwiehoq aasa        aklsjbndka asada      asldaj", "aa", gb.IgnoreCase)
+    Print msu.ucfirst(" pepepep     adadasd   qoiehqopwiehoq aasa        aklsjbndka asada      asldaj")
+    Print msu.ucwords(" pepepep     adadasd   qoiehqopwiehoq aasa        aklsjbndka asada      asldaj")
+    Print msu.ucwords(" pepepep,adadasd,qoiehqopwiehoq aasa        aklsjbndka asada      asldaj", ",")
+    Print msu.gethttpbuf("http://google.com")
+    
+End
+

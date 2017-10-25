@@ -215,9 +215,9 @@ Public Function WGroup() As String 'devuelve el Grupo de trabajo del pc
     
 End
 
-Public Function SysFile(ruta As String) As String '' migrado: alias de [exModSysFile.getFileSys]
+Public Function SysFile(ruta As String) As String '' migrado: alias de [mf.getFileSys]
     
-    Return exModSysFile.getFileSys(ruta)
+    Return msf.getFileSys(ruta)
     
 End
 
@@ -320,7 +320,7 @@ Public Function AddressIP() As String 'devuelve las Ips configuradas en el equip
     
     Dim sIPs As String
     
-    sIPs = exModSysNet.getIpdef(exModSysNet.getIfdef())
+    sIPs = msn.getIpdef(msn.getIfdef())
     Return RTrim(Replace(sIPs, "\n", " "))
     
 End
@@ -329,7 +329,7 @@ Public Function LastNIP() As String 'devuelve el último digito de la Ip
     
     Dim sIPs As String[]
     
-    sIPs = Split(exModSysNet.getIpdef(exModSysNet.getIfdef()), ".")
+    sIPs = Split(msn.getIpdef(msn.getIfdef()), ".")
     Return RTrim(Replace(sIPs[sIPs.Max], "\n", " "))
     
 End

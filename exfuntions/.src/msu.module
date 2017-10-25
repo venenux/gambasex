@@ -35,14 +35,14 @@ Public Function ucfirst(strInput As String) As String
 End
 
 ''Devuelve un texto con la primera letra en mayusculas de cada una de las palabras, removiendo espacios extra
-Public Function ucwords(strInput As String) As String
+Public Function ucwords(strInput As String, Optional strDiv As String = " ") As String
     
     Dim strtmp As String[]
     Dim strtp As String
 
     outputfunction = ""
-    strInput = LTrim(outputfunction)
-    strtmp = Split(strInput, " ")
+    strInput = LTrim(strInput)
+    strtmp = Split(strInput, strDiv)
     For Each strtp In strtmp
         If Comp(Replace(strtp, " ", ""), "", gb.IgnoreCase) = 0 Then
             Continue

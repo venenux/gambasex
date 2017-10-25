@@ -42,7 +42,7 @@ Private Sub preparaConexiones(Optional indexnumberscons As Integer = 0) As Boole
     Endif
     apploc = $configurados["cod_localidad"]
     appusr = $configurados["cod_localusua"]
-    appmac = exModSysNet.getImdef()
+    appmac = msn.getImdef()
     dbip = $configurados["cnxmysqldbip"]
     dbusr = $configurados["cnxmysqldbusr"]
     dbnam = $configurados["cnxmysqldbnam"]
