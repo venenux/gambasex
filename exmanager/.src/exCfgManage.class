@@ -44,9 +44,9 @@ Private Sub ReConfigurar() '' reconfigura todas las variables y establece un nue
     ' asignacion de datos respecto disponibilidad
     $configurados["cod_localidad"] = hSettings["aplicacion/cod_localidad", "998"]
     $configurados["cod_localusua"] = hSettings["aplicacion/cod_localusua", "999"]
-    $configurados["cod_maquina"] = hSettings["dbconexion/cod_maquina", msn.getImdef()]
+    $configurados["cod_maquina"] = hSettings["dbconexion/cod_maquina", emn.getImdef()]
     $configurados["cnxsqlitename"] = hSettings["dbconexion/cnxsqlitename", "." & Application.Name & ".sqlite"]
-    $configurados["cnxmysqldbip"] = hSettings["dbconexion/cnxmysqldbip", msn.getIpdef()]
+    $configurados["cnxmysqldbip"] = hSettings["dbconexion/cnxmysqldbip", emn.getIpdef()]
     $configurados["cnxmysqldbusr"] = hSettings["dbconexion/cnxmysqldbusr", "root"]
     $configurados["cnxmysqldbnam"] = hSettings["dbconexion/cnxmysqldbnam", "mysql"]
     $configurados["cnxmysqldbpas"] = hSettings["dbconexion/cnxmysqldbpas", "root.1"] ' TODO: usar encryptacion md5, por ahora plano

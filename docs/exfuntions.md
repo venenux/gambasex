@@ -5,12 +5,12 @@
 Este documento solo documenta los modules estaticos, consulte [exdocu.md](exdocu.md).
 Se pueden invocar directamente (estaticos) sus funciones en los "exModulos".
 
-* [msi] (#msi) : ExModSysInfo, funciones de informacion del sistema
-* [msf] (#msf) : ExModSysfile, funciones de manejo de archivos
-* [msn] (#msn) : ExModSysNet, funciones e informacion de red
-* [msu] (#msu) : ExModSysUtils, manejo y manipulacion de variables
+* [emi] (#emi) : ExModSysInfo, funciones de informacion del sistema
+* [emf] (#emf) : ExModSysfile, funciones de manejo de archivos
+* [emn] (#emn) : ExModSysNet, funciones e informacion de red
+* [emu] (#emu) : ExModSysUtils, manejo y manipulacion de variables
 
-## msi
+## emi
  
 Funciones utilitarias de informacion del sistema instalado ejecutandose.
 
@@ -18,7 +18,7 @@ Funciones utilitarias de informacion del sistema instalado ejecutandose.
 * `cmd_checks(aCommands As String[], Optional bDisplayDialog As Boolean = False) As Boolean` : retorna verdadero si todo lo requerido en array esta instalado o presente
 * `cmd_exits(sCommand As String) As Boolean` : devuelve el nombre del comando si existe, sino null
 
-## msf
+## emf
  
 Funciones utilitarias de manipulacion de archivos
 
@@ -28,7 +28,7 @@ Funciones utilitarias de manipulacion de archivos
 * `getFileDev(Optional ruta As String = "") As String` : devuelve el dispositivo o disco, segun ruta, sino el del sistema de ficheros raiz, si es mapeado no devuelve el dispositivo real, solo el mapa
 * `caltoods(file) As String` : convierte `file` a ods, mismo nombre, ruta siempre /tmp
 
-## msn
+## emn
 
 Se detecta toda informacion de red usando `/sbin/ifconfig` esto es estandar en linux y mac 
 por ende es seguro usar ruta absoluta.
@@ -47,7 +47,7 @@ asi como **nawk/gawk** (`awk`), **grep** (`grep`) y **sed** (`sed`), en mac todo
 * `getIfall() As String[]` : obtener todas las interfaces de red activas de las disponibles
 * `getIpall() As String[]` : obtener todas las ip/direcciones de red activas de las configuradas
 
-## msu
+## emu
 
 Se trabaja con manipulacion de variables, comunmente cadenas de texto y enteros.
 
