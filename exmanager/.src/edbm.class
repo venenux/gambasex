@@ -13,12 +13,12 @@ Private $conexdbsql As New Connection    '' variable interna de la conecion de d
 Private conninmemmavailable As Boolean = False  ''' si la conexcion local la db en memoria/sqlite esta ya disponible, semaforo de trabajo interno
 Private conninpoolavailable As Boolean = False  ''' si la conexcion remota la db central/mysql esta ya disponible, semaforo de trabajo interno
 Property Read conectados As Boolean  ''' si esta en TRUE el pool de conexciones esta disponible, el ultimo elemento sera los errores ocurridos
-Private $objconfs As ExCfgManage
+Private $objconfs As ecfm
 
 '' prepara una instancia del pool de las conexciones a las bases de datos, el error si alguno ocurre esta en el ultimo elemento
 Public Sub _new(Optional autoiniciardbs As Boolean = True)
     
-    $objconfs = New ExCfgManage
+    $objconfs = New ecfm
     If autoiniciardbs Then
         If Not $objconfs.configurado Then
             $objconfs.configurar
