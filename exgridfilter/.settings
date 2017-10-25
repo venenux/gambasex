@@ -40,7 +40,7 @@ Geometry=[0,28,210,210]
 [DebugWindow/c]
 Geometry=[-10,-8,875,708]
 
-[DebugWindow/exgridfilter1.Value]
+[DebugWindow/egf1.Value]
 Geometry=[0,28,210,210]
 
 [DebugWindow/grid.source]

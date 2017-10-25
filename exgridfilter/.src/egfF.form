@@ -35,7 +35,7 @@
     { Menu2 Menu
     }
   }
-  { !grid exgridview
+  { !grid egv
     MoveScaled(1,1,88,35)
     #Public = True
     Expand = True

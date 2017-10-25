@@ -13,9 +13,9 @@ Public Sub Form_Open()
     
     ' titulos se pueden sobreescribir por defecto son detectados de la fuente source
     titulos = ["colum1", "colum2", "teee"]          ' para eso hay que ponerlos primero de las fuentes
-    exgridfilter1.titles = titulos          ' entonces coloco los titulos, despues desabilitarlos
-    exgridfilter1.source = filas            ' entonces añade todo incluso la primera fila
-    exgridfilter1.menuDefault = True        ' hay un menu definodo, se muestra si no se define uno
+    egf1.titles = titulos          ' entonces coloco los titulos, despues desabilitarlos
+    egf1.source = filas            ' entonces añade todo incluso la primera fila
+    egf1.menuDefault = True        ' hay un menu definodo, se muestra si no se define uno
     
     ' para bases de datos es muy facil solo pasar el objeto resultado del query
     ' Dim con As new connection
@@ -23,17 +23,17 @@ Public Sub Form_Open()
     ' con.Host = Application.Path
     ' con.Name = "dbtest.sqlite"
     ' rs = con.exec(selet * from table")
-    ' exgridfilter1.source = rs
+    ' egf1.source = rs
     
 End
 
 '' ejemplo de como se obtiene la fila completa en el grid extendido
-Public Sub exgridfilter1_DblClick()
+Public Sub egf1_DblClick()
     
     Dim fila As Collection
     Dim celdas, valores As String = ""
     
-    fila = exgridfilter1.Value
+    fila = egf1.Value
     For Each celdas In fila
         valores = valores & celdas
     Next

@@ -24,7 +24,7 @@ Property mode As Integer ''Modo de selección, multiple, single
 Property alternate As Boolean ''Alternar colores en las líneas
 Property subMenu As String ''nombre del menu definido popup con el botón derecho del ratón
 Property menuDefault As Boolean ''Si cierto aparecerá el menú por defecto. Si se ha establecido  subMenu éste aparecerá debajo del menu por defecto. Si falso y hay subMenu sólo aparecerá subMenu. Si falso y no hay subMenu, no aparecerá nada.
-Property grid As ExGridview  '' exGridFilter extiende de ExGridview un extended gridView con capacidades de ordenamiento y recursividad en memoria a partir de fuente de datos matricial (colleccion o arreglo bidimensional o Result)
+Property grid As egv  '' egf extiende de egv un extended gridView con capacidades de ordenamiento y recursividad en memoria a partir de fuente de datos matricial (colleccion o arreglo bidimensional o Result)
 Property showButtons As Boolean ''Especifica si la botonera es visible o no
 Property posButtons As Integer ''Posición de la Botonera 0=debajo, 1=encima,2=Izquierda,3=derecha
 Property showExportMenu As Boolean ''Especifica si la opción de exportar los datos a CSV en el menú por defecto es visible o no. 
@@ -34,15 +34,15 @@ Property Read pnBotones As Panel '' panel contenedor de botones de busqueda
 Property Read isShift As Boolean
 Property Read isControl As Boolean
 
-Private $Form As Exgridfilterf
-Private $Grid As ExGridview
+Private $Form As EgfF
+Private $Grid As egv
 Private $obs As Observer
 Private $menu As String
 Private $original As Variant
 
 Public Sub _new()
     
-    $Form = New Exgridfilterf(Me)
+    $Form = New EgfF(Me)
     'fGridFilter.verDefault = True
     $Form.Show
     $Grid = $Form.grid
@@ -179,13 +179,13 @@ Private Function isControl_Read() As Boolean
     
 End
 
-Private Function grid_Read() As Exgridview
+Private Function grid_Read() As egv
     
     Return $grid
     
 End
 
-Private Sub grid_Write(Value As Exgridview)
+Private Sub grid_Write(Value As egv)
     
     $grid = Value
     

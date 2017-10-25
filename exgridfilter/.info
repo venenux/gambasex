@@ -1,74 +1,94 @@
-#exGridview
+#egv
 GridView
 C
+'Un "Extended Gridview"<br>**Author** PICCORO Lenz McKAY<br><br>Gridview extendido base, indexacion en ram, la fuente puede ser un resultado sql o una collecion o cualquier fuente indexada que tenda definidos los indices
 _Properties
 C
 s
-*,wordWrap=True,setHeads=True,expandCols=False,titles,widths,alternate=T
+"*,wordWrap=True,setHeads=True,expandCols=False,titles,widths,alternate=T"
 _Group
 C
 s
-View
+"View"
 _Similar
 C
 s
-GridView,TableView
+"GridView,TableView"
 _drawWith
 C
 s
-GridView
+"GridView"
 licencia
 C
 s
-CC-BY-NC-SS con ecepciones, detalles https://gitlab.com/venenux/gambasex/blob/master/LICENSE.md
+"CC-BY-NC-SS con ecepciones, detalles https://gitlab.com/venenux/gambasex/blob/master/LICENSE.md"
 source
 p
 v
 
+'Fuente de datos como objeto *Collecion*, *Matrix* bidimensional o objeto *Result*. La clase lo maneja en su variable privada *[$source]*<br> ejemplo: <code>exGriview.source\=con.exec("SELECT \* FROM Tabla")</code> <br>Es necesario proporcionar una fuente de datos de matrix bidimensional, como lo son:<br>- En caso de matriz, de dos dimensiones de cadenas,<br>- o directo el resultado de una consulta,<br>- O n objeto collection con sus indices definidos.<br><br>*RETURNS*: objeto matrix de dos dimensiones, puede tratarse como collecion.
 wordWrap
 p
 b
 
+'if True, the wordWrap propery of cells is setted to True and the height of rows is fitted.<br>adaptara el alto de la línea para que quepa todo el contenido del campo. Si es false, sólo aparecerá el que quepa en el ancho de la columna.
 setHeads
 p
 b
 
+'si debe mostrar titulos de columnas, default **True** en matrizes bidimensionales debe llenarse vacio lapropiedad titles
 expandCols
 p
 b
 
+'si debe cada columna expandirse apra ver su contenido o no, indiferente o no del tamaño del grid
 titles
 p
 String[]
 
+'cabeceras del gridview, si no asignadas, autodetectadas desde **source** usando los indices
 alternate
 p
 b
 
+'si debe cada fila alternar su color para diferenciarse
 widths
 p
 String[]
 
+'arreglo de anchos de columnas, cada indice es la columna correspondiente, indice no definido es columna automatica de ese indice en adelante:<br> *a.* Si definido una sola columna, ese ancho se respeta siempre<br> *b.* Si indefinido para una columna y expandcols es True, esa columna se adaptara<br> *c.* Si indefinido para una columna y expandcols es False, esa columna pero el resto automatica
 Value
 r
 Collection
 
+'arreglo completo de todos los valores de el gridview *incluyendo el filtro activo*<br>, para acceso directo segun su indice.<br>Ejemplo:<br> *egv.Value\["columname"\]* in event Click or DblClic accedera al valor de la columna "columname" en la posicion del click de la fila entera.
+Selection
+r
+v
+
+'@{since 3.5} devuelve ofrece el arreglo completo de todo el grid *incluyendo el filtro activo*, es como una collecion de la *[cource]* pero ya filtrada.
 isShift
 r
 b
 
+'notifica si tecla shift esta activa/presionada para combinaciones de menu
 isControl
 r
 b
 
+'notifica si tecla control esta activa/presionada para combinaciones de menu
 fieldtypes
 r
 Integer[]
 
+'@{experimental} almacena los tipos de campos detectados o determina los tipos de celdas de los datos
 _new
 m
 
 
+'fila a tratar
+'columna a tratar
+'Gridview extendido, provee indexacion en ram, lo que hace su trabajo eficiente sin tener que if varias veces a la fuente, que puede ser un resultado sql o una collecion o cualquier fuente indexada que tenda definidos los indices como alfanumericos
 Clear
 m
 
@@ -81,10 +101,12 @@ grid_RowClick
 m
 
 (row)i
+'situa el valor en una fila completa al inicio de esta fila, la celda inicial de la fila actual
 grid_Click
 m
 
 
+'al establecerce en la fila actual en su primera celda pinta al fila segunlas propiedades, y devuelve el valor de dicha fila
 grid_ColumnClick
 m
 
@@ -93,6 +115,7 @@ sort
 m
 
 (c)i
+'ordenamiento por el valor seleccionado de columna usando el indice de sus posiciones
 grid_KeyPress
 m
 
@@ -113,29 +136,30 @@ grid_ColumnResize
 m
 
 (column)i
-#exgridfilter
+#egf
 UserControl
 C
 _Properties
 C
 s
-*,source,widths,wordWrap=False,titles,alternate=-1,mode,subMenu{Menu},menuDefault=-1,showButtons=-1,showExportMenu=-1,posButtons{Align.Bottom;Right}=Bottom
+"*,source,widths,wordWrap=False,titles,alternate=-1,mode,subMenu{Menu},menuDefault=-1,showButtons=-1,showExportMenu=-1,posButtons{Align.Bottom;Right}=Bottom"
 _Group
 C
 s
-View
+"View"
 _Similar
 C
 s
-GridView
+"GridView"
 _drawWith
 C
 s
-TableView
+"TableView"
 licencia
 C
 s
-https://gitlab.com/venenux/gambasex/blob/master/LICENSE.md
+"https://gitlab.com/venenux/gambasex/blob/master/LICENSE.md"
+'Licencia especial CC-BY-SS con ecepciones, detalles https://gitlab.com/venenux/gambasex/blob/master/LICENSE.md
 :Click
 :
 
@@ -160,6 +184,7 @@ wordWrap
 p
 b
 
+'Si está activo el contenido de la columna se amplia en varias lineas si es necesario
 titles
 p
 String[]
@@ -182,8 +207,9 @@ b
 
 grid
 p
-ExGridview
+egv
 
+'egf extiende de egv un extended gridView con capacidades de ordenamiento y recursividad en memoria a partir de fuente de datos matricial (colleccion o arreglo bidimensional o Result)
 showButtons
 p
 b
@@ -208,6 +234,7 @@ pnBotones
 r
 Panel
 
+'panel contenedor de botones de busqueda
 isShift
 r
 b

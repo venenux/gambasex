@@ -315,7 +315,7 @@ End
 
 Public Sub Action_Activate(opcion As String) As String
     
-    Dim g As Exgridfilter
+    Dim g As egf
     
     Select Case opcion
         Case "mFiltrar"
