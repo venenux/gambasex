@@ -8,7 +8,7 @@ Indice de documentacion
  
 # Controls
  
-+ [exgridview](exgridview.md) Controles de grilla extendida de Gridview
++ [exgrids](exgrids.md) Controles de grilla extendida de Gridview
 
 # Framework
 

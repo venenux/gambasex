@@ -19,7 +19,7 @@ Property expandCols As Boolean ''' si debe cada columna expandirse apra ver su c
 Property titles As String[] ''' cabeceras del gridview, si no asignadas, autodetectadas desde **source** usando los indices
 Property alternate As Boolean ''' si debe cada fila alternar su color para diferenciarse
 Property widths As String[] ''' arreglo de anchos de columnas, cada indice es la columna correspondiente, indice no definido es columna automatica de ese indice en adelante:<br> *a.* Si definido una sola columna, ese ancho se respeta siempre<br> *b.* Si indefinido para una columna y expandcols es True, esa columna se adaptara<br> *c.* Si indefinido para una columna y expandcols es False, esa columna pero el resto automatica
-Property Read Value As Collection '' arreglo completo de todos los valores de el gridview *incluyendo el filtro activo*<br>, para acceso directo segun su indice.<br>Ejemplo:<br> *exgridview.Value\["columname"\]* in event Click or DblClic accedera al valor de la columna "columname" en la posicion del click de la fila entera.
+Property Read Value As Collection '' arreglo completo de todos los valores de el gridview *incluyendo el filtro activo*<br>, para acceso directo segun su indice.<br>Ejemplo:<br> *egv.Value\["columname"\]* in event Click or DblClic accedera al valor de la columna "columname" en la posicion del click de la fila entera.
 #If Version > "3.4"
 Property Read Selection As Variant '' @{since 3.5} devuelve ofrece el arreglo completo de todo el grid *incluyendo el filtro activo*, es como una collecion de la *[cource]* pero ya filtrada.
 #Endif

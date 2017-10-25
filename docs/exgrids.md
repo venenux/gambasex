@@ -6,19 +6,22 @@ Varios controles de Gridsviews extendidos, ordenamientos, filtrado, conversion c
  
 ## ExGridview ExGridFilter
  
-Un "extended gridview", con ordenamiento, data en memoria y busqueda indexada, 
+Un "extended gridview" (`egv` + `egf`), con ordenamiento, data en memoria y busqueda indexada, 
 la fuente se mantiene en ram, similar a tabletools.
-El exGridfilter implementa su manejo de formulario, integra una barra de capacidades 
+El exGridfilter (`egf`) implementa su manejo de formulario, integra una barra de capacidades 
 de busqueda y permite definir un menu de exportacion y acciones customizadas. 
-Esta es la implementacion de exGridview.
+Esta es la implementacion de exGridview (`egv`).
 
 ### Limitantes
 
 Actualmente si la fuente es un resultado de una consulta de base de datos, 
-fallara si la conexcion es `odbc`, esto porque en gambas dependiendo de la impelmenta
+fallara si la conexcion es `odbc`, esto porque en gambas dependiendo de la implementacion 
 del `modulo unixodbc` puede que el cursor sea `Foward-only`, esto imposibilita 
 obtener un `Count` y mucho menos iterar aleatoriamente en los resultados.
-si no se puede iterar aleatoriamente en los resultados no se puede llenar rapido el g
+Si no se puede iterar aleatoriamente en los resultados no se puede llenar rapido el grid
+
+Sin embargo, se puede usar una base de datos SQLite como "man in the middle", el framework 
+implementara esto en ExDBManager (`edbm`) de manera automatica ya que levantara por defecto una db en ram.
 
 ### Uso y propiedades
 
@@ -34,17 +37,17 @@ filas.Add(["cel1", "cel2"], 1)
 filas.Add(["cel3", "cel4"], 1)
 ' titulos se pueden sobreescribir por defecto son detectados de la fuente source
 titulos = ["colum1", "colum2"]          ' para eso hay que ponerlos primero de las fuentes
-exGridviewobj.setHeads = True           ' forzar la habilitacion
-exGridviewobj.titles = titulos          ' entonces coloco los titulos, despues desabilitarlos
-' exGridviewobj esta pegado en el form, la fuente puede ser un Result desde db
-exGridviewobj.setHeads = False          ' si quiero todas las filas, primero sin titulo
-exGridviewobj.source = filas            ' entonces añade todo incluso la primera fila
+egvobj.setHeads = True           ' forzar la habilitacion
+egvobj.titles = titulos          ' entonces coloco los titulos, despues desabilitarlos
+' egvobj esta pegado en el form, la fuente puede ser un Result desde db
+egvobj.setHeads = False          ' si quiero todas las filas, primero sin titulo
+egvobj.source = filas            ' entonces añade todo incluso la primera fila
 ```
 
 #### Menus 
 
 Se puede definir un menu y asignarlo en las propiedades, sin embargo al instanciar o 
-el `exgridfilter` se puede directamente a la propiedad `menuDefault` = True
+el `egf` se puede directamente a la propiedad `menuDefault` = True
 
 #### columnas, contenido y ancho
 El ancho se controla con la propiedad widths  que es un integer[] en la que se puede 

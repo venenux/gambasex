@@ -1,4 +1,4 @@
-#exGridview
+#egv
 GridView
 C
 'Un "Extended Gridview"<br>**Author** PICCORO Lenz McKAY<br><br>Gridview extendido base, indexacion en ram, la fuente puede ser un resultado sql o una collecion o cualquier fuente indexada que tenda definidos los indices
@@ -61,7 +61,7 @@ Value
 r
 Collection
 
-'arreglo completo de todos los valores de el gridview *incluyendo el filtro activo*<br>, para acceso directo segun su indice.<br>Ejemplo:<br> *exgridview.Value\["columname"\]* in event Click or DblClic accedera al valor de la columna "columname" en la posicion del click de la fila entera.
+'arreglo completo de todos los valores de el gridview *incluyendo el filtro activo*<br>, para acceso directo segun su indice.<br>Ejemplo:<br> *egv.Value\["columname"\]* in event Click or DblClic accedera al valor de la columna "columname" en la posicion del click de la fila entera.
 Selection
 r
 v

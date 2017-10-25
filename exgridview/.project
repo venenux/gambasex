@@ -1,8 +1,8 @@
 # Gambas Project File 3.0
 # Compiled with Gambas 3.1.1
-Title=exGridview
+Title=egv
 Startup=FTest
-Icon=.hidden/control/exgridview.png
+Icon=.hidden/control/egv.png
 Version=1.1.0
 Component=gb.image
 Component=gb.gui

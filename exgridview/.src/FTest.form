@@ -2,7 +2,7 @@
 
 { Form Form
   MoveScaled(0,0,47,38)
-  { exGridviewobj exGridview
+  { egvobj egv
     MoveScaled(2,1,42,35)
   }
 }
