@@ -7,8 +7,8 @@ Private $configurado As Collection
 
 Public Function main()
     
-  Dim objconfs As New ecfm
-  Dim objdbcon As New edbm
+  Dim objconfs As New Ecfm
+  Dim objdbcon As New Edbm
 
   $configurado = objconfs.configuracion
   Print "creacion/lectura archivo configuracion: " & objconfs.configurado
