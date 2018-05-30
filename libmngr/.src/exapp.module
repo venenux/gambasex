@@ -1,0 +1,126 @@
+' Gambas module file
+
+'
+' System application resources utilities functions
+'
+' This program is free software; you can redistribute it and/or modify
+' it under the terms of the GNU General Public License as published by
+' the Free Software Foundation; either version 2 of the License, or
+' (at your option) any later version.
+'
+' This program is distributed in the hope that it will be useful,
+' but WITHOUT ANY WARRANTY; without even the implied warranty of
+' MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+' GNU General Public License for more details.
+'
+' You should have received a copy of the GNU General Public License
+' along with this program; if not, write to the Free Software
+' Foundation, Inc., 51 Franklin St, Fifth Floor,
+' Boston, MA  02110-1301  USA
+
+Export
+
+''' Se detecta toda informacion de la aplicacion corriendo actualmente, ojo: una lib tambien puede ejecutarse como app si tiene un starter modulo/clase
+
+Private commandshelltmp As String   '' variable interna para manejar el comando ejecutado en la rutina invocada
+Private outputfunction As String    '' variable interna para resultado del comando ejecutado en la rutina invocada
+Public _requisites As String = "awk,ifconfig,sh,bash,less,head,tail"
+
+
+Public Function Runide() As Integer ''retorna -1 si esta ejecutando en el IDE que puede emplearse como True si ejecuta en el IDE
+    
+    Dim strProcess As String
+    
+    strProcess = File.Load("/proc" &/ CStr(Application.Id) &/ "comm")
+    If Left(strProcess, 4) = "gbx3" Then
+        Return -1
+    Else
+        Return 0
+    Endif
+    
+End
+
+'' nombre de la distro instalada o metadistro <br> @return String
+Public Function Distron() As String
+    
+    Dim sDis As String
+    
+    Shell "lsb_release -d | cut -d':' -f2" To sDis
+    Replace(sDis, gb.Tab, "")
+    sDis = Trim(sDis)
+    Return sDis
+    
+End
+
+'' nombre de la distro madre o raiz <br> @return String
+Public Function Distrom() As String
+    
+    Dim strDistro As String
+    Dim strDistroShort As String
+    Dim intN As Integer
+    
+    Shell "lsb_release -si | cut -d' ' -f1" To strDistro
+    strDistro = Trim(strDistro)
+    strDistroShort = strDistro
+    If Comp(strDistro, "") = 0 Then
+        strDistroShort = "LFS" ' linux from scratch
+    Endif
+    Return strDistroShort
+    
+End
+
+'' encapsula la primera letra entre corchetes/parentesis <br> @return String
+Private Function nprocgrep(nameproc As String) As String
+    
+    Dim firstchar As String
+    Dim restchars As String
+    
+    firstchar = Left$(nameproc)
+    restchars = Mid$(nameproc, 2)
+    Return "[" & firstchar & "]" & restchars
+    
+End
+
+
+'' devuelve cadena con los proceso esta ejecutandose actualemnte, que tangan nombre similar, si se pasa el nombre verifica un proceso de ese mismo nombre
+Public Function Procs(Optional nameproc As String = Application.Name) As Variant
+    
+    Dim outputfunctionslip As String
+    nameproc = nprocgrep(nameproc)
+    commandshelltmp = "ps -lxa | grep " & nameproc & " | sed 's/   */ /g' | cut -d' ' -f3,13,14,15"
+    ' el "\" es escape.. re-escapar, ademas /sbin/ifconfig es estandar en MACOS y LINUX se debe usar fullpath para no ser root o usar como usuario normal
+    Shell commandshelltmp To outputfunction
+    Return outputfunction
+    
+End
+
+
+Public Function ProcPid(Optional nameproc As String = Application.Name) As Variant
+    
+    Dim outputfunctionslip As String[]
+    Dim commandfind As String
+    Dim commandfindarg As String
+    Dim commandfindargpos As Integer
+    
+    outputfunction = Procs(nameproc)
+    outputfunctionslip = Split(outputfunction, "\n")
+    If outputfunctionslip.Find("", gb.IgnoreCase, 1) <> -1 Then
+        outputfunctionslip.Remove(outputfunctionslip.Find("", gb.IgnoreCase), 1)
+    Endif
+    For Each commandfind In outputfunctionslip
+        commandfindargpos = RInStr(commandfind, " ")
+        If commandfindargpos > 0 Then
+            commandfindarg = Mid(commandfind, commandfindargpos)
+        Endif
+        If InStr(commandfindarg, nameproc, 1, gb.IgnoreCase) > 0 Then
+            commandfindargpos = InStr(commandfind, " ")
+            If commandfindargpos > 0
+                outputfunction = Mid(commandfind, 1, commandfindargpos - 1)
+            Endif
+        Endif
+    Next
+    
+    Return outputfunction
+    
+End
+

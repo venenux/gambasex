@@ -1,0 +1,23 @@
+' Gambas class file
+
+Export
+
+Property Read appname As String
+
+Private $appname As String
+
+
+Private Function appname_Read() As String
+
+    Dim pos As Integer
+    $appname = Application.Name
+    pos = String.InStr($appname, ".")
+    $appname = String.Mid($appname, pos + 1)
+    pos = String.InStr($appname, ".")
+    $appname = String.Mid($appname, pos + 1)
+    pos = String.InStr($appname, ".")
+    $appname = String.Mid($appname, pos + 1)
+    Return $appname
+
+End
+
