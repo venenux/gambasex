@@ -6,6 +6,10 @@ Property Read appname As String
 
 Private $appname As String
 
+Property appconfig As Settings
+
+Private $appconfig As Settings
+
 
 Private Function appname_Read() As String
 
@@ -21,3 +25,15 @@ Private Function appname_Read() As String
 
 End
 
+
+Private Function appconfig_Read() As Settings
+
+    Return $appconfig
+
+End
+
+Private Sub appconfig_Write(Value As Settings)
+
+    $appconfig = Value
+
+End

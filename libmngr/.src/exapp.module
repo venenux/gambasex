@@ -24,7 +24,7 @@ Export
 
 Private commandshelltmp As String   '' variable interna para manejar el comando ejecutado en la rutina invocada
 Private outputfunction As String    '' variable interna para resultado del comando ejecutado en la rutina invocada
-Public _requisites As String = "awk,ifconfig,sh,bash,less,head,tail"
+Public _requisites As String = "awk,ifconfig,sh,bash,less,head,tail,iconv,file"
 
 
 Public Function Runide() As Variant ''retorna -1 si esta ejecutando en el IDE que puede emplearse como True si ejecuta en el IDE
@@ -124,3 +124,38 @@ Public Function ProcPid(Optional nameproc As String = Application.Name) As Varia
     
 End
 
+
+
+Public Function getFileDev(Optional ruta As String = "") As String '' devuelve el dispositivo o disco, segun ruta, sino el del sistema de ficheros raiz, si es mapeado no devuelve el dispositivo real, solo el mapa
+    
+    Dim outputfunction2 As String
+    If Comp(Trim(ruta), "", gb.IgnoreCase) = 0 Then ruta = "/"
+    Shell "df -h " & ruta & " | cut -d' ' -f1" To outputfunction 'Almacenamos caracteristicas del Sistema de Ficheros pasado en ruta
+    Try outputfunction2 = Scan(outputfunction, "*\n*")[1] 'Ocultamos el Error si no encuentra la cadena
+    If Error Then outputfunction2 = outputfunction
+    Return Replace(outputfunction2, "\n", "")
+    
+End
+
+
+Public Function getFileSys(Optional directorio As String = "") As String '' devuelve el sistema de ficheros, segun `directorio`, sino el sistema de ficheros raiz, si no es valido/montado no devuelve nada
+    
+    If Comp(Trim(directorio), "", gb.IgnoreCase) = 0 Then directorio = "on / "
+    If Comp(Trim(directorio), "/", gb.IgnoreCase) = 0 Then directorio = "on / "
+    Shell "mount | grep \"" & directorio & "\" | cut -d' ' -f5" To outputfunction 'Almacenamos caracteristicas del Sistema de Ficheros pasado en ruta
+    Return Replace(outputfunction, "\n", "")
+    
+End
+
+Public Function CharacterSets() As String[] '' deveulve un arreglo con los tipos de codificaciones soportadas por el sistemaoperativo y su softwareinstalado
+    
+    Dim sIconvList As String
+    Dim aCharacterSets As String[]
+    
+    Shell "iconv --list" To sIconvList
+    sIconvList = Replace$(sIconvList, "//", "")
+    aCharacterSets = Split(sIconvList, "\n")
+    aCharacterSets.Remove(aCharacterSets.Max, 1)
+    Return aCharacterSets
+    
+End

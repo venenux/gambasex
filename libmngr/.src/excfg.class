@@ -56,7 +56,7 @@ Private Sub preparevalores()
     
     apppath = Application.Path
     
-   For Each sSlot In $appconfig.Keys                ' for each section in the config file
+    For Each sSlot In $appconfig.Keys               ' for each section in the config file
         For Each sKey In $appconfig.Keys[sSlot]     ' fir each setting under that/current section
             If Comp("application", sSlot, gb.IgnoreCase) = 0 Then
                 $appconfig[sSlot & "/apptype"] = $appconfig[sSlot & "/apptype", "app"]
