@@ -27,7 +27,7 @@ Private outputfunction As String    '' variable interna para resultado del coman
 Public _requisites As String = "awk,ifconfig,sh,bash,less,head,tail"
 
 
-Public Function Runide() As Integer ''retorna -1 si esta ejecutando en el IDE que puede emplearse como True si ejecuta en el IDE
+Public Function Runide() As Variant ''retorna -1 si esta ejecutando en el IDE que puede emplearse como True si ejecuta en el IDE
     
     Dim strProcess As String
     
@@ -88,8 +88,7 @@ Public Function Procs(Optional nameproc As String = Application.Name) As Variant
     Dim outputfunctionslip As String
     nameproc = nprocgrep(nameproc)
     commandshelltmp = "ps -lxa | grep " & nameproc & " | sed 's/   */ /g' | cut -d' ' -f3,13,14,15"
-    ' el "\" es escape.. re-escapar, ademas /sbin/ifconfig es estandar en MACOS y LINUX se debe usar fullpath para no ser root o usar como usuario normal
-    Shell commandshelltmp To outputfunction
+    Shell commandshelltmp To outputfunction  ' son varias lineas pero devueltas en uan sola (\n o gb.NewLine)
     Return outputfunction
     
 End
@@ -102,24 +101,25 @@ Public Function ProcPid(Optional nameproc As String = Application.Name) As Varia
     Dim commandfindarg As String
     Dim commandfindargpos As Integer
     
-    outputfunction = Procs(nameproc)
-    outputfunctionslip = Split(outputfunction, "\n")
+    outputfunction = Procs(nameproc)                    ' busca en ps/procps todo lo similar
+    outputfunctionslip = Split(outputfunction, gb.NewLine)    ' y lo organiza en un array
     If outputfunctionslip.Find("", gb.IgnoreCase, 1) <> -1 Then
-        outputfunctionslip.Remove(outputfunctionslip.Find("", gb.IgnoreCase), 1)
+        outputfunctionslip.Remove(outputfunctionslip.Find("", gb.IgnoreCase), 1) ' remueve solo si hay un elemento vacio
     Endif
     For Each commandfind In outputfunctionslip
-        commandfindargpos = RInStr(commandfind, " ")
+        commandfindargpos = RInStr(commandfind, " ")    ' itera buscando en cada uno de los procesos encontrados
         If commandfindargpos > 0 Then
-            commandfindarg = Mid(commandfind, commandfindargpos)
+            commandfindarg = Mid(commandfind, commandfindargpos) ' extrae el comando entero menos el ultimo argumento
         Endif
-        If InStr(commandfindarg, nameproc, 1, gb.IgnoreCase) > 0 Then
+        If InStr(commandfindarg, nameproc, 1, gb.IgnoreCase) > 0 Then ' busca si el comando sin argumento es el deseado
             commandfindargpos = InStr(commandfind, " ")
             If commandfindargpos > 0
-                outputfunction = Mid(commandfind, 1, commandfindargpos - 1)
+                outputfunction = Mid(commandfind, 1, commandfindargpos - 1) ' si lo es, extrae el primer strings antes de espacio
             Endif
         Endif
     Next
     
+    outputfunction = Trim(outputfunction)
     Return outputfunction
     
 End

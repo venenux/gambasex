@@ -1,0 +1,136 @@
+' Gambas class file
+
+Export
+
+''' clase de configuracion inicial, inicia parametros de la aplicacion sea cliente o servidor y establece a donde se conectara asi como datos de entidad y conectividad
+
+'' dia y hora, sin minutos, en que establece los datos
+Private diadb As String = Format$(Now, "yyyymmddhh")
+'' nombre de archivo trabajo local por el sistema, usa 'diadb' como sufijo
+Private fileconfname As String = "exappconfig.conf"
+'' ruta completa a el archivo la ruta en uso por instancia
+Private fileconfruta As String = Application.path
+'' direccion del archvo con ruta y nombre configurado
+Private fileconf As String = fileconfruta &/ fileconfname
+'' abstracion de la configuracion
+Private $appconfig As Settings = Null
+'' semaforo que determina si esta desde desarrollo
+Private $apponide As Boolean = Null
+
+Private Sub preparefileconf()
+    
+    $apponide = exapp.Runide()
+    If $apponide = -1 Then
+        fileconf = Application.path &/ fileconfname
+    Else
+        fileconf = "/etc" &/ fileconfname
+        If Not Exist(fileconf) Then
+            fileconf = User.Home &/ "." & fileconfname
+            Try Copy Application.path &/ fileconfname To fileconf
+            If Not Exist(fileconf) Then
+                fileconf = Application.path &/ "exappconfig.conf"
+            Endif
+        Endif
+    Endif
+    
+    
+End
+
+
+
+Public Sub _new()
+    
+    preparefileconf
+    $appconfig = New Settings(fileconf)
+    
+    preparevalores
+    ' en cualquier caso, esto solo es en desarrollo, en produccion, creara un archivo nuevo vacio porque no encontrara cual copiar
+    
+End
+
+
+Private Sub preparevalores()
+    
+    Dim apppath As String
+    Dim sSlot, sKey, value As String = ""
+    
+    apppath = Application.Path
+    
+   For Each sSlot In $appconfig.Keys                ' for each section in the config file
+        For Each sKey In $appconfig.Keys[sSlot]     ' fir each setting under that/current section
+            If Comp("application", sSlot, gb.IgnoreCase) = 0 Then
+                $appconfig[sSlot & "/apptype"] = $appconfig[sSlot & "/apptype", "app"]
+                value = $appconfig[sSlot & "/apptype"]
+                If Comp(value, "app", gb.IgnoreCase) = 0 Then
+                    value = $appconfig[sSlot & "/appbase", Null]
+                    value = $appconfig[sSlot & "/appurl", Null]
+                    value = $appconfig[sSlot & "/appindex", Null]
+                Endif
+                value = $appconfig[sSlot & "/apptype"]
+                If Comp(value, "web", gb.IgnoreCase) = 0 Then
+                    value = $appconfig[sSlot & "/appbase", Null]
+                    value = $appconfig[sSlot & "/appurl", Null]
+                    value = $appconfig[sSlot & "/appindex", Null]
+                Endif
+            Endif
+        Next
+        For Each sKey In $appconfig.Keys[sSlot]     ' fir each setting under that/current section
+            If Comp("ubication", sSlot, gb.IgnoreCase) = 0 Then
+               value = $appconfig[sSlot & "/appubiusr", "9997"]
+               value = $appconfig[sSlot & "/appubirun", "9998"]
+               value = $appconfig[sSlot & "/appubiapp", "9999"]
+            Endif
+        Next
+    Next
+
+    
+End
+
+' Private Sub ReConfigurar() '' reconfigura todas las variables y establece un nuevo arreglo de datos de configuracion
+'     
+'     Dim hSettings As Settings
+'     Dim nSettings As Boolean = False
+'     
+'     If Not Exist(User.Home &/ fileconf) Then
+'         nSettings = False
+'     Else
+'         nSettings = True  ' existe configuracion, no cargar valores ni crear valores por defecto
+'     Endif
+'     ' creo la config, si archivo no existe lo crea, si valor no existe, lo fabrica con default abajo
+'     hSettings = New Settings(User.Home &/ fileconf)
+'     ' asignacion de datos respecto disponibilidad
+'     $configurados["cod_localidad"] = hSettings["aplicacion/cod_localidad", "998"]
+'     $configurados["cod_localusua"] = hSettings["aplicacion/cod_localusua", "999"]
+' '    $configurados["cod_maquina"] = hSettings["dbconexion/cod_maquina", emn.getImdef()]
+'     $configurados["cnxsqlitename"] = hSettings["dbconexion/cnxsqlitename", "." & Application.Name & ".sqlite"]
+'  '   $configurados["cnxmysqldbip"] = hSettings["dbconexion/cnxmysqldbip", emn.getIpdef()]
+'     $configurados["cnxmysqldbusr"] = hSettings["dbconexion/cnxmysqldbusr", "root"]
+'     $configurados["cnxmysqldbnam"] = hSettings["dbconexion/cnxmysqldbnam", "mysql"]
+'     $configurados["cnxmysqldbpas"] = hSettings["dbconexion/cnxmysqldbpas", "root.1"] ' TODO: usar encryptacion md5, por ahora plano
+'     ' relectura de datos y salvaguarda de estos
+'     hSettings["aplicacion/cod_localidad"] = $configurados["cod_localidad"]
+'     hSettings["aplicacion/cod_localusua"] = $configurados["cod_localusua"]
+'     hSettings["aplicacion/cod_maquina"] = $configurados["cod_maquina"]
+'     hSettings["dbconexion/cnxsqliteruta"] = $configurados["cnxsqliteruta"]
+'     hSettings["dbconexion/cnxsqlitename"] = $configurados["cnxsqlitename"]
+'     hSettings["dbconexion/cnxmysqldbip"] = $configurados["cnxmysqldbip"]
+'     hSettings["dbconexion/cnxmysqldbusr"] = $configurados["cnxmysqldbusr"]
+'     hSettings["dbconexion/cnxmysqldbnam"] = $configurados["cnxmysqldbnam"]
+'     hSettings["dbconexion/cnxmysqldbpas"] = $configurados["cnxmysqldbpas"]
+'     
+'     Error.Clear
+'     configurado = True
+'     Try hSettings.Save
+'     If Error Then configurado = False
+'     
+' End
+' 
+' Public Function configurar() '' hacer que la aplicacion acceda a la configuracion y la lea/force si accede como funcion, sino como propiedad
+'     
+'     If Not configurado Then
+'     ReConfigurar()  ' reconfiguro, asi si hay valores nuevos los vueve leer, y devuelve el arreglo
+'     Endif
+'     
+' End
+' 
+
