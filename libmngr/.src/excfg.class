@@ -38,9 +38,14 @@ End
 
 
 
-Public Sub _new()
+Public Sub _new(Optional filename As String)
     
     preparefileconf
+    If InStr(filename, "/", 0, gb.IgnoreCase) > 0 Then
+        fileconf = filename
+    Else
+        fileconfname = filename
+    Endif
     $appconfig = New Settings(fileconf)
     
     preparevalores
