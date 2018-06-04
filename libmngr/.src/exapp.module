@@ -27,6 +27,39 @@ Private outputfunction As String    '' variable interna para resultado del coman
 Public _requisites As String = "awk,ifconfig,sh,bash,less,head,tail,iconv,file"
 
 
+' TODO  lsof -i :80 sirve en mac y linux
+
+
+'' verifica que 
+Public Function softck(sCommands As String, Optional bDisplayDialog As Boolean = True) As Boolean
+    
+    Dim aDependencyCheck As New String[]
+    Dim aCommands As New String[]
+    Dim sCommand As String
+    Dim bResult As Boolean
+    
+    If Len(sCommands) < 1 Then
+        Return Null
+    Endif
+    aCommands = Split(sCommands, ",")
+    
+    For Each sCommand In aCommands
+        Shell "type -p dash" To outputfunction
+        If Comp(Trim(outputfunction), "", gb.IgnoreCase) = 0 Then
+            aDependencyCheck.Add(sCommand)
+        Endif
+    Next
+    ' solo estan en el array los comandos que no se pudieron encontrar
+    bResult = True
+    If aDependencyCheck.Length > 0 Then
+        bResult = False
+    Endif
+    ' por ahora se limita a que si falta una todo falla, si no falta nada todo esta bien
+    Return bResult
+    
+End
+
+
 Public Function Runide() As Variant ''retorna -1 si esta ejecutando en el IDE que puede emplearse como True si ejecuta en el IDE
     
     Dim strProcess As String
@@ -45,9 +78,15 @@ Public Function Distron() As String
     
     Dim sDis As String
     
+    If Comp(System.Family, "MacOSX", gb.IgnoreCase) = 0 Then
+        Return System.Family
+    Endif
     Shell "lsb_release -d | cut -d':' -f2" To sDis
     Replace(sDis, gb.Tab, "")
     sDis = Trim(sDis)
+    If Comp(strDistro, "") = 0 Then
+        Return System.Family
+    Endif
     Return sDis
     
 End
@@ -59,6 +98,12 @@ Public Function Distrom() As String
     Dim strDistroShort As String
     Dim intN As Integer
     
+    If Comp(System.Family, "MacOSX", gb.IgnoreCase) = 0 Then
+        Return "Mac"
+    Endif
+    If InStr(System.Family, "BSD", 0, gb.IgnoreCase) > 1 Then
+        Return "BSD"
+    Endif
     Shell "lsb_release -si | cut -d' ' -f1" To strDistro
     strDistro = Trim(strDistro)
     strDistroShort = strDistro
