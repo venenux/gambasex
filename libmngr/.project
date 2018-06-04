@@ -2,7 +2,7 @@
 # Compiled with Gambas 3.10.0
 Title=libmngr
 Startup=Main
-Version=0.0.1
+VersionFile=1
 Component=gb.args
 Component=gb.compress
 Component=gb.compress.bzlib2
