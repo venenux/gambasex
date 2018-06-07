@@ -22,34 +22,84 @@ Property confarray As Collection
 
 Private Sub preparefileconf()
     
+    Dim filenameold As String = ""
+    Dim pathseppos0, pathseppos1, pathseppos2 As Integer = 0
+
+    pathseppos0 = InStr(fileconf, "/")
+    pathseppos1 = RInStr(fileconf, "/")
+    pathseppos2 = RInStr(fileconf, ".conf")
+    fileconfname = Mid(fileconf, pathseppos1 + 1)
+    fileconfruta = Mid(fileconf, 1, pathseppos1 - 1)
+    filenameold = fileconfname
     $apponide = exapp.Runide()
-    If $apponide = -1 Then
+    If $apponide = -2 Then
         fileconf = Application.path &/ fileconfname
     Else
-        fileconf = "/etc" &/ fileconfname
-        If Not Exist(fileconf) Then
-            fileconf = User.Home &/ "." & fileconfname
-            Try Copy Application.path &/ fileconfname To fileconf
-            If Not Exist(fileconf) Then
-                fileconf = Application.path &/ "exappconfig.conf"
-            Endif
+        If pathseppos0 < 1 Or pathseppos0 > 2 Then
+            fileconf = Application.Path &/ fileconf
+        Endif
+        If pathseppos0 < 1 Or pathseppos0 > 2 Then
+            fileconfruta = Mid(fileconf, 1, RInStr(fileconf, "/") - 1)
+        Endif
+        If pathseppos1 < 1 Or Comp(Trim(fileconfruta), "", gb.IgnoreCase) = 0 Then
+            fileconfruta = Application.Path
+        Endif
+        If fileconfname = Null And pathseppos2 < 1 Then
+            fileconfname = "exappconfig.conf"
+        Endif
+        If fileconfname <> Null And pathseppos2 < 1 Then
+            fileconfname = fileconfname & ".conf"
+        Endif
+        If fileconf = Null Or Comp(fileconf, "", gb.IgnoreCase) = 0 Then
+            fileconf = fileconfruta &/ fileconfname ' si no hay ruta o es nula armada de los individuales, en la siguiente corrobora que coordinen
+        Endif
+        If InStr(fileconf, fileconfname, 1, gb.IgnoreCase) < 1 Then
+            fileconf = fileconfruta &/ fileconfname ' debe estar en la ruta el archivo con extension y tambien al menos dos barras
         Endif
     Endif
-    
+    If Not Exist(fileconf) Then
+        fileconf = "/etc" &/ filenameold
+    Endif
+    If Not Exist(fileconf) Then
+        fileconf = "/etc/exappconfig.conf"
+    Endif
+    If Not Exist(fileconf) Then
+        fileconf = "/etc" &/ Application.Name & ".conf"
+    Endif
+    If Not Exist(fileconf) Then
+        fileconf = User.Home &/ "." & fileconfname
+        Try Copy Application.path &/ fileconfname To fileconf
+        If Not Exist(fileconf) Then
+            fileconf = Application.path &/ "exappconfig.conf"
+        Endif
+    Endif
+    pathseppos1 = RInStr(fileconf, "/")
+    pathseppos2 = RInStr(fileconf, ".conf")
+    fileconfname = Mid(fileconf, pathseppos1 + 1)
+    fileconfruta = Mid(fileconf, 1, pathseppos1 - 1)
     
 End
 
 
 '' si en el argumento se para la ruta completa la ruta base de la aplicacion sera la del aplicativo, sino sera app.path de la lib
-Public Sub _new(Optional filename As String = Application.Name)
+Public Sub _new(Optional filename As String = Application.Name &/ Application.Name & ".conf")
     
-    preparefileconf
+    Dim cabeceraappconfig As String
+    Dim cabeceradbconfig As String
+    cabeceraappconfig = "# Application section, main config variables for all the application" & gb.NewLine
+    
+    '' prepar con valores por defecto antes de revisar los que se piden
     If InStr(filename, "/", 0, gb.IgnoreCase) > 0 Then
         fileconf = filename
+        fileconfname = Null
     Else
+        fileconf = Null
         fileconfname = filename
     Endif
-    $appconfig = New Settings(fileconf)
+    '' despues preparo pero con los archivos que se piden
+    preparefileconf
+    
+    $appconfig = New Settings(fileconf, cabeceraappconfig)
     
     preparevalores
     ' en cualquier caso, esto solo es en desarrollo, en produccion, creara un archivo nuevo vacio porque no encontrara cual copiar
@@ -60,16 +110,11 @@ End
 Private Sub preparevalores()
     
     Dim apppath As String
-    Dim cabeceraappconfig As String
-    Dim cabeceradbconfig As String
     Dim sSlot, sKey, value As String = ""
-    
-    cabeceraappconfig = "# Application section, main config variables for all the application"
     
     apppath = fileconfruta
     
     For Each sSlot In $appconfig.Keys               ' for each section in the config file
-        For Each sKey In $appconfig.Keys[sSlot]     ' fir each setting under that/current section
             If Comp("application", sSlot, gb.IgnoreCase) = 0 Then
                 $appconfig[sSlot & "/apptype"] = $appconfig[sSlot & "/apptype", "app"]
                 value = $appconfig[sSlot & "/apptype"]
@@ -85,14 +130,11 @@ Private Sub preparevalores()
                     $appconfig[sSlot & "/appindex"] = $appconfig[sSlot & "/appindex", Null]
                 Endif
             Endif
-        Next
-        For Each sKey In $appconfig.Keys[sSlot]     ' fir each setting under that/current section
             If Comp("ubication", sSlot, gb.IgnoreCase) = 0 Then
                $appconfig[sSlot & "/appubiusr"] = $appconfig[sSlot & "/appubiusr", "9997"]
                $appconfig[sSlot & "/appubirun"] = $appconfig[sSlot & "/appubirun", "9998"]
                $appconfig[sSlot & "/appubiapp"] = $appconfig[sSlot & "/appubiapp", "9999"]
             Endif
-        Next
     Next
 
     
