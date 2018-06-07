@@ -1,0 +1,9 @@
+' Gambas module file
+
+Public Sub Main()
+
+    Dim ver As String = Application.Path
+    Dim cofig As New Excfg
+  exapp.ProcPid("firefox")
+
+End
