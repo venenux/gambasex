@@ -17,6 +17,9 @@ Private $appconfig As Settings = Null
 '' semaforo que determina si esta desde desarrollo
 Private $apponide As Boolean = Null
 
+Property confarray As Collection
+
+
 Private Sub preparefileconf()
     
     $apponide = exapp.Runide()
@@ -37,8 +40,8 @@ Private Sub preparefileconf()
 End
 
 
-
-Public Sub _new(Optional filename As String)
+'' si en el argumento se para la ruta completa la ruta base de la aplicacion sera la del aplicativo, sino sera app.path de la lib
+Public Sub _new(Optional filename As String = Application.Name)
     
     preparefileconf
     If InStr(filename, "/", 0, gb.IgnoreCase) > 0 Then
@@ -57,9 +60,13 @@ End
 Private Sub preparevalores()
     
     Dim apppath As String
+    Dim cabeceraappconfig As String
+    Dim cabeceradbconfig As String
     Dim sSlot, sKey, value As String = ""
     
-    apppath = Application.Path
+    cabeceraappconfig = "# Application section, main config variables for all the application"
+    
+    apppath = fileconfruta
     
     For Each sSlot In $appconfig.Keys               ' for each section in the config file
         For Each sKey In $appconfig.Keys[sSlot]     ' fir each setting under that/current section
@@ -67,29 +74,31 @@ Private Sub preparevalores()
                 $appconfig[sSlot & "/apptype"] = $appconfig[sSlot & "/apptype", "app"]
                 value = $appconfig[sSlot & "/apptype"]
                 If Comp(value, "app", gb.IgnoreCase) = 0 Then
-                    value = $appconfig[sSlot & "/appbase", Null]
-                    value = $appconfig[sSlot & "/appurl", Null]
-                    value = $appconfig[sSlot & "/appindex", Null]
+                    $appconfig[sSlot & "/appbase"] = $appconfig[sSlot & "/appbase", ""]
+                    $appconfig[sSlot & "/appurl"] = $appconfig[sSlot & "/appurl", ""]
+                    $appconfig[sSlot & "/appindex"] = $appconfig[sSlot & "/appindex", ""]
                 Endif
                 value = $appconfig[sSlot & "/apptype"]
                 If Comp(value, "web", gb.IgnoreCase) = 0 Then
-                    value = $appconfig[sSlot & "/appbase", Null]
-                    value = $appconfig[sSlot & "/appurl", Null]
-                    value = $appconfig[sSlot & "/appindex", Null]
+                    $appconfig[sSlot & "/appbase"] = $appconfig[sSlot & "/appbase", Null]
+                    $appconfig[sSlot & "/appurl"] = $appconfig[sSlot & "/appurl", Null]
+                    $appconfig[sSlot & "/appindex"] = $appconfig[sSlot & "/appindex", Null]
                 Endif
             Endif
         Next
         For Each sKey In $appconfig.Keys[sSlot]     ' fir each setting under that/current section
             If Comp("ubication", sSlot, gb.IgnoreCase) = 0 Then
-               value = $appconfig[sSlot & "/appubiusr", "9997"]
-               value = $appconfig[sSlot & "/appubirun", "9998"]
-               value = $appconfig[sSlot & "/appubiapp", "9999"]
+               $appconfig[sSlot & "/appubiusr"] = $appconfig[sSlot & "/appubiusr", "9997"]
+               $appconfig[sSlot & "/appubirun"] = $appconfig[sSlot & "/appubirun", "9998"]
+               $appconfig[sSlot & "/appubiapp"] = $appconfig[sSlot & "/appubiapp", "9999"]
             Endif
         Next
     Next
 
     
 End
+
+
 
 ' Private Sub ReConfigurar() '' reconfigura todas las variables y establece un nuevo arreglo de datos de configuracion
 '     
@@ -139,3 +148,15 @@ End
 ' End
 ' 
 
+
+Private Function confarray_Read() As Collection
+
+    
+
+End
+
+Private Sub confarray_Write(Value As Collection)
+
+    
+
+End

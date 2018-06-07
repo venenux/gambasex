@@ -1,8 +1,7 @@
 # Gambas Project File 3.0
 # Compiled with Gambas 3.5.4
 Title=libmngr
-Version=0.0.1
-VersionFile=1
+Startup=Main
 Component=gb.args
 Component=gb.compress
 Component=gb.db

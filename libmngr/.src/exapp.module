@@ -76,18 +76,18 @@ End
 '' nombre de la distro instalada o metadistro <br> @return String
 Public Function Distron() As String
     
-    Dim sDis As String
+    Dim strDistro As String
     
     If Comp(System.Family, "MacOSX", gb.IgnoreCase) = 0 Then
         Return System.Family
     Endif
-    Shell "lsb_release -d | cut -d':' -f2" To sDis
-    Replace(sDis, gb.Tab, "")
-    sDis = Trim(sDis)
+    Shell "lsb_release -d | cut -d':' -f2" To strDistro
+    Replace(strDistro, gb.Tab, "")
+    strDistro = Trim(strDistro)
     If Comp(strDistro, "") = 0 Then
         Return System.Family
     Endif
-    Return sDis
+    Return strDistro
     
 End
 
