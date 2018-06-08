@@ -10,36 +10,40 @@ Private diadb As String = Format$(Now, "yyyymmddhh")
 Private fileconfname As String = "exappconfig.conf"
 '' ruta completa a el archivo la ruta en uso por instancia
 Private fileconfruta As String = Application.path
-'' direccion del archvo con ruta y nombre configurado
-Private fileconf As String = fileconfruta &/ fileconfname
-'' abstracion de la configuracion
+'' direccion del archvo cfg con ruta y nombre configurado
+Private filecfgfi As String = fileconfruta &/ fileconfname
+'' direccion del archvo db con ruta y nombre configurado
+Private filecfgdb As String = fileconfruta &/ "exdatabase.conf"
+
+'' abstracion de la configuracion principal
 Private $appconfig As Settings = Null
+'' abstracion de la configuracion basedatos
+Private $appconfdb As Settings = Null
 '' semaforo que determina si esta desde desarrollo
 Private $apponide As Boolean = Null
 
 Property confarray As Collection
 
-
 Private Sub preparefileconf()
     
     Dim filenameold As String = ""
     Dim pathseppos0, pathseppos1, pathseppos2 As Integer = 0
-
-    pathseppos0 = InStr(fileconf, "/")
-    pathseppos1 = RInStr(fileconf, "/")
-    pathseppos2 = RInStr(fileconf, ".conf")
-    fileconfname = Mid(fileconf, pathseppos1 + 1)
-    fileconfruta = Mid(fileconf, 1, pathseppos1 - 1)
+    
+    pathseppos0 = InStr(filecfgfi, "/")
+    pathseppos1 = RInStr(filecfgfi, "/")
+    pathseppos2 = RInStr(filecfgfi, ".conf")
+    fileconfname = Mid(filecfgfi, pathseppos1 + 1)
+    fileconfruta = Mid(filecfgfi, 1, pathseppos1 - 1)
     filenameold = fileconfname
     $apponide = exapp.Runide()
     If $apponide = -2 Then
-        fileconf = Application.path &/ fileconfname
+        filecfgfi = Application.path &/ fileconfname
     Else
         If pathseppos0 < 1 Or pathseppos0 > 2 Then
-            fileconf = Application.Path &/ fileconf
+            filecfgfi = Application.Path &/ filecfgfi
         Endif
         If pathseppos0 < 1 Or pathseppos0 > 2 Then
-            fileconfruta = Mid(fileconf, 1, RInStr(fileconf, "/") - 1)
+            fileconfruta = Mid(filecfgfi, 1, RInStr(filecfgfi, "/") - 1)
         Endif
         If pathseppos1 < 1 Or Comp(Trim(fileconfruta), "", gb.IgnoreCase) = 0 Then
             fileconfruta = Application.Path
@@ -50,110 +54,121 @@ Private Sub preparefileconf()
         If fileconfname <> Null And pathseppos2 < 1 Then
             fileconfname = fileconfname & ".conf"
         Endif
-        If fileconf = Null Or Comp(fileconf, "", gb.IgnoreCase) = 0 Then
-            fileconf = fileconfruta &/ fileconfname ' si no hay ruta o es nula armada de los individuales, en la siguiente corrobora que coordinen
+        If filecfgfi = Null Or Comp(filecfgfi, "", gb.IgnoreCase) = 0 Then
+            filecfgfi = fileconfruta &/ fileconfname ' si no hay ruta o es nula armada de los individuales, en la siguiente corrobora que coordinen
         Endif
-        If InStr(fileconf, fileconfname, 1, gb.IgnoreCase) < 1 Then
-            fileconf = fileconfruta &/ fileconfname ' debe estar en la ruta el archivo con extension y tambien al menos dos barras
-        Endif
-    Endif
-    If Not Exist(fileconf) Then
-        fileconf = "/etc" &/ filenameold
-    Endif
-    If Not Exist(fileconf) Then
-        fileconf = "/etc/exappconfig.conf"
-    Endif
-    If Not Exist(fileconf) Then
-        fileconf = "/etc" &/ Application.Name & ".conf"
-    Endif
-    If Not Exist(fileconf) Then
-        fileconf = User.Home &/ "." & fileconfname
-        Try Copy Application.path &/ fileconfname To fileconf
-        If Not Exist(fileconf) Then
-            fileconf = Application.path &/ "exappconfig.conf"
+        If InStr(filecfgfi, fileconfname, 1, gb.IgnoreCase) < 1 Then
+            filecfgfi = fileconfruta &/ fileconfname ' debe estar en la ruta el archivo con extension y tambien al menos dos barras
         Endif
     Endif
-    pathseppos1 = RInStr(fileconf, "/")
-    pathseppos2 = RInStr(fileconf, ".conf")
-    fileconfname = Mid(fileconf, pathseppos1 + 1)
-    fileconfruta = Mid(fileconf, 1, pathseppos1 - 1)
+    If Not Exist(filecfgfi) Then
+        filecfgfi = "/etc" &/ filenameold
+    Endif
+    If Not Exist(filecfgfi) Then
+        filecfgfi = "/etc/exappconfig.conf"
+    Endif
+    If Not Exist(filecfgfi) Then
+        filecfgfi = "/etc" &/ Application.Name & ".conf"
+    Endif
+    If Not Exist(filecfgfi) Then
+        filecfgfi = User.Home &/ "." & fileconfname
+        Try Copy Application.path &/ fileconfname To filecfgfi
+        If Not Exist(filecfgfi) Then
+            filecfgfi = Application.path &/ "exappconfig.conf"
+        Endif
+    Endif
+    pathseppos1 = RInStr(filecfgfi, "/")
+    pathseppos2 = RInStr(filecfgfi, ".conf")
+    fileconfname = Mid(filecfgfi, pathseppos1 + 1)
+    fileconfruta = Mid(filecfgfi, 1, pathseppos1 - 1)
+    ' filecfgfi listo ahora el de db
+    filecfgdb = fileconfruta &/ "exdatabase.conf"
     
 End
-
 
 '' si en el argumento se para la ruta completa la ruta base de la aplicacion sera la del aplicativo, sino sera app.path de la lib
 Public Sub _new(Optional filename As String = Application.Name &/ Application.Name & ".conf")
     
     Dim cabeceraappconfig As String
     Dim cabeceradbconfig As String
-    cabeceraappconfig = "# Application section, main config variables for all the application" & gb.NewLine
     
     '' prepar con valores por defecto antes de revisar los que se piden
     If InStr(filename, "/", 0, gb.IgnoreCase) > 0 Then
-        fileconf = filename
+        filecfgfi = filename
         fileconfname = Null
     Else
-        fileconf = Null
+        filecfgfi = Null
         fileconfname = filename
     Endif
     '' despues preparo pero con los archivos que se piden
     preparefileconf
     
-    $appconfig = New Settings(fileconf, cabeceraappconfig)
+    $appconfig = New Settings(filecfgfi)
+    $appconfdb = New Settings(filecfgdb)
     
     preparevalores
     ' en cualquier caso, esto solo es en desarrollo, en produccion, creara un archivo nuevo vacio porque no encontrara cual copiar
     
 End
 
-
 Private Sub preparevalores()
     
+    Dim dbdefaultits As Boolean = False
     Dim apppath As String
     Dim sSlot, sKey, value As String = ""
     
     apppath = fileconfruta
     
     For Each sSlot In $appconfig.Keys               ' for each section in the config file
-            If Comp("application", sSlot, gb.IgnoreCase) = 0 Then
-                $appconfig[sSlot & "/apptype"] = $appconfig[sSlot & "/apptype", "app"]
-                value = $appconfig[sSlot & "/apptype"]
-                If Comp(value, "app", gb.IgnoreCase) = 0 Then
-                    $appconfig[sSlot & "/appbase"] = $appconfig[sSlot & "/appbase", ""]
-                    $appconfig[sSlot & "/appurl"] = $appconfig[sSlot & "/appurl", ""]
-                    $appconfig[sSlot & "/appindex"] = $appconfig[sSlot & "/appindex", ""]
-                Endif
-                value = $appconfig[sSlot & "/apptype"]
-                If Comp(value, "web", gb.IgnoreCase) = 0 Then
-                    $appconfig[sSlot & "/appbase"] = $appconfig[sSlot & "/appbase", Null]
-                    $appconfig[sSlot & "/appurl"] = $appconfig[sSlot & "/appurl", Null]
-                    $appconfig[sSlot & "/appindex"] = $appconfig[sSlot & "/appindex", Null]
-                Endif
+        If Comp("application", sSlot, gb.IgnoreCase) = 0 Then
+            $appconfig[sSlot & "/apptype"] = $appconfig[sSlot & "/apptype", "app"]
+            value = $appconfig[sSlot & "/apptype"]
+            If Comp(value, "app", gb.IgnoreCase) = 0 Then
+                $appconfig[sSlot & "/appbase"] = $appconfig[sSlot & "/appbase", fileconfruta]
+                $appconfig[sSlot & "/appurl"] = $appconfig[sSlot & "/appurl", ""]
+                $appconfig[sSlot & "/appindex"] = $appconfig[sSlot & "/appindex", ""]
             Endif
-            If Comp("ubication", sSlot, gb.IgnoreCase) = 0 Then
-               $appconfig[sSlot & "/appubiusr"] = $appconfig[sSlot & "/appubiusr", "9997"]
-               $appconfig[sSlot & "/appubirun"] = $appconfig[sSlot & "/appubirun", "9998"]
-               $appconfig[sSlot & "/appubiapp"] = $appconfig[sSlot & "/appubiapp", "9999"]
+            value = $appconfig[sSlot & "/apptype"]
+            If Comp(value, "web", gb.IgnoreCase) = 0 Then
+                $appconfig[sSlot & "/appbase"] = $appconfig[sSlot & "/appbase", fileconfruta]
+                $appconfig[sSlot & "/appurl"] = $appconfig[sSlot & "/appurl", Null]
+                $appconfig[sSlot & "/appindex"] = $appconfig[sSlot & "/appindex", Null]
             Endif
+        Endif
+        If Comp("ubication", sSlot, gb.IgnoreCase) = 0 Then
+            $appconfig[sSlot & "/appubiusr"] = $appconfig[sSlot & "/appubiusr", "9997"]
+            $appconfig[sSlot & "/appubirun"] = $appconfig[sSlot & "/appubirun", "9998"]
+            $appconfig[sSlot & "/appubiapp"] = $appconfig[sSlot & "/appubiapp", "9999"]
+        Endif
     Next
-
+    
+    $appconfdb["database/activegroup"] = $appconfig["database/activegroup", "default"]
+    $appconfdb["default/dbdriver"] = $appconfig["default/dbdriver", "sqlite3"]
+    $appconfdb["database/activegroup"] = $appconfig["database/activegroup", "default"]
+    $appconfdb["database/activegroup"] = $appconfig["database/activegroup", "default"]
+    $appconfdb["database/activegroup"] = $appconfig["database/activegroup", "default"]
+    $appconfdb["database/activegroup"] = $appconfig["database/activegroup", "default"]
+    
+    ' For Each sSlot In $appconfig.Keys               ' for each section in the config file
+    '     $appconfig[sSlot & "/appubiusr"] = $appconfig[sSlot & "/appubiusr", "9997"]
+    '     $appconfig[sSlot & "/appubirun"] = $appconfig[sSlot & "/appubirun", "9998"]
+    '     $appconfig[sSlot & "/appubiapp"] = $appconfig[sSlot & "/appubiapp", "9999"]
+    ' Next
     
 End
-
-
 
 ' Private Sub ReConfigurar() '' reconfigura todas las variables y establece un nuevo arreglo de datos de configuracion
 '     
 '     Dim hSettings As Settings
 '     Dim nSettings As Boolean = False
 '     
-'     If Not Exist(User.Home &/ fileconf) Then
+'     If Not Exist(User.Home &/ filecfgfi) Then
 '         nSettings = False
 '     Else
 '         nSettings = True  ' existe configuracion, no cargar valores ni crear valores por defecto
 '     Endif
 '     ' creo la config, si archivo no existe lo crea, si valor no existe, lo fabrica con default abajo
-'     hSettings = New Settings(User.Home &/ fileconf)
+'     hSettings = New Settings(User.Home &/ filecfgfi)
 '     ' asignacion de datos respecto disponibilidad
 '     $configurados["cod_localidad"] = hSettings["aplicacion/cod_localidad", "998"]
 '     $configurados["cod_localusua"] = hSettings["aplicacion/cod_localusua", "999"]
@@ -190,15 +205,10 @@ End
 ' End
 ' 
 
-
 Private Function confarray_Read() As Collection
-
     
-
 End
 
 Private Sub confarray_Write(Value As Collection)
-
     
-
 End
