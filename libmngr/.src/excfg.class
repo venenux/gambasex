@@ -2,6 +2,8 @@
 
 Export
 
+Inherits Collection
+
 ''' clase de configuracion inicial, inicia parametros de la aplicacion sea cliente o servidor y establece a donde se conectara asi como datos de entidad y conectividad
 
 '' dia y hora, sin minutos, en que establece los datos
@@ -22,7 +24,6 @@ Private $appconfdb As Settings = Null
 '' semaforo que determina si esta desde desarrollo
 Private $apponide As Boolean = Null
 
-Property confarray As Collection
 
 Private Sub preparefileconf()
     
@@ -115,7 +116,8 @@ Private Sub preparevalores()
     
     Dim dbdefaultits As Boolean = False
     Dim apppath As String
-    Dim sSlot, sKey, value As String = ""
+    Dim var001, var002 As String
+    Dim sSlot, sKey, value As String = exapp.Null
     
     apppath = fileconfruta
     
@@ -125,14 +127,14 @@ Private Sub preparevalores()
             value = $appconfig[sSlot & "/apptype"]
             If Comp(value, "app", gb.IgnoreCase) = 0 Then
                 $appconfig[sSlot & "/appbase"] = $appconfig[sSlot & "/appbase", fileconfruta]
-                $appconfig[sSlot & "/appurl"] = $appconfig[sSlot & "/appurl", ""]
-                $appconfig[sSlot & "/appindex"] = $appconfig[sSlot & "/appindex", ""]
+                $appconfig[sSlot & "/appurl"] = $appconfig[sSlot & "/appurl", exapp.Null]
+                $appconfig[sSlot & "/appindex"] = $appconfig[sSlot & "/appindex", exapp.Null]
             Endif
             value = $appconfig[sSlot & "/apptype"]
             If Comp(value, "web", gb.IgnoreCase) = 0 Then
                 $appconfig[sSlot & "/appbase"] = $appconfig[sSlot & "/appbase", fileconfruta]
-                $appconfig[sSlot & "/appurl"] = $appconfig[sSlot & "/appurl", Null]
-                $appconfig[sSlot & "/appindex"] = $appconfig[sSlot & "/appindex", Null]
+                $appconfig[sSlot & "/appurl"] = $appconfig[sSlot & "/appurl", exapp.Null]
+                $appconfig[sSlot & "/appindex"] = $appconfig[sSlot & "/appindex", exapp.Null]
             Endif
         Endif
         If Comp("ubication", sSlot, gb.IgnoreCase) = 0 Then
@@ -144,71 +146,63 @@ Private Sub preparevalores()
     
     $appconfdb["database/activegroup"] = $appconfig["database/activegroup", "default"]
     $appconfdb["default/dbdriver"] = $appconfig["default/dbdriver", "sqlite3"]
-    $appconfdb["database/activegroup"] = $appconfig["database/activegroup", "default"]
-    $appconfdb["database/activegroup"] = $appconfig["database/activegroup", "default"]
-    $appconfdb["database/activegroup"] = $appconfig["database/activegroup", "default"]
-    $appconfdb["database/activegroup"] = $appconfig["database/activegroup", "default"]
+    var001 = $appconfdb["default/dbdriver"]
+    If Comp(var001, "sqlite3", gb.IgnoreCase) = 0 Then
+        $appconfdb["default/username"] = $appconfig["default/username", exapp.Null]
+        $appconfdb["default/password"] = $appconfig["default/password", exapp.Null]
+        $appconfdb["default/database"] = $appconfig["default/database", exapp.Null] ' db en ram si no se especifica
+        $appconfdb["default/hostname"] = $appconfig["default/hostname", exapp.Null]
+    Else
+        $appconfdb["default/username"] = $appconfig["default/username", "dba"]
+        $appconfdb["default/password"] = $appconfig["default/password", "sql"]
+        $appconfdb["default/database"] = $appconfig["default/database", "appdatabase"]
+        $appconfdb["default/hostname"] = $appconfig["default/hostname", "127.0.0.1"]
+        If Comp($appconfdb["default/hostname"], exapp.Null) = 0 Or Comp($appconfdb["default/hostname"], Null) Then
+            $appconfdb["default/dbdriver"] = $appconfig["default/dbdriver", "sqlite3"]
+            $appconfdb["default/username"] = $appconfig["default/username", exapp.Null]
+            $appconfdb["default/password"] = $appconfig["default/password", exapp.Null]
+            $appconfdb["default/database"] = $appconfig["default/database", exapp.Null] ' db en ram si no se especifica
+            $appconfdb["default/hostname"] = $appconfig["default/hostname", exapp.Null]
+        Endif
+    Endif
     
-    ' For Each sSlot In $appconfig.Keys               ' for each section in the config file
-    '     $appconfig[sSlot & "/appubiusr"] = $appconfig[sSlot & "/appubiusr", "9997"]
-    '     $appconfig[sSlot & "/appubirun"] = $appconfig[sSlot & "/appubirun", "9998"]
-    '     $appconfig[sSlot & "/appubiapp"] = $appconfig[sSlot & "/appubiapp", "9999"]
-    ' Next
-    
-End
-
-' Private Sub ReConfigurar() '' reconfigura todas las variables y establece un nuevo arreglo de datos de configuracion
-'     
-'     Dim hSettings As Settings
-'     Dim nSettings As Boolean = False
-'     
-'     If Not Exist(User.Home &/ filecfgfi) Then
-'         nSettings = False
-'     Else
-'         nSettings = True  ' existe configuracion, no cargar valores ni crear valores por defecto
-'     Endif
-'     ' creo la config, si archivo no existe lo crea, si valor no existe, lo fabrica con default abajo
-'     hSettings = New Settings(User.Home &/ filecfgfi)
-'     ' asignacion de datos respecto disponibilidad
-'     $configurados["cod_localidad"] = hSettings["aplicacion/cod_localidad", "998"]
-'     $configurados["cod_localusua"] = hSettings["aplicacion/cod_localusua", "999"]
-' '    $configurados["cod_maquina"] = hSettings["dbconexion/cod_maquina", emn.getImdef()]
-'     $configurados["cnxsqlitename"] = hSettings["dbconexion/cnxsqlitename", "." & Application.Name & ".sqlite"]
-'  '   $configurados["cnxmysqldbip"] = hSettings["dbconexion/cnxmysqldbip", emn.getIpdef()]
-'     $configurados["cnxmysqldbusr"] = hSettings["dbconexion/cnxmysqldbusr", "root"]
-'     $configurados["cnxmysqldbnam"] = hSettings["dbconexion/cnxmysqldbnam", "mysql"]
-'     $configurados["cnxmysqldbpas"] = hSettings["dbconexion/cnxmysqldbpas", "root.1"] ' TODO: usar encryptacion md5, por ahora plano
-'     ' relectura de datos y salvaguarda de estos
-'     hSettings["aplicacion/cod_localidad"] = $configurados["cod_localidad"]
-'     hSettings["aplicacion/cod_localusua"] = $configurados["cod_localusua"]
-'     hSettings["aplicacion/cod_maquina"] = $configurados["cod_maquina"]
-'     hSettings["dbconexion/cnxsqliteruta"] = $configurados["cnxsqliteruta"]
-'     hSettings["dbconexion/cnxsqlitename"] = $configurados["cnxsqlitename"]
-'     hSettings["dbconexion/cnxmysqldbip"] = $configurados["cnxmysqldbip"]
-'     hSettings["dbconexion/cnxmysqldbusr"] = $configurados["cnxmysqldbusr"]
-'     hSettings["dbconexion/cnxmysqldbnam"] = $configurados["cnxmysqldbnam"]
-'     hSettings["dbconexion/cnxmysqldbpas"] = $configurados["cnxmysqldbpas"]
-'     
-'     Error.Clear
-'     configurado = True
-'     Try hSettings.Save
-'     If Error Then configurado = False
-'     
-' End
-' 
-' Public Function configurar() '' hacer que la aplicacion acceda a la configuracion y la lea/force si accede como funcion, sino como propiedad
-'     
-'     If Not configurado Then
-'     ReConfigurar()  ' reconfiguro, asi si hay valores nuevos los vueve leer, y devuelve el arreglo
-'     Endif
-'     
-' End
-' 
-
-Private Function confarray_Read() As Collection
+    For Each sSlot In $appconfig.Keys               ' for each section in the config file
+        For Each sKey In $appconfig.Keys[sSlot]
+            
+            Me.Add($appconfig[sSlot &/ sKey], sSlot &/ sKey)
+        Next
+    Next
+    For Each sSlot In $appconfdb.Keys               ' for each section in the config file
+        For Each sKey In $appconfdb.Keys[sSlot]
+            Me.Add($appconfig[sSlot &/ sKey], sSlot &/ sKey)
+        Next
+    Next
     
 End
 
-Private Sub confarray_Write(Value As Collection)
-    
+
+
+Public Sub _get(Key As String) As Variant
+  
+  Dim vVal As Variant
+  
+  vVal = Super[Key]
+  If TypeOf(vVal) = gb.Pointer And If vVal = exapp.Null Then vVal = Null
+  Return vVal
+  
 End
+
+Public Sub _put(Value As Variant, Key As String)
+  
+  If IsNull(Value) Then Value = exapp.Null
+  Super[Key] = Value
+  
+End
+
+Public Sub _next() As Variant
+  
+  Super._next()
+  If Not Enum.Stopped Then Return _get(Me.Key)
+  
+End
+
