@@ -26,8 +26,16 @@ Private commandshelltmp As String   '' variable interna para manejar el comando 
 Private outputfunction As String    '' variable interna para resultado del comando ejecutado en la rutina invocada
 Public _requisites As String = "awk,ifconfig,sh,bash,less,head,tail,iconv,file"
 
+Property Read {Null} As Variant     '' emulacion de null para que una lib collecion lo admita
+Private $vNull As Variant           '' variable null emulada para que sea aceptada en una colleccion
 
 ' TODO  lsof -i :80 sirve en mac y linux
+
+Public Sub _init()
+  
+  $vNull = VarPtr($vNull)
+  
+End
 
 
 '' verifica que 
@@ -203,4 +211,10 @@ Public Function CharacterSets() As String[] '' deveulve un arreglo con los tipos
     aCharacterSets.Remove(aCharacterSets.Max, 1)
     Return aCharacterSets
     
+End
+
+Private Function Null_Read() As Variant
+
+    Return $vNull
+
 End
