@@ -24,6 +24,13 @@ Private $appconfdb As Settings = Null
 '' semaforo que determina si esta desde desarrollo
 Private $apponide As Boolean = Null
 
+'' propiedad que contiene ya cargado toda la configuraciones de aplicacion
+Property appconfig As Settings
+
+'' propiedad que contiene ya cargado toda la configuraciones de db
+Property appconfdb As Settings
+
+
 
 Private Sub preparefileconf()
     
@@ -174,7 +181,7 @@ Private Sub preparevalores()
     Next
     For Each sSlot In $appconfdb.Keys               ' for each section in the config file
         For Each sKey In $appconfdb.Keys[sSlot]
-            Me.Add($appconfig[sSlot &/ sKey], sSlot &/ sKey)
+            Me.Add($appconfdb[sSlot &/ sKey], sSlot &/ sKey)
         Next
     Next
     
@@ -206,3 +213,26 @@ Public Sub _next() As Variant
   
 End
 
+
+Private Function appconfdb_Read() As Settings
+
+    Return $appconfdb
+
+End
+
+Private Sub appconfdb_Write(Value As Settings)
+
+
+End
+
+Private Function appconfig_Read() As Settings
+
+    Return $appconfig
+
+End
+
+Private Sub appconfig_Write(Value As Settings)
+
+    
+
+End
