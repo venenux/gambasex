@@ -25,10 +25,10 @@ Private $appconfdb As Settings = Null
 Private $apponide As Boolean = Null
 
 '' propiedad que contiene ya cargado toda la configuraciones de aplicacion
-Property appconfig As Settings
+Property appconfig As Variant
 
 '' propiedad que contiene ya cargado toda la configuraciones de db
-Property appconfdb As Settings
+Property appconfdb As Variant
 
 
 
@@ -43,7 +43,7 @@ Private Sub preparefileconf()
     fileconfname = Mid(filecfgfi, pathseppos1 + 1)
     fileconfruta = Mid(filecfgfi, 1, pathseppos1 - 1)
     filenameold = fileconfname
-    $apponide = exapp.Runide()
+    $apponide = exapp.isrunide
     If $apponide = -2 Then
         filecfgfi = Application.path &/ fileconfname
     Else
@@ -214,25 +214,26 @@ Public Sub _next() As Variant
 End
 
 
-Private Function appconfdb_Read() As Settings
+Private Function appconfdb_Read() As Variant
 
     Return $appconfdb
 
 End
 
-Private Sub appconfdb_Write(Value As Settings)
-
-
-End
-
-Private Function appconfig_Read() As Settings
+Private Function appconfig_Read() As Variant
 
     Return $appconfig
 
 End
 
-Private Sub appconfig_Write(Value As Settings)
+Private Sub appconfdb_Write(Value As Variant)
 
-    
+    ' TODO: recibir uan ruta y reconfigurar el archivo de configuracion
+
+End
+
+Private Sub appconfig_Write(Value As Variant)
+
+    ' TODO: recibir uan ruta y reconfigurar el archivo de configuracion
 
 End

@@ -4,6 +4,11 @@ Public Sub Main()
 
     Dim ver As String = Application.Path
     Dim cofig As New Excfg
+    
+    Print exapp.runbasepath
+    Print exapp.exebasepath
+    
+    
   exapp.ProcPid("firefox")
 
 End

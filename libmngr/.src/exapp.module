@@ -24,10 +24,18 @@ Export
 
 Private commandshelltmp As String   '' variable interna para manejar el comando ejecutado en la rutina invocada
 Private outputfunction As String    '' variable interna para resultado del comando ejecutado en la rutina invocada
+
 Public _requisites As String = "awk,ifconfig,sh,bash,less,head,tail,iconv,file"
 
 Property Read {Null} As Variant     '' emulacion de null para que una lib collecion lo admita
 Private $vNull As Variant           '' variable null emulada para que sea aceptada en una colleccion
+
+Property Read isrunide As Boolean   '' true o -1 si se esta ejecutando en el IDE, pro ahora solo probado en linux
+
+Property Read runbasepath As String '' ruta base detectada, desde donde se invoca el ejecutable principal<br>Example: ./path/app will return /parent
+Property Read exebasepath As String '' ruta base detectada, desde donde se ejecuta el ejecutable principal<br>Example: ./path/app will return /parent/path/
+
+
 
 ' TODO  lsof -i :80 sirve en mac y linux
 
@@ -38,7 +46,7 @@ Public Sub _init()
 End
 
 
-'' verifica que 
+'' verifica que los comando pasados separados por comma existan y se puedan ejecutar
 Public Function softck(sCommands As String, Optional bDisplayDialog As Boolean = True) As Boolean
     
     Dim aDependencyCheck As New String[]
@@ -64,20 +72,6 @@ Public Function softck(sCommands As String, Optional bDisplayDialog As Boolean =
     Endif
     ' por ahora se limita a que si falta una todo falla, si no falta nada todo esta bien
     Return bResult
-    
-End
-
-
-Public Function Runide() As Variant ''retorna -1 si esta ejecutando en el IDE que puede emplearse como True si ejecuta en el IDE
-    
-    Dim strProcess As String
-    
-    strProcess = File.Load("/proc" &/ CStr(Application.Id) &/ "comm")
-    If Left(strProcess, 4) = "gbx3" Then
-        Return -1
-    Else
-        Return 0
-    Endif
     
 End
 
@@ -216,5 +210,41 @@ End
 Private Function Null_Read() As Variant
 
     Return $vNull
+
+End
+
+' retorna la ruta desde donde se realiza la invocacion del ejecutable y no la ruta hacia este
+Private Function runbasepath_Read() As String
+
+    Dim rutadeejecucion As String = ""
+    Shell "pwd" To rutadeejecucion
+    If exapp.isrunide = -1 Then
+        rutadeejecucion = Application.Path
+    Endif
+    
+    Return rutadeejecucion
+
+End
+
+' retorna la ruta desde donde esta el ejecutable que se esta invocando, la ruta completa hacia este
+Private Function exebasepath_Read() As String
+
+    Dim rutadeprograma As String = ""
+    rutadeprograma = Application.Path
+    
+    Return rutadeprograma
+
+End
+
+Private Function isrunide_Read() As Boolean
+
+    Dim strProcess As String
+    
+    strProcess = File.Load("/proc" &/ CStr(Application.Id) &/ "comm")
+    If Left(strProcess, 4) = "gbx3" Then
+        Return -1
+    Else
+        Return 0
+    Endif
 
 End
