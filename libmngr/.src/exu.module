@@ -1,0 +1,47 @@
+' Gambas module file
+
+
+'' modulo de utilidades, que nunca persisten o tiene que persistir en la instancia de la app, ejemplo cambiar una letra por otra
+
+Export
+
+''' Se trabaja con manipulacion de variables
+
+Private outputfunction As String    '' variable interna para resultado ofrecido por cada funcion
+
+
+
+
+''Devuelve un texto con la primera letra en mayusculas y todas las siguientes en minúsculas.
+Public Function ucfirst(strInput As String) As String
+    
+    outputfunction = strInput
+    strInput = LTrim(outputfunction)
+    If Comp(Replace(strInput, " ", ""), "") <> 0 Then
+        outputfunction = String.UCase(String.Mid(strInput, 1, 1))
+        outputfunction &= String.LCase(String.Mid(strInput, 2, String.len(strInput) - 1))
+    Endif
+    Return outputfunction
+    
+End
+
+''Devuelve un texto con la primera letra en mayusculas de cada una de las palabras, removiendo espacios extra
+Public Function ucwords(strInput As String, Optional strDiv As String = " ") As String
+    
+    Dim strtmp As String[]
+    Dim strtp As String
+
+    outputfunction = ""
+    strInput = LTrim(strInput)
+    strtmp = Split(strInput, strDiv)
+    For Each strtp In strtmp
+        If Comp(Replace(strtp, " ", ""), "", gb.IgnoreCase) = 0 Then
+            Continue
+        Else
+            outputfunction = outputfunction & " " & ucfirst(strtp)
+        Endif
+    Next
+    Return outputfunction
+
+End
+
