@@ -42,11 +42,11 @@ Private Sub preparaConexiones() As Boolean
             Continue
         Endif
         
+        Try $con.Close()          ' Cierra la conexion el try permite falle sin error
+        Error.Clear
+        $con = New Connection
+        
         For Each sKey In $appconfdb.Keys[sSlot]
-            
-            Try $con.Close()          ' Cierra la conexion el try permite falle sin error
-            Error.Clear
-            $con = New Connection
             
             If Comp("dbdriver", sKey, gb.IgnoreCase) = 0 Then
                 $con.Type = $appconfdb[sSlot &/ sKey]
@@ -58,21 +58,17 @@ Private Sub preparaConexiones() As Boolean
                 $con.User = $appconfdb[sSlot &/ sKey]
             Endif
             If Comp("password", sKey, gb.IgnoreCase) = 0 Then
-                $con.Name = $appconfdb[sSlot &/ sKey]
+                $con.Password = $appconfdb[sSlot &/ sKey]
             Endif
             If Comp("database", sKey, gb.IgnoreCase) = 0 Then
-                $con.Password = $appconfdb[sSlot &/ sKey]
+                $con.Name = $appconfdb[sSlot &/ sKey]
             Endif
             
         Next
         
         Try $con.Open()
         
-        If Not Error Then
-            Me.Add($con, sSlot)
-        Else
-            Me.Add(exapp.Null, sSlot)
-        Endif
+        Me.Add($con, sSlot)
         
         If Comp(dbdef, sSlot, gb.IgnoreCase) = 0 And Not Error Then
             $db = $con
