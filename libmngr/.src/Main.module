@@ -5,7 +5,11 @@ Public Sub Main()
     Dim ver As String = Application.Path
     Dim cofig As New Excfg
     
+    ' ejemplo de obtencion de configuracion
+    Print cofig.cfgdb["conex0/hostname"]
+    ' ejemplo de deteccion de rutas desde donde se realiza la invocacion pero no esta la app
     Print exapp.runbasepath
+    ' ejemplo de deteccion de rutas desde donde esta la aplicacion que se esta invocando
     Print exapp.exebasepath
     
     

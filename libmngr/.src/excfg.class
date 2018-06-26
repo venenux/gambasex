@@ -25,10 +25,10 @@ Private $appconfdb As Settings = Null
 Private $apponide As Boolean = Null
 
 '' propiedad que contiene ya cargado toda la configuraciones de aplicacion
-Property appconfig As Variant
+Property Read cfgap As Settings
 
 '' propiedad que contiene ya cargado toda la configuraciones de db
-Property appconfdb As Variant
+Property Read cfgdb As Settings
 
 
 
@@ -122,6 +122,7 @@ End
 Private Sub preparevalores()
     
     Dim dbdefaultits As Boolean = False
+    Dim dbprefixconf As String = "db_"
     Dim apppath As String
     Dim var001, var002 As String
     Dim sSlot, sKey, value As String = exapp.Null
@@ -175,13 +176,16 @@ Private Sub preparevalores()
     
     For Each sSlot In $appconfig.Keys               ' for each section in the config file
         For Each sKey In $appconfig.Keys[sSlot]
-            
             Me.Add($appconfig[sSlot &/ sKey], sSlot &/ sKey)
         Next
     Next
     For Each sSlot In $appconfdb.Keys               ' for each section in the config file
         For Each sKey In $appconfdb.Keys[sSlot]
-            Me.Add($appconfdb[sSlot &/ sKey], sSlot &/ sKey)
+            If InStr(sSlot, dbprefixconf) > 1 Then
+                Me.Add($appconfdb[sSlot &/ sKey], sSlot &/ sKey)
+            Else
+                Me.Add($appconfdb[sSlot &/ sKey], dbprefixconf & sSlot &/ sKey)
+            Endif
         Next
     Next
     
@@ -214,26 +218,14 @@ Public Sub _next() As Variant
 End
 
 
-Private Function appconfdb_Read() As Variant
+Private Function cfgdb_Read() As Settings
 
     Return $appconfdb
 
 End
 
-Private Function appconfig_Read() As Variant
+Private Function cfgap_Read() As Settings
 
     Return $appconfig
-
-End
-
-Private Sub appconfdb_Write(Value As Variant)
-
-    ' TODO: recibir uan ruta y reconfigurar el archivo de configuracion
-
-End
-
-Private Sub appconfig_Write(Value As Variant)
-
-    ' TODO: recibir uan ruta y reconfigurar el archivo de configuracion
 
 End

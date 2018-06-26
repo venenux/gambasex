@@ -11,7 +11,8 @@ Private $appconfig As Settings = Null
 '' abstracion de la configuracion basedatos
 Private $appconfdb As Settings = Null
 
-Private $conexciones As Connection[]  '' variable interna de conneciones
+Property Read dataram As Connection  '' connecion db local en ram
+
 
 '' prepara una instancia del pool de las conexciones a las bases de datos, el error si alguno ocurre esta en el ultimo elemento
 Public Sub _new()
@@ -23,9 +24,9 @@ End
 '' constructor del pool de las conexciones indicadas en configuracion
 Private Sub preparaConexiones() As Boolean
     
-    ' Dim dbusr, dbnam, dbip, dbpor, dbpas As String = ""
-    ' Dim apploc, appusr, appmac As String = ""
-    ' Dim $configurados As New Collection
+    Dim dbusr, dbnam, dbip, dbpor, dbpas As String = ""
+    Dim apploc, appusr, appmac As String = ""
+    Dim $objconect As New Connection
     ' 
     ' If Not IsNull($objconfs) Then
     '     $configurados = $objconfs.configuracion             ' instancio y leo la configuracion, tomo valores de db (nota TODO: pass en md5)
@@ -89,3 +90,9 @@ Private Sub preparaConexionram()
 End
 
 
+
+Private Function dataram_Read() As Connection
+
+    Return 
+
+End
