@@ -191,7 +191,7 @@ Private Sub preparevalores()
     
 End
 
-
+' sobreescritura de get, put y next par admitir null
 
 Public Sub _get(Key As String) As Variant
   
@@ -218,11 +218,15 @@ Public Sub _next() As Variant
 End
 
 
+' permite leer configuracion de base de datos como objeto variable directa
+
 Private Function cfgdb_Read() As Settings
 
     Return $appconfdb
 
 End
+
+' permite leer configuracion archivo principal como objeto variable directa
 
 Private Function cfgap_Read() As Settings
 

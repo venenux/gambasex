@@ -4,6 +4,12 @@ Public Sub Main()
 
     Dim ver As String = Application.Path
     Dim cofig As New Excfg
+    Dim dbobj As New Exdb
+    
+    dbobj["conex2"].Open() ' una vez instanciada config y dbobj se "llama" y se usa directo
+    dbobj["conex2"].Exec("select 'pepe' as ba")
+    
+    Print exapp.cf.cfgdb["conex0/hostname"]
     
     ' ejemplo de obtencion de configuracion
     Print cofig.cfgdb["conex0/hostname"]
@@ -11,7 +17,6 @@ Public Sub Main()
     Print exapp.runbasepath
     ' ejemplo de deteccion de rutas desde donde esta la aplicacion que se esta invocando
     Print exapp.exebasepath
-    
     
   exapp.ProcPid("firefox")
 

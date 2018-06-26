@@ -35,13 +35,14 @@ Property Read isrunide As Boolean   '' true o -1 si se esta ejecutando en el IDE
 Property Read runbasepath As String '' ruta base detectada, desde donde se invoca el ejecutable principal<br>Example: ./path/app will return /parent
 Property Read exebasepath As String '' ruta base detectada, desde donde se ejecuta el ejecutable principal<br>Example: ./path/app will return /parent/path/
 
-
+Public cf As Excfg
 
 ' TODO  lsof -i :80 sirve en mac y linux
 
 Public Sub _init()
   
   $vNull = VarPtr($vNull)
+  cf = New Excfg
   
 End
 
@@ -248,3 +249,4 @@ Private Function isrunide_Read() As Boolean
     Endif
 
 End
+
