@@ -1,6 +1,5 @@
 ' Gambas module file
 
-
 '' modulo de utilidades, que nunca persisten o tiene que persistir en la instancia de la app, ejemplo cambiar una letra por otra
 
 Export
@@ -9,22 +8,39 @@ Export
 
 Private outputfunction As String    '' variable interna para resultado ofrecido por cada funcion
 
-
 '' substr_count - Count the number of substring occurrences, default is case sensitive
 Public Function substr_count(strInput As String, pattern As String, Optional compare As Integer = gb.Binary) As Integer 
-
-  Dim i, n As Integer
-  While i <= Len(strInput)
-    i = InStr(strInput, pattern, i + 1, compare)
-    If i = 0 Then Break
-    Inc n
-  Wend
-  Return n
-
+    
+    Dim i, n As Integer
+    
+    While i <= Len(strInput)
+        i = InStr(strInput, pattern, i + 1, compare)
+        If i = 0 Then Break
+        Inc n
+    Wend
+    Return n
+    
 End
 
+' **************** strings - manejo y retoro de strings manipulados
 
-''Devuelve un texto con la primera letra en mayusculas y todas las siguientes en minúsculas.
+'' encapsula la primera letra entre corchetes/parentesis, o el parametro dado de segundo \ @return String
+Public Function nprocgrep(nameproc As String, Optional cual As Integer = 0) As String
+    
+    Dim firstchar As String
+    Dim restchars As String
+    
+    firstchar = Left$(nameproc)
+    restchars = Mid$(nameproc, 2)
+    If cual = 1 Then
+        Return "[" & firstchar & "]" & restchars
+    Else
+        Return "{" & firstchar & "}" & restchars
+    Endif
+    
+End
+
+'' Devuelve un texto con la primera letra en mayusculas y todas las siguientes en minúsculas.
 Public Function ucfirst(strInput As String) As String
     
     outputfunction = strInput
@@ -42,7 +58,7 @@ Public Function ucwords(strInput As String, Optional strDiv As String = " ") As 
     
     Dim strtmp As String[]
     Dim strtp As String
-
+    
     outputfunction = ""
     strInput = LTrim(strInput)
     strtmp = Split(strInput, strDiv)
@@ -54,8 +70,273 @@ Public Function ucwords(strInput As String, Optional strDiv As String = " ") As 
         Endif
     Next
     Return outputfunction
-
+    
 End
+
+' ************************ funciones de validaciones de texto
+
+'' verifica si es string el objeto o extrae su simbolo texto si es control, ejemplo si tiene un textbox retorna el .Text de este o si es un Integer retorna el valor como string \ @return FALSE si no tiene string valido, string si tiene .Text o es string valido
+Public Function getstrig(objinput As Variant) As Variant
+    
+    Dim simbol As String
+    
+    If IsNull(objinput) Then
+        Return False
+    Endif
+    
+    If TypeOf(objinput) = gb.String Then
+        Return objinput
+    Endif
+    
+    If TypeOf(objinput) = gb.Class Then
+        For Each simbol In objinput.Symbols
+            If Comp(simbol, "Text") = 0 Then    '' ve si es un control que tiene un input de texto y lo devuelve el string
+                Return objinput.Text
+            Endif
+        Next
+    Endif
+    
+    Return CStr(objinput)
+    
+End
+
+'' segun el obj o string recibido deveulve true si no es vacio, no es nulo o tiene al menos una letra o algo
+Public Function required(objinput As Variant) As Variant
+    
+    Dim texto As String = ""
+    
+    texto = getstrig(objinput)
+    
+    If texto <> False Then
+        If Comp(texto, "", gb.IgnoreCase) = 0 Then
+            Return True
+        Endif
+    Endif
+    
+    Return False
+    
+End
+
+'' validacion de un texto/input sea solo letras, sin numeros o simbolos ni latinas ni espacios <br> @return False si no es valido
+Public Function alphabetical(objinput As Variant) As Variant
+    
+    Dim regex As New RegExp
+    Dim strPattern As String = "[A-Z]"
+    
+    Dim texto As String = getstrig(objinput)
+    
+    If texto <> False Then
+        If regex.Match(texto, strPattern, regex.Caseless) = True Then
+            Return True
+        Endif
+    Endif
+    
+    Return False
+    
+End
+    
+End
+
+'' validacion de un texto/input sea solo letras pero incluye acentos y latinas, sin numeros ni espacios \ @return FALSE si no cumple o el texto original
+Public Function alphabeticalatin(objinput As Variant) As Variant
+
+    Dim int As Integer
+    Dim strSymbol As String
+    
+    Dim stxRevise As New String[]
+    Dim stxLeters As New String[]
+    Dim intKey As Integer
+    
+    Dim texto As String = getstrig(objinput)
+    Dim textr As String = ""
+    
+    If texto = False Then
+        Return False
+    Endif
+    
+    stxLeters.Clear
+    stxLeters = Split("a:b:c:d:e:f:g:h:i:j:k:l:m:n:o:p:q:r:s:t:u:v:w:x:y:z:A:B:C:D:E:F:G:H:I:J:K:L:M:N:O:P:Q:R:S:T:U:V:W:X:Y:Z:á:à:â:ã:é:è:ê:í:ï:ó:ô:õ:ö:ú:ç:ñ:Á:À:Â:Ã:É:È:Í:Ï:Ó:Ô:Õ:Ö:Ú:Ç:Ñ", ":")
+    
+    For int = 1 To String.Len(texto)
+        strSymbol = String.Mid(texto, int, 1)
+        intKey = stxLeters.Find(strSymbol)
+        If intKey > -1 Then
+            stxRevise.Add(strSymbol)
+        End If
+    Next
+    
+    textr = stxRevise.Join("")
+    If String.Len(textr) = String.Len(texto) Then 
+        Return texto
+    Endif
+    
+    Return False
+    
+End
+
+'' validacion de un texto/input letras y numeros sin simbolos o acentos ni espacios \ @return FALSE si no cumple o el texto original
+Public Function alphanumeric(objinput As Variant) As Variant
+    
+    Dim regex As New RegExp
+    Dim strPattern As String = "[A-Z0-9]"
+    
+    Dim texto As String = getstrig(objinput)
+    
+    If texto <> False Then
+        If regex.Match(texto, strPattern, regex.Caseless) = True Then
+            Return True
+        Endif
+    Endif
+    
+    Return False
+    
+End
+
+ '' Validacion de si solo letras y números, con acentos y letras latinas. \ @return FALSE si no cumple o el texto original
+Public Function alphanumericlatin(strInput As String) As String
+    
+    Dim int As Integer
+    Dim strSymbol As String
+    
+    Dim stxLeters As New String[]
+    Dim intKey As Integer
+    Dim stxOut As New String[]
+    Dim strOut As String
+    
+    Dim btxLeters As New Byte[]
+    Dim stxRepin As New String[]
+    Dim stxRepout As New String[]
+    Dim intRep As Integer
+    
+    btxLeters = Byte[].FromString(strInput)
+    
+    stxOut.Clear
+    stxLeters.Clear
+    
+    stxLeters = Split("a:b:c:d:e:f:g:h:i:j:k:l:m:n:o:p:q:r:s:t:u:v:w:x:y:z:A:B:C:D:E:F:G:H:I:J:K:L:M:N:O:P:Q:R:S:T:U:V:W:X:Y:Z:á:à:â:ã:é:è:ê:í:ï:ó:ô:õ:ö:ú:ç:ñ:Á:À:Â:Ã:É:È:Ê:Í:Ï:Ó:Ô:Õ:Ö:Ú:Ç:Ñ:0:1:2:3:4:5:6:7:8:9", ":")
+    stxRepin = Split("Á:À:Â:Ã:É:È:Ê:Í:Ï:Ó:Ô:Õ:Ö:Ú:Ñ:á:à:â:ã:é:è:ê:í:ï:ó:ô:õ:ö:ú:ñ", ":")
+    stxRepout = Split("A:A:A:A:E:E:E:I:I:O:O:O:O:U:N:a:a:a:a:e:e:e:i:i:o:o:o:o:u:n", ":")
+    
+    For int = 1 To String.Len(strInput)
+        strSymbol = String.Mid(strInput, int, 1)
+        intKey = stxLeters.Find(strSymbol)
+        If intKey > -1 Then
+            
+            intRep = stxRepin.Find(strSymbol)
+            If intRep > -1 Then
+                strSymbol = stxRepout[intRep]
+            Endif
+            
+            stxOut.Add(strSymbol)
+        End If
+    Next
+    
+    strOut = stxOut.Join("")
+    
+    If String.Len(strOut) = String.Len(strInput) Then
+        Return strInput
+    Endif
+    
+    Return False
+    
+End
+
+ '' Validación de solo texto, espacio, punto y coma entre parentesis \ @return FALSE si no cumple o el texto original
+Public Function alphaparenthesis(objinput As Variant) As Variant
+    
+    Dim regex As New RegExp
+    Dim strPattern As String = "([A-Za-z. ]*)"
+    
+    Dim texto As String = getstrig(objinput)
+    
+    If texto <> False Then
+        If regex.Match(texto, strPattern, regex.Caseless) = True Then
+            Return texto
+        Endif
+    Endif
+    
+    Return False
+    
+End
+
+'' Validación de una direccion de correo electrónico \ @return FALSE si no es valida, string con la direccion si es valida
+Public Function email(objinput As Variant) As Variant
+    
+    Dim regex As New RegExp
+    Dim strPattern As String = "^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,8}$"
+    
+    Dim texto As String = getstrig(objinput)
+    
+    If texto <> False Then
+        If regex.Match(texto, strPattern, regex.Caseless) = True Then
+            Return texto
+        Endif
+    Endif
+    
+    Return False
+    
+End
+
+
+
+ ''Devuelve un texto solo con numeros. <br> @return False si no es valido
+Public Function numerical(objinput As Variant) As Variant
+    
+    Dim regex As New RegExp
+    Dim strPattern As String = "[0-9]"
+    
+    Dim texto As String = getstrig(objinput)
+    
+    If texto <> False Then
+        If regex.Match(texto, strPattern, regex.Caseless) = True Then
+            Return True
+        Endif
+    Endif
+    
+    Return False
+    
+End
+
+'' solo texto cyrilico nada de latino o texto normal romanico ni numeros
+Public Function OnlyCyrilic(strInput As String) As String
+    
+    Dim int As Integer
+    Dim strSymbol As String
+    
+    Dim stxLeters As New String[]
+    Dim intKey As Integer
+    Dim stxOut As New String[]
+    Dim strOut As String
+    
+    Dim btxLeters As New Byte[]
+    
+    btxLeters = Byte[].FromString(strInput)
+    
+    stxOut.Clear
+    stxLeters.Clear
+    
+    stxLeters = Split("а:б:в:г:д:е:ё:ж:з:и:й:к:л:м:н:о:п:р:с:т:у:ф:х:ц:ч:ш:щ:ъ:ы:ь:э:ю:я:А:Б:В:Г:Д:Е:Ё:Ж:З:И:Й:К:Л:М:Н:О:П:Р:С:Т:У:Ф:Х:Ц:Ч:Ш:Щ:Ъ:Ы:Ь:Э:Ю:Я", ":")
+    
+    For int = 1 To String.Len(strInput)
+        strSymbol = String.Mid(strInput, int, 1)
+        intKey = stxLeters.Find(strSymbol)
+        If intKey > -1 Then
+            stxOut.Add(strSymbol)
+        End If
+    Next
+    
+    strOut = stxOut.Join("")
+    
+    If String.Len(strOut) = String.Len(strInput) Then
+        Return strInput
+    Endif
+    
+    Return False
+    
+End
+
+
+' ************** strings y URIs
 
 '' obtiene todo el contenido de una url en una cadena/buffer para analizar **en crudo**, util para json, xml o para descargar binarios<br>@parameter url : la uri<br>@return string html de la respuesta, o string "" si invalido o no hay nada, string "-1" si invalido o agotado en server
 Public Function gethttpbuf(Optional urltogetinfo As String = "") As String
@@ -89,6 +370,7 @@ Public Function urisegment(strInput As String, Optional segment As Integer = 999
     
     Dim strtmp As String[]
     Dim index As Integer
+    
     outputfunction = ""
     strtmp = Split(strInput, "/")
     index = segment
@@ -97,14 +379,17 @@ Public Function urisegment(strInput As String, Optional segment As Integer = 999
     Endif
     outputfunction = strtmp[index]
     Return outputfunction
+    
 End
 
 ''Devuelve la ruta absoluta de un uri que termina en un archivo
 Public Function urifilepath(strInput As String) As String
     
     Dim strtp As String
+    
     outputfunction = ""
     strtp = Mid(strInput, 1, RInStr(strInput, "/"))
     'strtp = String.Left(strtp, String.Len(strtp) - 1) 
     Return strtp
+    
 End

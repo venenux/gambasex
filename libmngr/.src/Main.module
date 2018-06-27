@@ -17,6 +17,12 @@ Public Sub Main()
     ' ejemplo de deteccion de rutas desde donde esta la aplicacion que se esta invocando
     Print exapp.exebasepath
     
+    ver = exu.email("mail@domi.co")
+    
+    Print exu.email("mpes") & " y este " & ver
+    
+    Print exu.alphasymbol("apapapa@%$@") & "," & exu.alphasymbol(" apapapa") & "," & exu.alphasymbol("apapapa")
+    
   exapp.ProcPid("firefox")
 
 End
