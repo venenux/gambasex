@@ -170,9 +170,4 @@ Private Function set_Read() As String
 
 End
 
-Public Function db(Optional name As String) As Connection
 
-    ' TODO verificar igual qeu arriba que el nombre daexista el objeto db y devolver esa
-    Return $db
-
-End
