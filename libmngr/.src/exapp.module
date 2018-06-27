@@ -1,8 +1,10 @@
 ' Gambas module file
 
-'
-' System application resources utilities functions
-'
+''' System application resources utilities functions \
+''' \
+''' Se detecta toda informacion de la aplicacion corriendo actualmente, \ ojo: una lib tambien puede ejecutarse como app si tiene un starter modulo/clase
+
+
 ' This program is free software; you can redistribute it and/or modify
 ' it under the terms of the GNU General Public License as published by
 ' the Free Software Foundation; either version 2 of the License, or
@@ -20,7 +22,7 @@
 
 Export
 
-''' Se detecta toda informacion de la aplicacion corriendo actualmente, ojo: una lib tambien puede ejecutarse como app si tiene un starter modulo/clase
+
 
 Private commandshelltmp As String   '' variable interna para manejar el comando ejecutado en la rutina invocada
 Private outputfunction As String    '' variable interna para resultado del comando ejecutado en la rutina invocada
@@ -30,7 +32,7 @@ Public _requisites As String = "awk,ifconfig,sh,bash,less,head,tail,iconv,file"
 Property Read {Null} As Variant     '' emulacion de null para que una lib collecion lo admita
 Private $vNull As Variant           '' variable null emulada para que sea aceptada en una colleccion
 
-Property Read isrunide As Boolean   '' true o -1 si se esta ejecutando en el IDE, pro ahora solo probado en linux
+Property Read isrunide As Boolean   '' true o -1 si se esta ejecutando en el IDE, por ahora solo probado en linux
 
 Property Read runbasepath As String '' ruta base detectada, desde donde se invoca el ejecutable principal<br>Example: ./path/app will return /parent
 Property Read exebasepath As String '' ruta base detectada, desde donde se ejecuta el ejecutable principal<br>Example: ./path/app will return /parent/path/
@@ -117,24 +119,12 @@ Public Function Distrom() As String
     
 End
 
-'' encapsula la primera letra entre corchetes/parentesis <br> @return String
-Private Function nprocgrep(nameproc As String) As String
-    
-    Dim firstchar As String
-    Dim restchars As String
-    
-    firstchar = Left$(nameproc)
-    restchars = Mid$(nameproc, 2)
-    Return "[" & firstchar & "]" & restchars
-    
-End
-
 
 '' devuelve cadena con los proceso esta ejecutandose actualemnte, que tangan nombre similar, si se pasa el nombre verifica un proceso de ese mismo nombre
 Public Function Procs(Optional nameproc As String = Application.Name) As Variant
     
     Dim outputfunctionslip As String
-    nameproc = nprocgrep(nameproc)
+    nameproc = exu.nprocgrep(nameproc, 0)
     commandshelltmp = "ps -lxa | grep " & nameproc & " | sed 's/   */ /g' | cut -d' ' -f3,13,14,15"
     Shell commandshelltmp To outputfunction  ' son varias lineas pero devueltas en uan sola (\n o gb.NewLine)
     Return outputfunction
