@@ -11,7 +11,8 @@ Private $appconfig As Settings = Null
 '' abstracion de la configuracion basedatos
 Private $appconfdb As Settings = Null
 
-Property Read dat As Connection  '' connecion db local en ram
+Property Read set As String         '' configura el objeto connection actual en "db" para trabajar querys directo segun el argumento o devuelve el nombre actual de la conexcion
+Property Read dat As Connection     '' connecion db local en ram
 Property Read db As Connection      '' conneccion por defecto en configuracion "default group"
 
 Private $dat As Connection
@@ -21,7 +22,7 @@ Private $db As Connection
 Public Sub _new()
     
     Dim config As New Excfg(gb.IgnoreCase, exapp.exebasepath)
-
+    
     $appconfdb = config.cfgdb
     preparaConexiones
     
@@ -70,48 +71,12 @@ Private Sub preparaConexiones() As Boolean
         
         Me.Add($con, sSlot)
         
-        If Comp(dbdef, sSlot, gb.IgnoreCase) = 0 And Not Error Then
+        If Comp(dbdef, sSlot, gb.IgnoreCase) = 0 Then
             $db = $con
-        Else
-            $db = Null
         Endif
         
     Next
-    ' 
-    ' If Not IsNull($objconfs) Then
-    '     $configurados = $objconfs.configuracion             ' instancio y leo la configuracion, tomo valores de db (nota TODO: pass en md5)
-    ' Endif
-    ' apploc = $configurados["cod_localidad"]
-    ' appusr = $configurados["cod_localusua"]
-    ' appmac = exnet.getImdef()
-    ' dbip = $configurados["cnxmysqldbip"]
-    ' dbusr = $configurados["cnxmysqldbusr"]
-    ' dbnam = $configurados["cnxmysqldbnam"]
-    ' dbpas = $configurados["cnxmysqldbpas"]  ' TODO: pass leer en md5 y decodificar aqui
-    ' If indexnumberscons = 1 Then
-    ' 
-    ' Else
-    '     Try $conexdbsql.Close()              ' Cierra la conexion con try para no error si esta cerrada
-    '     $conexdbsql = New Connection
-    '     $conexdbsql.Type = "mysql"       ' Define el tipo de Conexion
-    '     $conexdbsql.Host = dbip   ' Nombre del Servidor
-    '     $conexdbsql.Login = dbusr       ' Usuario para la coenxion
-    '     $conexdbsql.Port = "3306"        ' Puerto usado para la conexion, usualmente: 3306
-    '     $conexdbsql.Name = dbnam      ' Nombre de la base de datos a usar
-    '     $conexdbsql.Password = dbpas ' Clave de Usuario
-    '     Try $conexdbsql.Open()               ' Abrimos la conexion
-    '     conninpoolavailable = True
-    '     If Error Then
-    '         $conexdbsql = Null
-    '         conninpoolavailable = False ' si algun error colocan en null el elmento
-    '     Endif
-    '     If Not conninmemmavailable Then     ' es dificil que la db en memoria cambie o se desconecte
-    '         preparaConexionram()             ' por ende es seguro confiar que si esta presente es la misma de siempre
-    '     Endif
-    ' Endif
-    ' $conexciones.Add($conexdbsql, 1)
-    ' 
-
+    
 End
 
 ' sobreescritura de get, put y next para admitur null en la colleccion
@@ -121,14 +86,26 @@ Public Sub _get(Key As String) As Variant
     Dim vVal As Variant
     
     vVal = Super[Key]
-    If TypeOf(vVal) = gb.Pointer And If vVal = exapp.Null Then vVal = Null
+    If TypeOf(vVal) = gb.Pointer Then 
+        If vVal = exapp.Null Then 
+            vVal = Null
+        Endif
+    Endif
+    
+    If TypeOf(vVal) = gb.Object Then
+        Try vVal.Open
+    Endif
+    
     Return vVal
     
 End
 
 Public Sub _put(Value As Variant, Key As String)
     
-    If IsNull(Value) Then Value = exapp.Null
+    If IsNull(Value) Then 
+        Value = exapp.Null
+    Endif
+    
     Super[Key] = Value
     
 End
@@ -136,7 +113,10 @@ End
 Public Sub _next() As Variant
     
     Super._next()
-    If Not Enum.Stopped Then Return _get(Me.Key)
+    
+    If Not Enum.Stopped Then 
+        Return _get(Me.Key)
+    Endif
     
 End
 
@@ -166,12 +146,33 @@ Private Sub preparaConexionram()
     '     
 End
 
+
 Private Function dat_Read() As Connection
     
-    Return 
+    Try $dat.Open
+    ' TODO falta detectar la db ram y adosarla ea este objeto, facil
+    Return $dat
     
 End
 
 Private Function db_Read() As Connection
     
+    ' TODO falta sacar la db actual y setear or la defecto, si no existe la defecto setearla por la primera que funcione
+    Try $db.Open
+    ' TODO verificar que todo este en orden antes de retornarla
+    Return $db
+    
+End
+
+Private Function set_Read() As String
+
+    ' TODO asignar la db segun el nombre dato, pero verificar que este nombre sea valido
+
+End
+
+Public Function db(Optional name As String) As Connection
+
+    ' TODO verificar igual qeu arriba que el nombre daexista el objeto db y devolver esa
+    Return $db
+
 End
