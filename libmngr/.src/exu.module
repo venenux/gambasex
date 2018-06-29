@@ -134,8 +134,6 @@ Public Function alphabetical(objinput As Variant) As Variant
     Return False
     
 End
-    
-End
 
 '' validacion de un texto/input sea solo letras pero incluye acentos y latinas, sin numeros ni espacios \ @return FALSE si no cumple o el texto original
 Public Function alphabeticalatin(objinput As Variant) As Variant
@@ -334,7 +332,6 @@ Public Function OnlyCyrilic(strInput As String) As String
     Return False
     
 End
-
 
 ' ************** strings y URIs
 
