@@ -1,0 +1,242 @@
+' Gambas module file
+
+''' System application resources utilities functions \
+''' \
+''' Se detecta toda informacion de la aplicacion corriendo actualmente, \ ojo: una lib tambien puede ejecutarse como app si tiene un starter modulo/clase
+
+
+' This program is free software; you can redistribute it and/or modify
+' it under the terms of the GNU General Public License as published by
+' the Free Software Foundation; either version 2 of the License, or
+' (at your option) any later version.
+'
+' This program is distributed in the hope that it will be useful,
+' but WITHOUT ANY WARRANTY; without even the implied warranty of
+' MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+' GNU General Public License for more details.
+'
+' You should have received a copy of the GNU General Public License
+' along with this program; if not, write to the Free Software
+' Foundation, Inc., 51 Franklin St, Fifth Floor,
+' Boston, MA  02110-1301  USA
+
+Export
+
+
+
+Private commandshelltmp As String   '' variable interna para manejar el comando ejecutado en la rutina invocada
+Private outputfunction As String    '' variable interna para resultado del comando ejecutado en la rutina invocada
+
+Public _requisites As String = "awk,ifconfig,sh,bash,less,head,tail,iconv,file"
+
+Property Read {Null} As Variant     '' emulacion de null para que una lib collecion lo admita
+Private $vNull As Variant           '' variable null emulada para que sea aceptada en una colleccion
+
+Property Read isrunide As Boolean   '' true o -1 si se esta ejecutando en el IDE, por ahora solo probado en linux
+
+Property Read runbasepath As String '' ruta base detectada, desde donde se invoca el ejecutable principal<br>Example: ./path/app will return /parent
+Property Read exebasepath As String '' ruta base detectada, desde donde se ejecuta el ejecutable principal<br>Example: ./path/app will return /parent/path/
+
+Public cf As Excfg
+
+' TODO  lsof -i :80 sirve en mac y linux
+
+Public Sub _init()
+  
+  $vNull = VarPtr($vNull)
+  cf = New Excfg
+  
+End
+
+
+'' verifica que los comando pasados separados por comma existan y se puedan ejecutar
+Public Function softck(sCommands As String, Optional bDisplayDialog As Boolean = True) As Boolean
+    
+    Dim aDependencyCheck As New String[]
+    Dim aCommands As New String[]
+    Dim sCommand As String
+    Dim bResult As Boolean
+    
+    If Len(sCommands) < 1 Then
+        Return Null
+    Endif
+    aCommands = Split(sCommands, ",")
+    
+    For Each sCommand In aCommands
+        Shell "type -p dash" To outputfunction
+        If Comp(Trim(outputfunction), "", gb.IgnoreCase) = 0 Then
+            aDependencyCheck.Add(sCommand)
+        Endif
+    Next
+    ' solo estan en el array los comandos que no se pudieron encontrar
+    bResult = True
+    If aDependencyCheck.Length > 0 Then
+        bResult = False
+    Endif
+    ' por ahora se limita a que si falta una todo falla, si no falta nada todo esta bien
+    Return bResult
+    
+End
+
+'' nombre de la distro instalada o metadistro <br> @return String
+Public Function Distron() As String
+    
+    Dim strDistro As String
+    
+    If Comp(System.Family, "MacOSX", gb.IgnoreCase) = 0 Then
+        Return System.Family
+    Endif
+    Shell "lsb_release -d | cut -d':' -f2" To strDistro
+    Replace(strDistro, gb.Tab, "")
+    strDistro = Trim(strDistro)
+    If Comp(strDistro, "") = 0 Then
+        Return System.Family
+    Endif
+    Return strDistro
+    
+End
+
+'' nombre de la distro madre o raiz <br> @return String
+Public Function Distrom() As String
+    
+    Dim strDistro As String
+    Dim strDistroShort As String
+    Dim intN As Integer
+    
+    If Comp(System.Family, "MacOSX", gb.IgnoreCase) = 0 Then
+        Return "Mac"
+    Endif
+    If InStr(System.Family, "BSD", 0, gb.IgnoreCase) > 1 Then
+        Return "BSD"
+    Endif
+    Shell "lsb_release -si | cut -d' ' -f1" To strDistro
+    strDistro = Trim(strDistro)
+    strDistroShort = strDistro
+    If Comp(strDistro, "") = 0 Then
+        strDistroShort = "LFS" ' linux from scratch
+    Endif
+    Return strDistroShort
+    
+End
+
+
+'' devuelve cadena con los proceso esta ejecutandose actualemnte, que tangan nombre similar, si se pasa el nombre verifica un proceso de ese mismo nombre
+Public Function Procs(Optional nameproc As String = Application.Name) As Variant
+    
+    Dim outputfunctionslip As String
+    nameproc = exu.nprocgrep(nameproc, 0)
+    commandshelltmp = "ps -lxa | grep " & nameproc & " | sed 's/   */ /g' | cut -d' ' -f3,13,14,15"
+    Shell commandshelltmp To outputfunction  ' son varias lineas pero devueltas en uan sola (\n o gb.NewLine)
+    Return outputfunction
+    
+End
+
+
+Public Function ProcPid(Optional nameproc As String = Application.Name) As Variant
+    
+    Dim outputfunctionslip As String[]
+    Dim commandfind As String
+    Dim commandfindarg As String
+    Dim commandfindargpos As Integer
+    
+    outputfunction = Procs(nameproc)                    ' busca en ps/procps todo lo similar
+    outputfunctionslip = Split(outputfunction, gb.NewLine)    ' y lo organiza en un array
+    If outputfunctionslip.Find("", gb.IgnoreCase, 1) <> -1 Then
+        outputfunctionslip.Remove(outputfunctionslip.Find("", gb.IgnoreCase), 1) ' remueve solo si hay un elemento vacio
+    Endif
+    For Each commandfind In outputfunctionslip
+        commandfindargpos = RInStr(commandfind, " ")    ' itera buscando en cada uno de los procesos encontrados
+        If commandfindargpos > 0 Then
+            commandfindarg = Mid(commandfind, commandfindargpos) ' extrae el comando entero menos el ultimo argumento
+        Endif
+        If InStr(commandfindarg, nameproc, 1, gb.IgnoreCase) > 0 Then ' busca si el comando sin argumento es el deseado
+            commandfindargpos = InStr(commandfind, " ")
+            If commandfindargpos > 0
+                outputfunction = Mid(commandfind, 1, commandfindargpos - 1) ' si lo es, extrae el primer strings antes de espacio
+            Endif
+        Endif
+    Next
+    
+    outputfunction = Trim(outputfunction)
+    Return outputfunction
+    
+End
+
+
+
+Public Function getFileDev(Optional ruta As String = "") As String '' devuelve el dispositivo o disco, segun ruta, sino el del sistema de ficheros raiz, si es mapeado no devuelve el dispositivo real, solo el mapa
+    
+    Dim outputfunction2 As String
+    If Comp(Trim(ruta), "", gb.IgnoreCase) = 0 Then ruta = "/"
+    Shell "df -h " & ruta & " | cut -d' ' -f1" To outputfunction 'Almacenamos caracteristicas del Sistema de Ficheros pasado en ruta
+    Try outputfunction2 = Scan(outputfunction, "*\n*")[1] 'Ocultamos el Error si no encuentra la cadena
+    If Error Then outputfunction2 = outputfunction
+    Return Replace(outputfunction2, "\n", "")
+    
+End
+
+
+Public Function getFileSys(Optional directorio As String = "") As String '' devuelve el sistema de ficheros, segun `directorio`, sino el sistema de ficheros raiz, si no es valido/montado no devuelve nada
+    
+    If Comp(Trim(directorio), "", gb.IgnoreCase) = 0 Then directorio = "on / "
+    If Comp(Trim(directorio), "/", gb.IgnoreCase) = 0 Then directorio = "on / "
+    Shell "mount | grep \"" & directorio & "\" | cut -d' ' -f5" To outputfunction 'Almacenamos caracteristicas del Sistema de Ficheros pasado en ruta
+    Return Replace(outputfunction, "\n", "")
+    
+End
+
+Public Function CharacterSets() As String[] '' deveulve un arreglo con los tipos de codificaciones soportadas por el sistemaoperativo y su softwareinstalado
+    
+    Dim sIconvList As String
+    Dim aCharacterSets As String[]
+    
+    Shell "iconv --list" To sIconvList
+    sIconvList = Replace$(sIconvList, "//", "")
+    aCharacterSets = Split(sIconvList, "\n")
+    aCharacterSets.Remove(aCharacterSets.Max, 1)
+    Return aCharacterSets
+    
+End
+
+Private Function Null_Read() As Variant
+
+    Return $vNull
+
+End
+
+' retorna la ruta desde donde se realiza la invocacion del ejecutable y no la ruta hacia este
+Private Function runbasepath_Read() As String
+
+    Dim rutadeejecucion As String = ""
+    Shell "pwd" To rutadeejecucion
+    If exapp.isrunide = -1 Then
+        rutadeejecucion = Application.Path
+    Endif
+    
+    Return rutadeejecucion
+
+End
+
+' retorna la ruta desde donde esta el ejecutable que se esta invocando, la ruta completa hacia este
+Private Function exebasepath_Read() As String
+
+    Dim rutadeprograma As String = ""
+    rutadeprograma = Application.Path
+    
+    Return rutadeprograma
+
+End
+
+Private Function isrunide_Read() As Boolean
+
+    Dim strProcess As String
+    
+    strProcess = File.Load("/proc" &/ CStr(Application.Id) &/ "comm")
+    If Left(strProcess, 4) = "gbx3" Then
+        Return -1
+    Else
+        Return 0
+    Endif
+
+End
+

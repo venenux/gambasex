@@ -1,0 +1,6 @@
+[Component]
+Key=libmngr
+State=1
+VersionFile=1
+Authors=PICCORO Lenz McKAY <mckaygerhard@gmail.com>
+Requires=gb,gb.compress,gb.compress.bzlib2,gb.compress.zlib,gb.db,gb.db.mysql,gb.db.odbc,gb.db.postgresql,gb.db.sqlite3,gb.eval,gb.net,gb.net.curl,gb.net.smtp,gb.util,gb.settings,gb.web,gb.util.web,gb.xml,gb.xml.html

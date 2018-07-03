@@ -1,0 +1,28 @@
+# Gambas Project File 3.0
+# Compiled with Gambas 3.5.4
+Title=libmngr
+Startup=Main
+Component=gb.args
+Component=gb.compress
+Component=gb.db
+Component=gb.db.mysql
+Component=gb.db.odbc
+Component=gb.db.postgresql
+Component=gb.db.sqlite3
+Component=gb.settings
+Component=gb.net
+Component=gb.net.curl
+Component=gb.net.smtp
+Component=gb.openssl
+Component=gb.vb
+Component=gb.web
+Component=gb.xml
+Component=gb.xml.html
+Component=gb.xml.rpc
+Component=gb.xml.xslt
+Description="libreria de inicio comun para el sistema"
+Authors="PICCORO Lenz McKAY <mckaygerhard@gmail.com>"
+TabSize=4
+Type=Library
+Vendor=elsistema
+Packager=1

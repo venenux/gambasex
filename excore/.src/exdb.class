@@ -1,0 +1,173 @@
+' Gambas class file
+
+''' clase de manejo de conexciones a base de datos indicadas, tiene dos conexciones, una en memoria y otra remota de db central, TODO: pool de conexciones de n conexciones
+
+Export
+
+Inherits Collection
+
+'' abstracion de la configuracion principal
+Private $appconfig As Settings = Null
+'' abstracion de la configuracion basedatos
+Private $appconfdb As Settings = Null
+
+Property Read set As String         '' configura el objeto connection actual en "db" para trabajar querys directo segun el argumento o devuelve el nombre actual de la conexcion
+Property Read dat As Connection     '' connecion db local en ram
+Property Read db As Connection      '' conneccion por defecto en configuracion "default group"
+
+Private $dat As Connection
+Private $db As Connection
+
+'' prepara una instancia del pool de las conexciones a las bases de datos, el error si alguno ocurre esta en el ultimo elemento
+Public Sub _new()
+    
+    Dim config As New Excfg(gb.IgnoreCase, exapp.exebasepath)
+    
+    $appconfdb = config.cfgdb
+    preparaConexiones
+    
+End
+
+'' constructor del pool de las conexciones indicadas en configuracion
+Private Sub preparaConexiones() As Boolean
+    
+    Dim dbusr, dbnam, dbip, dbpor, dbpas As String = ""
+    Dim apploc, appusr, appmac As String = ""
+    Dim $con As Connection
+    Dim dbdef, dbram, sSlot, sKey, value As String = exapp.Null
+    
+    For Each sSlot In $appconfdb.Keys               ' for each section in the config file
+        
+        If Comp("database", sKey, gb.IgnoreCase) = 0 Then
+            dbdef = $appconfdb[sSlot &/ "activegroup"]
+            Continue
+        Endif
+        
+        Try $con.Close()          ' Cierra la conexion el try permite falle sin error
+        Error.Clear
+        $con = New Connection
+        
+        For Each sKey In $appconfdb.Keys[sSlot]
+            
+            If Comp("dbdriver", sKey, gb.IgnoreCase) = 0 Then
+                $con.Type = $appconfdb[sSlot &/ sKey]
+            Endif
+            If Comp("hostname", sKey, gb.IgnoreCase) = 0 Then
+                $con.Host = $appconfdb[sSlot &/ sKey]
+            Endif
+            If Comp("username", sKey, gb.IgnoreCase) = 0 Then
+                $con.User = $appconfdb[sSlot &/ sKey]
+            Endif
+            If Comp("password", sKey, gb.IgnoreCase) = 0 Then
+                $con.Password = $appconfdb[sSlot &/ sKey]
+            Endif
+            If Comp("database", sKey, gb.IgnoreCase) = 0 Then
+                $con.Name = $appconfdb[sSlot &/ sKey]
+            Endif
+            
+        Next
+        
+        Try $con.Open()
+        
+        Me.Add($con, sSlot)
+        
+        If Comp(dbdef, sSlot, gb.IgnoreCase) = 0 Then
+            $db = $con
+        Endif
+        
+    Next
+    
+End
+
+' sobreescritura de get, put y next para admitur null en la colleccion
+
+Public Sub _get(Key As String) As Variant
+    
+    Dim vVal As Variant
+    
+    vVal = Super[Key]
+    If TypeOf(vVal) = gb.Pointer Then 
+        If vVal = exapp.Null Then 
+            vVal = Null
+        Endif
+    Endif
+    
+    If TypeOf(vVal) = gb.Object Then
+        Try vVal.Open
+    Endif
+    
+    Return vVal
+    
+End
+
+Public Sub _put(Value As Variant, Key As String)
+    
+    If IsNull(Value) Then 
+        Value = exapp.Null
+    Endif
+    
+    Super[Key] = Value
+    
+End
+
+Public Sub _next() As Variant
+    
+    Super._next()
+    
+    If Not Enum.Stopped Then 
+        Return _get(Me.Key)
+    Endif
+    
+End
+
+'' instancia db memoria conexcion hacia '$conexdbram' \ es sqlite en memoria, manejese con cuidado
+Private Sub preparaConexionram()
+    
+    '     If conninmemmavailable And Not IsNull($conexdbram) Then          ' verificar si la conexcion activa y valida
+    '         If $conexdbram.Opened And $conexdbram.Name = "" Then      ' si es valida verificar activa y de memoria
+    '             $conexciones.Add($conexdbram, 0)                       ' si todo bien, reinsertar en el pool como primera
+    '             conninmemmavailable = True              ' reemplazo le index 0 por la activa seguro y devuelvo esta conexcion
+    '         Else
+    '             Goto REINICIARDBMEM
+    '         Endif
+    '     Else
+    ' REINICIARDBMEM:
+    '         $conexdbram = New Connection
+    '         $conexdbram.Type = "sqlite3"             'esto siempre va en minusculas: always must be lowercase
+    '         $conexdbram.Name = Null
+    '         Try $conexdbram.Open
+    '         If Error Then
+    '             $conexdbram = Null
+    '             conninmemmavailable = False
+    '         Endif
+    '         $conexciones.Add($conexdbram, 0)
+    '         conninmemmavailable = True
+    '     Endif
+    '     
+End
+
+
+Private Function dat_Read() As Connection
+    
+    Try $dat.Open
+    ' TODO falta detectar la db ram y adosarla ea este objeto, facil
+    Return $dat
+    
+End
+
+Private Function db_Read() As Connection
+    
+    ' TODO falta sacar la db actual y setear or la defecto, si no existe la defecto setearla por la primera que funcione
+    Try $db.Open
+    ' TODO verificar que todo este en orden antes de retornarla
+    Return $db
+    
+End
+
+Private Function set_Read() As String
+
+    ' TODO asignar la db segun el nombre dato, pero verificar que este nombre sea valido
+
+End
+
+

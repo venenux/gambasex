@@ -26,6 +26,8 @@ Read [docs/README.md](docs/README.md) or visit onlyne at https://venenux.github.
 Updates and news will be minimun each 15 days, the commits will be code source or documentation.
 Se haran actualizaciones minimo cada 15 dias, el commit sera de codigo o de documentacion.
 
+1. [excore](excore) libreria de inicializado y acceso data para el sistema
+
 Actually the work started the June 20th in 2017, as the 30th will be able to use in production.
 Actualmente el trabajo empezo el 20 de junio del 2017, para el 30 estara para uso de produccion.
 
