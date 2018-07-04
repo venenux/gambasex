@@ -9,16 +9,16 @@ controles ampliados de clases base, colleciones, base de datos y configuracion e
 **ExCfgManage**: clase de configuracion inicial, inicia parametros de la aplicacion sea cliente o servidor 
 y establece a donde se conectara asi como datos de entidad y conectividad. La aplicacion crea una clase 
 y esta por defecto asume un archivo de nombre de la aplicacion, con un pool de configuraciones 
-para bases de datos, adicional vriables de id's de ubicaciones entre otros.
+para bases de datos, adicional variables de id's de ubicaciones entre otros.
 
 La ruta de ubicacion del archivo se puede pasar en el constructor sino este es el orden en que se busca:
 1. en Application.path
 2. en Application.path un directorio arriba
 3. en USER.home
-4. en /etc/<Application.name>
+4. en /etc/`<Application.name>`
 
 El nombre sera por defecto <Application.name>.conf si no se especifica, sino se seguira la siguiente logica
-1. <Application.name>.conf
+1. `<Application.name>`.conf
 2. exappconfig.conf
 
 Esta clase es autoinstanciable por el modulo [exapp](exapp.md)
@@ -33,7 +33,7 @@ donde haya ya encontrado el de configuracion de archivo.
 ## Ejemplos
 
 
-``` sql
+``` VBScript
     Dim dbobj As New Exdb
     
     ' realizar un query tomando la conexion del archivo conf llamada conex2

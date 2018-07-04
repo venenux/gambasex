@@ -31,6 +31,19 @@ Actualmente el trabajo empezo el 20 de junio del 2017, para el 30 estara para us
 Updates and news will be minimun each 15 days, the commits will be code source or documentation.
 Se haran actualizaciones minimo cada 15 dias, el commit sera de codigo o de documentacion.
 
+## Example / Ejemplo
+
+``` VBScript
+    Dim dbobj As New Exdb
+    
+    ' realizar un query tomando la conexion del archivo conf llamada conex2
+    dbobj["conex2"].Exec("select 'pepe' as ba")
+    
+    ' imprimir el valor de configuracion del archivo de base de datos conex0 la parte de hostname
+    Print exapp.cf.cfgdb["conex0/hostname"]
+    
+```
+
 ## Contribute o Contribuir
 
 El estandar se definira hacia junio 30.. pero todo nombre debe ser:

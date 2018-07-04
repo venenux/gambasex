@@ -29,7 +29,7 @@ implementara esto en ExDBManager (`edbm`) de manera automatica ya que levantara 
 
 Extiende de `Gridview` usa una propiedad `source` para manejar los datos todos en ram:
 
-``` java
+``` VBScript
 ' elformato de la fuente source si es matrix, es primera linea titulos, resto filas
 titulos = ["tcel1", "tcel2"]
 filas.Add(titulos, 0)
@@ -62,14 +62,14 @@ c. Si indefinido ancho para una columna y expandcols es false, esa columna tomar
 
 Ejemplo:
 
-``` basic
+``` VBScript
 miGrid.rows.count=5 'cinco columnas
 miGrid.expandcols=true
 miGrid.widths=[100,50]  
 ``` 
 Las dos primeras columnas serán de 100 y 50 de ancho respectivamente y el resto se ad
 
-``` basic
+``` VBScript
 miGrid.widths=[100,50,-2,-1,-1]
 ```
 Las dos primeras serán fijas, la tercera se adaptará y las dos últimas tendrán un anc
