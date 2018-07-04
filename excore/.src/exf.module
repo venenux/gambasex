@@ -1,12 +1,12 @@
 ' Gambas module file
 
-Export
+''' modulo de utilidades respecto el sistema de ficheros, requiere `libreoffice` para conversiones, `openoffice` solo para visor
 
-'' modulo de utilidades respecto el sistema de ficheros, requiere `libreoffice` para conversiones, `openoffice` solo para visor
+Export
 
 Private commandshelltmp As String   '' variable interna para manejar el comando ejecutado en la rutina invocada
 Private outputfunction As String    '' variable interna para resultado del comando ejecutado en la rutina invocada
-Public _requisites As String = "awk,ifconfig,sh,bash,less,head,tail,iconv,file"
+Public _requisites As String = "df,mount,grep,cut,bash,iconv,file,soffice"
 
 Public Function CharacterSets() As String[] '' deveulve un arreglo con los tipos de codificaciones soportadas por el sistemaoperativo y su softwareinstalado
     

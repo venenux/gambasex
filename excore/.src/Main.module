@@ -8,6 +8,11 @@ Public Sub Main()
     
     dbobj["conex2"].Exec("select 'pepe' as ba")
     
+    ' obtiene el nombre de dispositivo desde arbol udev
+    Print exf.getFileDev("/")
+    ' btiene el nombre del formato del sistema de ficheros
+    Print exf.getFileSys("/")
+    
     Print exapp.cf.cfgdb["conex0/hostname"]
     
     ' ejemplo de obtencion de configuracion
@@ -21,7 +26,14 @@ Public Sub Main()
     
     Print exu.email("mpes") & " y este " & ver
     
-    Print exu.alphasymbol("apapapa@%$@") & "," & exu.alphasymbol(" apapapa") & "," & exu.alphasymbol("apapapa")
+    Print exu.alphanumericlatin("apapapa@%$@") & "," & exu.alphanumericlatin(" apapapa") & "," & exu.alphanumericlatin("apapapa")
+    
+    
+    Print exu.substr_count(" pepepep     adaadaasd   qoiehqopwiehoq aasa        aklsjbndka asada      asldaj", "aa", gb.IgnoreCase)
+    Print exu.ucfirst(" pepepep     adadasd   qoiehqopwiehoq aasa        aklsjbndka asada      asldaj")
+    Print exu.ucwords(" pepepep     adadasd   qoiehqopwiehoq aasa        aklsjbndka asada      asldaj")
+    Print exu.ucwords(" pepepep,adadasd,qoiehqopwiehoq aasa        aklsjbndka asada      asldaj", ",")
+    Print exu.gethttpbuf("http://google.com")
     
   exapp.ProcPid("firefox")
 
