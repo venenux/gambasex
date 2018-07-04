@@ -4,7 +4,7 @@ Indice de documentacion
 
 # Modules
  
-+ [exfuntions](exfuntions.md) Modulo funciones utilitarias: conversion,info,red.
++ [excore](excore.md) Core lib: pool de base de datos, carga de config, conversion, info, red.
  
 # Controls
  
@@ -12,5 +12,4 @@ Indice de documentacion
 
 # Framework
 
-+ [gb.mngr.dbconfig](gb.mngr.md) Parte del framework para manejo de configuracion inicial
-+ [gb.mngr.dbmanage](gb.mngr.md) Parte del framework para manejo de base de datos
++ [excore](excore.md) Core lib: pool de base de datos, carga de config, conversion, info, red.

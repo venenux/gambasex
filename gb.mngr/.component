@@ -1,6 +1,0 @@
-[Component]
-Key=gb.mngr
-State=1
-Authors=gambasex
-Requires=gb.db,gb.db.mysql,gb.db.odbc,gb.db.postgresql,gb.db.sqlite3,gb.net,gb.net.curl,gb.vb,gb.web
-

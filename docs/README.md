@@ -25,6 +25,7 @@ Actually the work started the June 20th in 2017, as the 30th will be able to use
 Actualmente el trabajo empezo el 20 de junio del 2017, para el 30 estara para uso de produccion.
 
 * [Documentacion: exdocu.md](exdocu.md) : documentacion minima, referencial, completa en el codigo, revisar Mtest.class.
+  * [excore](excore.md): database pool, configuration files, working funcionando y usable
 * [Diferencias respecto original](exdiferenciasoriginal.md) : fue inspirado en gambas-extra-functions pero este tiene un monton de errores.
 
 Updates and news will be minimun each 15 days, the commits will be code source or documentation.
