@@ -79,6 +79,7 @@ End
 Public Function getstrig(objinput As Variant) As Variant
     
     Dim simbol As String
+    Dim classnew As Class
     
     If IsNull(objinput) Then
         Return False
@@ -88,8 +89,9 @@ Public Function getstrig(objinput As Variant) As Variant
         Return objinput
     Endif
     
-    If TypeOf(objinput) = gb.Class Then
-        For Each simbol In objinput.Symbols
+    If TypeOf(objinput) = gb.Object Then
+        classnew = Object.Class(objinput)
+        For Each simbol In classnew.Symbols
             If Comp(simbol, "Text") = 0 Then    '' ve si es un control que tiene un input de texto y lo devuelve el string
                 Return objinput.Text
             Endif
@@ -108,7 +110,7 @@ Public Function required(objinput As Variant) As Variant
     texto = getstrig(objinput)
     
     If texto <> False Then
-        If Comp(texto, "", gb.IgnoreCase) = 0 Then
+        If Comp(Trim(texto), "", gb.IgnoreCase) <> 0 Then
             Return True
         Endif
     Endif
