@@ -1,0 +1,67 @@
+' Gambas class file
+
+Export
+
+' TODO clase que se crea pro cada mensage a enviar igual que CI, se preconfigura con el settings sino se le pasa la config en una collecion o array aun estoy definiendola
+
+' send e-mail 
+Public Sub Send(sSubject As String, sBody As String, Optional sTo As String) As Boolean
+
+  Dim hMsg As New SmtpClient
+  Dim sMimeType As String
+  Dim sendmail As Boolean = False
+
+  ' if mail is disabled, return
+  If Not Main.bEmailEnabled Then
+    Return False
+  Endif
+
+  ' sent msg to alternate address instead of default one
+  If sTo Then
+    sTo = Main.sEmailToAddress
+  Else
+      sto = "email@received"
+  Endif
+
+  hMsg.Subject = sSubject
+  hMsg.To.Add(sTo)
+  hMsg.From = Main.sEmailFromAddress
+  hMsg.Host = Main.sEmailSMTPServer
+  hMsg.Port = Main.iEmailSMTPPort
+
+  ' Set MIME type to HTML if there is something like <tag ... </tag in the message
+  If Regexp.Match(sBody, "<(\\w+).*</\\1", RegExp.DotAll) Then
+    sMimeType = "text/html"
+  Else
+    sMimeType = "text/plain"
+  Endif
+  hMsg.Add(sBody & "\n\n" & ("-- \nPowered by ") & Application.Name & " V" & Main.sProgramVersion & "\n", sMimeType)
+
+  ' both username and password need to be available
+  If Not sendmail Then
+    If Len(Main.sEmailUserName) And If Not Len(Main.sEmailPassword) Then
+      Return False
+    Else If Not Len(Main.sEmailUserName) And If Len(Main.sEmailPassword) Then
+      Return False
+    Else If Len(Main.sEmailUserName) And If Len(Main.sEmailPassword) Then
+      hMsg.User = Main.sEmailUserName
+      hMsg.Password = Main.sEmailPassword
+    Endif
+  Endif
+
+  If Main.bEmailSSL Then
+    hMsg.Encrypt = Net.SSL
+  Endif
+
+  Try hMsg.Send()
+  If Error Then
+    Return False
+  Endif
+
+  Return True
+
+Catch
+  Return False
+
+End
+
