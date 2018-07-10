@@ -76,7 +76,7 @@ End
 ' ************************ funciones de validaciones de texto
 
 '' verifica si es string el objeto o extrae su simbolo texto si es control, ejemplo si tiene un textbox retorna el .Text de este o si es un Integer retorna el valor como string \ @return FALSE si no tiene string valido, string si tiene .Text o es string valido
-Public Function getstrig(objinput As Variant) As Variant
+Public Function getstrig(ByRef objinput As Variant) As Variant
     
     Dim simbol As String
     Dim classobj As Class
