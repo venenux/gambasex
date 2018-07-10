@@ -37,14 +37,12 @@ Property Read isrunide As Boolean   '' true o -1 si se esta ejecutando en el IDE
 Property Read runbasepath As String '' ruta base detectada, desde donde se invoca el ejecutable principal<br>Example: ./path/app will return /parent
 Property Read exebasepath As String '' ruta base detectada, desde donde se ejecuta el ejecutable principal<br>Example: ./path/app will return /parent/path/
 
-Public cf As Excfg
 
 ' TODO  lsof -i :80 sirve en mac y linux
 
 Public Sub _init()
   
   $vNull = VarPtr($vNull)
-  cf = New Excfg
   
 End
 
@@ -101,7 +99,6 @@ Public Function Distrom() As String
     
     Dim strDistro As String
     Dim strDistroShort As String
-    Dim intN As Integer
     
     If Comp(System.Family, "MacOSX", gb.IgnoreCase) = 0 Then
         Return "Mac"
@@ -120,18 +117,19 @@ Public Function Distrom() As String
 End
 
 
-'' devuelve cadena con los proceso esta ejecutandose actualemnte, que tangan nombre similar, si se pasa el nombre verifica un proceso de ese mismo nombre
+'' devuelve cadena con los proceso esta ejecutandose actualemnte, que tangan nombre similar, si se pasa el nombre verifica un proceso de ese mismo nombre**OJO: si hay mas de un app ejecutandose obtendra el nombre de los procesos respectivos que implementen esta funcion por la lib**
 Public Function Procs(Optional nameproc As String = Application.Name) As Variant
     
     Dim outputfunctionslip As String
     nameproc = exu.nprocgrep(nameproc, 0)
     commandshelltmp = "ps -lxa | grep " & nameproc & " | sed 's/   */ /g' | cut -d' ' -f3,13,14,15"
+    outputfunctionslip = outputfunction
     Shell commandshelltmp To outputfunction  ' son varias lineas pero devueltas en uan sola (\n o gb.NewLine)
     Return outputfunction
     
 End
 
-
+'' obtener el pid del proceso `nameproc` si no se especifica obtiene el pid del applicatiovo que ejecuta **OJO: si hay mas de un app ejecutandose obtendra el pid de los procesos respectivos que implementen esta funcion por la lib**
 Public Function ProcPid(Optional nameproc As String = Application.Name) As Variant
     
     Dim outputfunctionslip As String[]
@@ -164,27 +162,6 @@ End
 
 
 
-Public Function getFileDev(Optional ruta As String = "") As String '' devuelve el dispositivo o disco, segun ruta, sino el del sistema de ficheros raiz, si es mapeado no devuelve el dispositivo real, solo el mapa
-    
-    Dim outputfunction2 As String
-    If Comp(Trim(ruta), "", gb.IgnoreCase) = 0 Then ruta = "/"
-    Shell "df -h " & ruta & " | cut -d' ' -f1" To outputfunction 'Almacenamos caracteristicas del Sistema de Ficheros pasado en ruta
-    Try outputfunction2 = Scan(outputfunction, "*\n*")[1] 'Ocultamos el Error si no encuentra la cadena
-    If Error Then outputfunction2 = outputfunction
-    Return Replace(outputfunction2, "\n", "")
-    
-End
-
-
-Public Function getFileSys(Optional directorio As String = "") As String '' devuelve el sistema de ficheros, segun `directorio`, sino el sistema de ficheros raiz, si no es valido/montado no devuelve nada
-    
-    If Comp(Trim(directorio), "", gb.IgnoreCase) = 0 Then directorio = "on / "
-    If Comp(Trim(directorio), "/", gb.IgnoreCase) = 0 Then directorio = "on / "
-    Shell "mount | grep \"" & directorio & "\" | cut -d' ' -f5" To outputfunction 'Almacenamos caracteristicas del Sistema de Ficheros pasado en ruta
-    Return Replace(outputfunction, "\n", "")
-    
-End
-
 Public Function CharacterSets() As String[] '' deveulve un arreglo con los tipos de codificaciones soportadas por el sistemaoperativo y su softwareinstalado
     
     Dim sIconvList As String
@@ -198,6 +175,7 @@ Public Function CharacterSets() As String[] '' deveulve un arreglo con los tipos
     
 End
 
+' emulacion de variable null para usar en colecciones
 Private Function Null_Read() As Variant
 
     Return $vNull
@@ -212,7 +190,7 @@ Private Function runbasepath_Read() As String
     If exapp.isrunide = -1 Then
         rutadeejecucion = Application.Path
     Endif
-    
+    ' ambito de application.path, es la de excore si se corre desde aqui sino es la de el proyecto que implementa la lib
     Return rutadeejecucion
 
 End
@@ -222,7 +200,7 @@ Private Function exebasepath_Read() As String
 
     Dim rutadeprograma As String = ""
     rutadeprograma = Application.Path
-    
+    ' ambito de application.path, es la de excore si se corre desde aqui sino es la de el proyecto que implementa la lib
     Return rutadeprograma
 
 End
