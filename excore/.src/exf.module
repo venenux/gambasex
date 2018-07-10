@@ -58,13 +58,43 @@ End
 
 Public Function getFileSys(Optional directorio As String = "") As String '' devuelve el sistema de ficheros, segun `directorio`, sino el sistema de ficheros raiz, si no es valido/montado no devuelve nada
     
-    If Comp(Trim(directorio), "", gb.IgnoreCase) = 0 Then directorio = "on / "
+    If Comp(Trim(directorio), "", gb.IgnoreCase) = 0 Then directorio = "/"
+    If Not Exist(Trim(directorio)) Then Return ""
     If Comp(Trim(directorio), "/", gb.IgnoreCase) = 0 Then directorio = "on / "
     Shell "mount | grep \"" & directorio & "\" | cut -d' ' -f5" To outputfunction 'Almacenamos caracteristicas del Sistema de Ficheros pasado en ruta
     Return Replace(outputfunction, "\n", "")
     
 End
 
+'' retorna el directorio padre unos `levelparent` arriba del argumento `directorio`, si son muchos niveles devuelve la raiz
+Public Function getDirParent(Optional directorio As String = Application.path, Optional levelparent As Integer = 1) As String
+    
+    Dim seconslas, atlast, tamanio, removeuntil As Integer = 0
+    If Not Exist(Trim(directorio)) Then Return Application.Path
+    If Comp(Trim(directorio), "", gb.IgnoreCase) = 0 Then Application.Path
+    If InStr(directorio, "/") < 1 Then Application.Path
+    If levelparent = 0 Then
+        tamanio = Len(directorio)
+        atlast = RInStr(directorio, "/", 0)
+        If tamanio = atlast Then directorio = Mid(directorio, 1, -1)
+        Return directorio
+    Endif
+    For removeuntil = 1 To levelparent Step 1
+        tamanio = Len(directorio)
+        atlast = RInStr(directorio, "/", 0)
+        If tamanio = atlast Then directorio = Mid(directorio, 1, -1)
+        seconslas = RInStr(directorio, "/", tamanio - 1)
+        outputfunction = Mid(directorio, 1, seconslas)
+        tamanio = Len(outputfunction)
+        atlast = RInStr(outputfunction, "/", 0)
+        If tamanio = atlast Then outputfunction = Mid(outputfunction, 1, -1)
+        directorio = outputfunction
+        If InStr(directorio, "/") < 1 Then Break
+    Next
+    If Comp(Trim(directorio), "", gb.IgnoreCase) = 0 Then outputfunction = "/"
+    Return outputfunction
+    
+End
 
 Public Sub caltoods(Optional namefile As String = "", Optional pathfile As String = "") As String '' exporta un archivo csv o excel a ods en donde se ejecute el modulo, @return: ruta de donde se guarda el resultado
   
@@ -81,3 +111,4 @@ Public Sub caltoods(Optional namefile As String = "", Optional pathfile As Strin
   Return Null
   
 End
+
