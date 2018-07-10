@@ -96,6 +96,36 @@ Public Function getDirParent(Optional directorio As String = Application.path, O
     
 End
 
+'' verifica que un directorio existe dentro de la ruta segun la profundidad padre, ejemplo buscr por encima del directorio padre otros directorios, ejemplo `pepe/log` dentro de `/home/pablo` retorna `/home/pablo/pepe/log` o `False` si no existe
+Public Function getDirExist(Optional busca As String = Application.name, Optional directorio As String = Application.Path, Optional levelparent As Integer = 0) As Variant
+    
+    Dim seconslas, atlast, tamanio, removeuntil As Integer = 0
+    directorio = getDirParent(directorio, levelparent)
+    If Not IsDir(directorio) Then Return False
+    ' remocion de ultimo caracter si es "/"
+    tamanio = Len(busca)
+    atlast = RInStr(busca, "/", 0)
+    If tamanio = atlast Then busca = Mid(busca, 1, -1)
+    ' remocion de caracteres ".." si no lo sigue un "/" pues lo hace invalido
+    atlast = InStr(directorio, "..")
+    If atlast > 0 Then
+        seconslas = InStr(directorio, "../")
+        If atlast <> seconslas Then
+            Return False    ' ruta invalida de busqueda ?
+        Endif
+    Endif
+    ' remocion del primer caracter si este es "/" porque sino se verifica de una es el root
+    tamanio = Len(busca)
+    atlast = InStr(busca, "/", 0)
+    If atlast = 1 Then busca = Mid(busca, 2, tamanio)
+    ' conctena y busca como una ruta absoluta en el sistema de ficheros de la lib
+    directorio = directorio &/ busca
+    If Not Exist(directorio) Then Return False
+    Return directorio
+    
+End
+
+
 Public Sub caltoods(Optional namefile As String = "", Optional pathfile As String = "") As String '' exporta un archivo csv o excel a ods en donde se ejecute el modulo, @return: ruta de donde se guarda el resultado
   
   Dim entorno As String = "/tmp/LibreOffice_Conversion_" & User.Name
