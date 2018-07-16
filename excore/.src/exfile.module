@@ -59,9 +59,8 @@ Public Function getDirParent(Optional directorio As String = Application.path, O
     
     ' ambito de application.path, es la de excore si se corre desde aqui sino es la de el proyecto que implementa la lib
     Dim seconslas, atlast, tamanio, removeuntil As Integer = 0
-    If Not Exist(Trim(directorio)) Then Return Application.Path
-    If Comp(Trim(directorio), "", gb.IgnoreCase) = 0 Then Application.Path
-    If InStr(directorio, "/") < 1 Then Application.Path
+    If Comp(Trim(directorio), "", gb.IgnoreCase) = 0 Then Return Application.Path
+    If InStr(directorio, "/") < 1 Then Return Application.Path
     If levelparent = 0 Then
         tamanio = Len(directorio)
         atlast = RInStr(directorio, "/", 0)
@@ -110,7 +109,7 @@ Public Function getDirExist(Optional busca As String = Application.name, Optiona
     If atlast = 1 Then busca = Mid(busca, 2, tamanio)
     ' conctena y busca como una ruta absoluta en el sistema de ficheros de la lib
     directorio = directorio &/ busca
-    If Not Exist(directorio) Then Return "Falso " & directorio
+    If Not Exist(directorio) Then Return False
     Return directorio
     
 End
