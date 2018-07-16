@@ -30,13 +30,13 @@ Private outputfunction As String    '' variable interna para resultado del coman
 Public _requisites As String = "awk,ifconfig,sh,bash,less,head,tail,iconv,file"
 
 Property Read {Null} As Variant     '' emulacion de null para que una lib collecion lo admita
-Private $vNull As Variant           '' variable null emulada para que sea aceptada en una colleccion
+Private $vNull As Variant = Null    '' variable null emulada para que sea aceptada en una colleccion
 
 Property Read isrunide As Boolean   '' true o -1 si se esta ejecutando en el IDE, por ahora solo probado en linux
 
 Property Read runbasepath As String '' ruta base detectada, desde donde se invoca el ejecutable principal<br>Example: ./path/app will return /parent
 Property Read exebasepath As String '' ruta base detectada, desde donde se ejecuta el ejecutable principal<br>Example: ./path/app will return /parent/path/
-
+Property Read parbasepath As String '' ruta superior a base, desde donde se ejecuta el ejecutable principal<br>Example: ./path/app will return ./ or parent
 
 ' TODO  lsof -i :80 sirve en mac y linux
 
@@ -48,7 +48,7 @@ End
 
 
 '' verifica que los comando pasados separados por comma existan y se puedan ejecutar
-Public Function softck(sCommands As String, Optional bDisplayDialog As Boolean = True) As Boolean
+Public Function softchk(sCommands As String, Optional bDisplayDialog As Boolean = True) As Boolean
     
     Dim aDependencyCheck As New String[]
     Dim aCommands As New String[]
@@ -56,7 +56,7 @@ Public Function softck(sCommands As String, Optional bDisplayDialog As Boolean =
     Dim bResult As Boolean
     
     If Len(sCommands) < 1 Then
-        Return Null
+        Return True
     Endif
     aCommands = Split(sCommands, ",")
     
@@ -162,7 +162,7 @@ End
 
 
 
-Public Function CharacterSets() As String[] '' deveulve un arreglo con los tipos de codificaciones soportadas por el sistemaoperativo y su softwareinstalado
+Public Function CharSet() As String[] '' deveulve un arreglo con los tipos de codificaciones soportadas por el sistemaoperativo y su softwareinstalado
     
     Dim sIconvList As String
     Dim aCharacterSets As String[]
@@ -205,6 +205,16 @@ Private Function exebasepath_Read() As String
 
 End
 
+' retorna la ruta superior a base, desde donde se ejecuta el ejecutable principal<br>Example: ./path/app will return ./ or parent 
+Private Function parbasepath_Read() As String
+
+    Dim rutadearchivos As String = ""
+    rutadearchivos = exfile.getDirParent(Me.runbasepath, 1)
+    ' ambito de application.path, es la de excore si se corre desde aqui sino es la de el proyecto que implementa la lib
+    Return rutadearchivos
+
+End
+
 Private Function isrunide_Read() As Boolean
 
     Dim strProcess As String
@@ -217,4 +227,3 @@ Private Function isrunide_Read() As Boolean
     Endif
 
 End
-

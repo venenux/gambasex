@@ -8,21 +8,9 @@ Private commandshelltmp As String   '' variable interna para manejar el comando 
 Private outputfunction As String    '' variable interna para resultado del comando ejecutado en la rutina invocada
 Public _requisites As String = "df,mount,grep,cut,bash,iconv,file,soffice"
 
-Public Function CharacterSets() As String[] '' deveulve un arreglo con los tipos de codificaciones soportadas por el sistemaoperativo y su softwareinstalado
-    
-    Dim sIconvList As String
-    Dim aCharacterSets As String[]
-    
-    Shell "iconv --list" To sIconvList
-    sIconvList = Replace$(sIconvList, "//", "")
-    aCharacterSets = Split(sIconvList, "\n")
-    aCharacterSets.Remove(aCharacterSets.Max, 1)
-    Return aCharacterSets
-    
-End
-
 Public Function getMimeEncoding(sFilePath As String, Optional ruta As String = User.Home) As String '' devuelve el tipo de archivo si es texto plano o binario
     
+    ' ambito de application.path, es la de excore si se corre desde aqui sino es la de el proyecto que implementa la lib
     If Comp(Trim(ruta), "", gb.IgnoreCase) = 0 Then ruta = Application.Path
     If Comp(Trim(sFilePath), "", gb.IgnoreCase) = 0 Then Return Null
     If InStr(sFilePath, "/", 0, gb.IgnoreCase) = 0 Then sFilePath = ruta &/ sFilePath
@@ -69,6 +57,7 @@ End
 '' retorna el directorio padre unos `levelparent` arriba del argumento `directorio`, si son muchos niveles devuelve la raiz
 Public Function getDirParent(Optional directorio As String = Application.path, Optional levelparent As Integer = 1) As String
     
+    ' ambito de application.path, es la de excore si se corre desde aqui sino es la de el proyecto que implementa la lib
     Dim seconslas, atlast, tamanio, removeuntil As Integer = 0
     If Not Exist(Trim(directorio)) Then Return Application.Path
     If Comp(Trim(directorio), "", gb.IgnoreCase) = 0 Then Application.Path
@@ -96,9 +85,10 @@ Public Function getDirParent(Optional directorio As String = Application.path, O
     
 End
 
-'' verifica que un directorio existe dentro de la ruta segun la profundidad padre, ejemplo buscr por encima del directorio padre otros directorios, ejemplo `pepe/log` dentro de `/home/pablo` retorna `/home/pablo/pepe/log` o `False` si no existe
+'' verifica que un directorio existe dentro de la ruta segun la profundidad padre, ejemplo buscar por encima del directorio padre otros directorios, ejemplo `pepe/log` dentro de `/home/pablo` retorna `/home/pablo/pepe/log` o `False` si no existe \ @See exapp.ambito para ver ambito de application.name
 Public Function getDirExist(Optional busca As String = Application.name, Optional directorio As String = Application.Path, Optional levelparent As Integer = 0) As Variant
     
+    ' ambito de application.name, es excore si se corre desde aqui sino es elnombre de el proyecto que implementa la lib
     Dim seconslas, atlast, tamanio, removeuntil As Integer = 0
     directorio = getDirParent(directorio, levelparent)
     If Not IsDir(directorio) Then Return False
@@ -120,7 +110,7 @@ Public Function getDirExist(Optional busca As String = Application.name, Optiona
     If atlast = 1 Then busca = Mid(busca, 2, tamanio)
     ' conctena y busca como una ruta absoluta en el sistema de ficheros de la lib
     directorio = directorio &/ busca
-    If Not Exist(directorio) Then Return False
+    If Not Exist(directorio) Then Return "Falso " & directorio
     Return directorio
     
 End
