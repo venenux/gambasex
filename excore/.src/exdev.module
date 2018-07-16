@@ -1,15 +1,22 @@
 ' Gambas module file
 
-Public Sub ScanSerialPorts(sPath As String, sFilter As String) As Collection
+'' obtiene rutas de los puertos seriales para comunicacion rs232 o usb serial
+Public Sub getSerials(sPath As String, sFilter As String) As Collection
 
   Dim sName, sRealName, sById As String
   Dim aPortsById As String[]
   Dim aSerialPorts As String[]
   Dim cSerPort2ById As New Collection
   Dim cResult As New Collection
+#If System = "Linux"
   Dim sByIdPath As String = "/dev/serial/by-id/"
+#Else
+  Dim sByIdPath As String = "/dev/serial/"
+#Endif
 
- #If System.Family = "Linux"
+' TODO: esto actualmente no sirve porque solo busca seriales viejos, no escanea usb
+
+#If System = "Linux"
    ' get the serial devices with id's
   cSerPort2ById.Clear()
   Try aPortsById = Dir(sByIdPath)
