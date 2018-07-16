@@ -74,3 +74,29 @@ Public Function getIpall() As String[]    '' obtener todas las ip/direcciones de
     
 End
 
+'' obtiene todo el contenido de una url en una cadena/buffer para analizar **en crudo**, util para json, xml o para descargar binarios<br>@parameter url : la uri<br>@return string html de la respuesta, o string "" si invalido o no hay nada, string "-1" si invalido o agotado en server
+Public Function gethttpbuf(Optional urltogetinfo As String = "") As String
+    
+    Dim gethttpobj As New HttpClient
+    Dim tiempoespera As Integer = 5
+    Dim tiempoquepas As Integer = 0
+    Dim Buffer As String
+    
+    If Comp(Replace(urltogetinfo, " ", ""), "") = 0 Then Return ""
+    gethttpobj.url = urltogetinfo
+    gethttpobj.Get()
+    
+    While (Lof(gethttpobj) = False And tiempoquepas < tiempoespera)
+        tiempoquepas = tiempoquepas + 1 'espero 1 segundo o que llegue a>5
+        Try Wait 1
+    Wend
+    If tiempoquepas >= tiempoespera Or Lof(gethttpobj) = False Then
+        Return "-1"
+    Endif
+    If Lof(gethttpobj) Then
+        Read #gethttpobj, Buffer, Lof(gethttpobj)
+    End If
+    gethttpobj.Close()
+    Return buffer
+    
+End

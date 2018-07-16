@@ -144,7 +144,7 @@ End
 '' validacion de un texto/input sea solo letras pero incluye acentos y latinas, sin numeros ni espacios \ @return FALSE si no cumple o el texto original
 Public Function alphabeticalatin(objinput As Variant) As Variant
 
-    Dim int As Integer
+    Dim intl As Integer
     Dim strSymbol As String
     
     Dim stxRevise As New String[]
@@ -161,8 +161,8 @@ Public Function alphabeticalatin(objinput As Variant) As Variant
     stxLeters.Clear
     stxLeters = Split("a:b:c:d:e:f:g:h:i:j:k:l:m:n:o:p:q:r:s:t:u:v:w:x:y:z:A:B:C:D:E:F:G:H:I:J:K:L:M:N:O:P:Q:R:S:T:U:V:W:X:Y:Z:á:à:â:ã:é:è:ê:í:ï:ó:ô:õ:ö:ú:ç:ñ:Á:À:Â:Ã:É:È:Í:Ï:Ó:Ô:Õ:Ö:Ú:Ç:Ñ", ":")
     
-    For int = 1 To String.Len(texto)
-        strSymbol = String.Mid(texto, int, 1)
+    For Intl = 1 To String.Len(texto)
+        strSymbol = String.Mid(texto, Intl, 1)
         intKey = stxLeters.Find(strSymbol)
         If intKey > -1 Then
             stxRevise.Add(strSymbol)
@@ -199,7 +199,7 @@ End
  '' Validacion de si solo letras y números, con acentos y letras latinas. \ @return FALSE si no cumple o el texto original
 Public Function alphanumericlatin(strInput As String) As String
     
-    Dim int As Integer
+    Dim intl As Integer
     Dim strSymbol As String
     
     Dim stxLeters As New String[]
@@ -221,8 +221,8 @@ Public Function alphanumericlatin(strInput As String) As String
     stxRepin = Split("Á:À:Â:Ã:É:È:Ê:Í:Ï:Ó:Ô:Õ:Ö:Ú:Ñ:á:à:â:ã:é:è:ê:í:ï:ó:ô:õ:ö:ú:ñ", ":")
     stxRepout = Split("A:A:A:A:E:E:E:I:I:O:O:O:O:U:N:a:a:a:a:e:e:e:i:i:o:o:o:o:u:n", ":")
     
-    For int = 1 To String.Len(strInput)
-        strSymbol = String.Mid(strInput, int, 1)
+    For Intl = 1 To String.Len(strInput)
+        strSymbol = String.Mid(strInput, Intl, 1)
         intKey = stxLeters.Find(strSymbol)
         If intKey > -1 Then
             
@@ -271,11 +271,14 @@ Public Function email(objinput As Variant) As Variant
     
     Dim texto As String = getstrig(objinput)
     
+    ' TODO: buscar que existia antes de MAtch ya que gambas 3.1 no lo puede ver como simbolo
+#If Version > "3.2"
     If texto <> False Then
         If regex.Match(texto, strPattern, regex.Caseless) = True Then
             Return texto
         Endif
     Endif
+#Endif
     
     Return False
     
@@ -304,7 +307,7 @@ End
 '' solo texto cyrilico nada de latino o texto normal romanico ni numeros
 Public Function OnlyCyrilic(strInput As String) As String
     
-    Dim int As Integer
+    Dim intl As Integer
     Dim strSymbol As String
     
     Dim stxLeters As New String[]
@@ -321,8 +324,8 @@ Public Function OnlyCyrilic(strInput As String) As String
     
     stxLeters = Split("а:б:в:г:д:е:ё:ж:з:и:й:к:л:м:н:о:п:р:с:т:у:ф:х:ц:ч:ш:щ:ъ:ы:ь:э:ю:я:А:Б:В:Г:Д:Е:Ё:Ж:З:И:Й:К:Л:М:Н:О:П:Р:С:Т:У:Ф:Х:Ц:Ч:Ш:Щ:Ъ:Ы:Ь:Э:Ю:Я", ":")
     
-    For int = 1 To String.Len(strInput)
-        strSymbol = String.Mid(strInput, int, 1)
+    For Intl = 1 To String.Len(strInput)
+        strSymbol = String.Mid(strInput, Intl, 1)
         intKey = stxLeters.Find(strSymbol)
         If intKey > -1 Then
             stxOut.Add(strSymbol)
@@ -340,33 +343,6 @@ Public Function OnlyCyrilic(strInput As String) As String
 End
 
 ' ************** strings y URIs
-
-'' obtiene todo el contenido de una url en una cadena/buffer para analizar **en crudo**, util para json, xml o para descargar binarios<br>@parameter url : la uri<br>@return string html de la respuesta, o string "" si invalido o no hay nada, string "-1" si invalido o agotado en server
-Public Function gethttpbuf(Optional urltogetinfo As String = "") As String
-    
-    Dim gethttpobj As New HttpClient
-    Dim tiempoespera As Integer = 5
-    Dim tiempoquepas As Integer = 0
-    Dim Buffer As String
-    
-    If Comp(Replace(urltogetinfo, " ", ""), "") = 0 Then Return ""
-    gethttpobj.url = urltogetinfo
-    gethttpobj.Get()
-    
-    While (Lof(gethttpobj) = False And tiempoquepas < tiempoespera)
-        tiempoquepas = tiempoquepas + 1 'espero 1 segundo o que llegue a>5
-        Try Wait 1
-    Wend
-    If tiempoquepas >= tiempoespera Or Lof(gethttpobj) = False Then
-        Return "-1"
-    Endif
-    If Lof(gethttpobj) Then
-        Read #gethttpobj, Buffer, Lof(gethttpobj)
-    End If
-    gethttpobj.Close()
-    Return buffer
-    
-End
 
 ''Devuelve el segmento ultimo o parte segun de un uri o ruta dada de archivos
 Public Function urisegment(strInput As String, Optional segment As Integer = 999) As String
