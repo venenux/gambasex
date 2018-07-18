@@ -96,8 +96,10 @@ Public Function getstrig(ByRef objinput As Variant) As Variant
     Endif
     
     For Each simbol In classobj.Symbols
-        If Comp(simbol, "Text") = 0 Then    '' ve si es un control que tiene un input de texto y lo devuelve el string
+        If Comp(simbol, "Text") = 0 Then
             Return objinput.Text
+        Else
+            Return False    '' si es un control que tiene input texto lo devuelve el string, sino no tiene y es falso
         Endif
     Next
     
