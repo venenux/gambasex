@@ -57,10 +57,20 @@ End
 '' retorna el directorio padre unos `levelparent` arriba del argumento `directorio`, si son muchos niveles devuelve la raiz
 Public Function getDirParent(Optional directorio As String = Application.path, Optional levelparent As Integer = 1) As String
     
-    ' ambito de application.path, es la de excore si se corre desde aqui sino es la de el proyecto que implementa la lib
     Dim seconslas, atlast, tamanio, removeuntil As Integer = 0
-    If Comp(Trim(directorio), "", gb.IgnoreCase) = 0 Then Return Application.Path
-    If InStr(directorio, "/") < 1 Then Return Application.Path
+    If Comp(Trim(directorio), "", gb.IgnoreCase) = 0 Then
+        Return Application.Path
+    Endif
+    If InStr(directorio, "/") < 1 And Len(directorio) < 1 Then 
+        Return Application.Path
+    Endif
+    If InStr(directorio, "/") < 1 And Len(directorio) > 0 And exu.substr_count(directorio, "/") < 1 Then 
+        If levelparent = 0 Then
+            Return Application.Path &/ directorio
+        Else
+            directorio = Application.Path &/ directorio
+        Endif
+    Endif
     If levelparent = 0 Then
         tamanio = Len(directorio)
         atlast = RInStr(directorio, "/", 0)
@@ -79,7 +89,9 @@ Public Function getDirParent(Optional directorio As String = Application.path, O
         directorio = outputfunction
         If InStr(directorio, "/") < 1 Then Break
     Next
-    If Comp(Trim(directorio), "", gb.IgnoreCase) = 0 Then outputfunction = "/"
+    If Comp(Trim(directorio), "", gb.IgnoreCase) = 0 Then
+        outputfunction = "/"
+    Endif
     Return outputfunction
     
 End
@@ -90,7 +102,6 @@ Public Function getDirExist(Optional busca As String = Application.name, Optiona
     ' ambito de application.name, es excore si se corre desde aqui sino es elnombre de el proyecto que implementa la lib
     Dim seconslas, atlast, tamanio, removeuntil As Integer = 0
     directorio = getDirParent(directorio, levelparent)
-    If Not IsDir(directorio) Then Return False
     ' remocion de ultimo caracter si es "/"
     tamanio = Len(busca)
     atlast = RInStr(busca, "/", 0)
@@ -110,6 +121,7 @@ Public Function getDirExist(Optional busca As String = Application.name, Optiona
     ' conctena y busca como una ruta absoluta en el sistema de ficheros de la lib
     directorio = directorio &/ busca
     If Not Exist(directorio) Then Return False
+    If Not IsDir(directorio) Then Return False
     Return directorio
     
 End

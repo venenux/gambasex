@@ -1,21 +1,30 @@
 ' Gambas class file
 
+''' clase de configuracion inicial, inicia parametros de la aplicacion sea cliente o servidor y establece a donde se conectara asi como datos de entidad y conectividad
+
 Export
 
 Inherits Collection
 
-''' clase de configuracion inicial, inicia parametros de la aplicacion sea cliente o servidor y establece a donde se conectara asi como datos de entidad y conectividad
+'' propiedad que contiene ya cargado toda la configuraciones de aplicacion
+Property Read cfap As Settings
+
+'' propiedad que contiene ya cargado toda la configuraciones de db
+Property Read cfdb As Settings
+
+'' propiedad que contiene archivo de configuracion extra "<appname>config.conf" si existe en la ruta base
+Property Read cfnm As Settings
+
 
 '' dia y hora, sin minutos, en que establece los datos
 Private diadb As String = Format$(Now, "yyyymmddhh")
-'' nombre de archivo trabajo local por el sistema, usa 'diadb' como sufijo
-Private fileconfname As String = "exappconfig.conf"
-'' ruta completa a el archivo la ruta en uso por instancia
-Private fileconfruta As String = Application.path
-'' direccion del archvo cfg con ruta y nombre configurado
-Private filecfgfi As String = fileconfruta &/ fileconfname
+
+'' ruta base en que se inicia lso archivos, y sera tratada como ruta base app
+Private appbasepath As String = Application.Path
+'' direccion del archvo cfg con/sin ruta y nombre configurado
+Private filecfgfi As String = "exappconfig.conf"
 '' direccion del archvo db con ruta y nombre configurado
-Private filecfgdb As String = fileconfruta &/ "exdatabase.conf"
+Private filecfgdb As String = "exdatabase.conf"
 
 '' abstracion de la configuracion principal
 Private $appconfig As Settings = Null
@@ -24,100 +33,140 @@ Private $appconfdb As Settings = Null
 '' semaforo que determina si esta desde desarrollo
 Private $apponide As Boolean = Null
 
-'' propiedad que contiene ya cargado toda la configuraciones de aplicacion
-Property Read cfgap As Settings
-
-'' propiedad que contiene ya cargado toda la configuraciones de db
-Property Read cfgdb As Settings
-
-
-
-Private Sub preparefileconf()
-    
-    Dim filenameold As String = ""
-    Dim pathseppos0, pathseppos1, pathseppos2 As Integer = 0
-    
-    pathseppos0 = InStr(filecfgfi, "/")
-    pathseppos1 = RInStr(filecfgfi, "/")
-    pathseppos2 = RInStr(filecfgfi, ".conf")
-    fileconfname = Mid(filecfgfi, pathseppos1 + 1)
-    fileconfruta = Mid(filecfgfi, 1, pathseppos1 - 1)
-    filenameold = fileconfname
-    $apponide = exapp.isrunide
-    If $apponide = -2 Then
-        filecfgfi = Application.path &/ fileconfname
-    Else
-        If pathseppos0 < 1 Or pathseppos0 > 2 Then
-            filecfgfi = Application.Path &/ filecfgfi
-        Endif
-        If pathseppos0 < 1 Or pathseppos0 > 2 Then
-            fileconfruta = Mid(filecfgfi, 1, RInStr(filecfgfi, "/") - 1)
-        Endif
-        If pathseppos1 < 1 Or Comp(Trim(fileconfruta), "", gb.IgnoreCase) = 0 Then
-            fileconfruta = Application.Path
-        Endif
-        If fileconfname = Null And pathseppos2 < 1 Then
-            fileconfname = "exappconfig.conf"
-        Endif
-        If fileconfname <> Null And pathseppos2 < 1 Then
-            fileconfname = fileconfname & ".conf"
-        Endif
-        If filecfgfi = Null Or Comp(filecfgfi, "", gb.IgnoreCase) = 0 Then
-            filecfgfi = fileconfruta &/ fileconfname ' si no hay ruta o es nula armada de los individuales, en la siguiente corrobora que coordinen
-        Endif
-        If InStr(filecfgfi, fileconfname, 1, gb.IgnoreCase) < 1 Then
-            filecfgfi = fileconfruta &/ fileconfname ' debe estar en la ruta el archivo con extension y tambien al menos dos barras
-        Endif
-    Endif
-    If Not Exist(filecfgfi) Then
-        filecfgfi = "/etc" &/ filenameold
-    Endif
-    If Not Exist(filecfgfi) Then
-        filecfgfi = "/etc/exappconfig.conf"
-    Endif
-    If Not Exist(filecfgfi) Then
-        filecfgfi = "/etc" &/ Application.Name & ".conf"
-    Endif
-    If Not Exist(filecfgfi) Then
-        filecfgfi = User.Home &/ "." & fileconfname
-        Try Copy Application.path &/ fileconfname To filecfgfi
-        If Not Exist(filecfgfi) Then
-            filecfgfi = Application.path &/ "exappconfig.conf"
-        Endif
-    Endif
-    pathseppos1 = RInStr(filecfgfi, "/")
-    pathseppos2 = RInStr(filecfgfi, ".conf")
-    fileconfname = Mid(filecfgfi, pathseppos1 + 1)
-    fileconfruta = Mid(filecfgfi, 1, pathseppos1 - 1)
-    ' filecfgfi listo ahora el de db
-    filecfgdb = fileconfruta &/ "exdatabase.conf"
-    
-End
 
 '' si en el argumento se para la ruta completa la ruta base de la aplicacion sera la del aplicativo, sino sera app.path de la lib
-Public Sub _new(Optional filename As String = Application.Name &/ Application.Name & ".conf")
+Public Sub _new(Optional filename As String = "conf" &/ Application.Name & ".conf")
     
-    Dim cabeceraappconfig As String
-    Dim cabeceradbconfig As String
-    
-    '' prepar con valores por defecto antes de revisar los que se piden
-    If InStr(filename, "/", 0, gb.IgnoreCase) > 0 Then
-        filecfgfi = filename
-        fileconfname = Null
-    Else
-        filecfgfi = Null
-        fileconfname = filename
+    filename = "conf/pepe.conf"
+    If Comp(Trim(filename), "", gb.IgnoreCase) <> 0 Then
+        appbasepath = filename
     Endif
-    '' despues preparo pero con los archivos que se piden
+    '' las variables se han asignado se preparan en un proceso aparte
     preparefileconf
     
-    $appconfig = New Settings(filecfgfi)
-    $appconfdb = New Settings(filecfgdb)
+    Component.Load("gb.settings")
+#If Version > "3.2"
+    Component.Load("gb.util")
+#Endif
+    
+    $appconfig = New Settings(appbasepath &/ filecfgfi)
+    $appconfdb = New Settings(appbasepath &/ filecfgdb)
     
     preparevalores
     ' en cualquier caso, esto solo es en desarrollo, en produccion, creara un archivo nuevo vacio porque no encontrara cual copiar
     
 End
+
+Private Sub preparefileconf()
+    
+    Dim directoryvalid As Boolean = False
+    Dim appenv As Collection = Null
+    Dim dirparentpath, filenameold, fileconfname As String = ""
+    Dim pathseppos0, pathseppos1, pathseppos2, countslas, deppinc As Integer = 0
+    
+    pathseppos0 = InStr(appbasepath, "/")
+    pathseppos1 = RInStr(appbasepath, "/") ' posicion del penultimo separador de ruta antes del nombre de archivo
+    pathseppos2 = RInStr(appbasepath, ".conf")
+    
+    If pathseppos2 > 0 Then
+        fileconfname = Mid(appbasepath, pathseppos1 + 1)    ' nombre de archivo si existe en la variable
+        dirparentpath = exfile.getDirParent(appbasepath)    ' ruta copleta desde la provista sin nombre de archivo
+    Else
+        fileconfname = filecfgfi                            ' no se dio en el ruta, usa por defecto en la clase
+        dirparentpath = appbasepath                         ' la ruta dada es solo ruta pura, se usa directa
+    Endif
+    
+    If exu.substr_count(dirparentpath, "/") < 1 Then
+        dirparentpath = Application.Path &/ dirparentpath       ' no usemos rutas realitvas al detectar
+    Endif
+    
+    directoryvalid = Exist(dirparentpath)
+    If Not directoryvalid Then              ' busqueda recursiva en la ruta proporcionada has raiz root
+        While Not directoryvalid
+            deppinc = deppinc + 1
+            dirparentpath = exfile.getDirParent(dirparentpath, deppinc)
+            directoryvalid = Exist(dirparentpath)
+            If Not directoryvalid And Comp(dirparentpath, "/") = 0 Then
+                Break
+            Endif
+            If deppinc > 50 Then
+                deppinc = 0
+                Break
+            Endif
+        Wend
+    Endif           ' fin verificacion de ruta proporcionada, de aqui en adelante rutas de la lib
+    
+    If InStr(dirparentpath, "/conf", 1, gb.IgnoreCase) = 0 Then
+        dirparentpath = dirparentpath &/ "conf"
+    Endif
+    
+    directoryvalid = Exist(dirparentpath)                   ' directorio conf no existe dentro de app.path
+    If Not directoryvalid Then
+        dirparentpath = User.Home &/ "." & Application.Name &/ "conf"
+    Endif
+    
+    directoryvalid = Exist(dirparentpath)                   ' directorio conf no existe dentro de app.path
+    If Not directoryvalid Then
+        dirparentpath = User.Home &/ "conf"
+    Endif
+    
+    directoryvalid = Exist(dirparentpath)                   ' directorio conf no existe dentro de app.path
+    If Not directoryvalid Then
+        dirparentpath = Application.Path &/ "conf"
+    Endif
+    
+    directoryvalid = Exist(dirparentpath)                   ' directorio conf no existe dentro de app.path
+    If Not directoryvalid Then
+        dirparentpath = Application.Path
+        If InStr(dirparentpath, "bin") > 0 And InStr(dirparentpath, "usr") > 0 Then
+            dirparentpath = "/etc/ex" & Application.Name &/ "conf"
+        Endif
+    Endif
+    
+    directoryvalid = Exist(dirparentpath)                   ' directorio conf no existe dentro de app.path
+    If Not directoryvalid Then
+        dirparentpath = User.Home & "conf"
+    Endif
+    
+    appbasepath = dirparentpath
+    filecfgfi = fileconfname
+    
+    If Not Exist(appbasepath &/ filecfgfi) And directoryvalid Then
+        filecfgfi = "ex" & Application.Name & ".conf"
+    Endif
+    
+    If Not Exist(appbasepath &/ filecfgfi) And directoryvalid Then
+        filecfgfi = Application.Name & ".conf"
+    Endif
+    
+    If Not Exist(appbasepath &/ filecfgfi) And directoryvalid Then
+        filecfgfi = "exappconfig.conf"
+    Endif
+    
+    If exapp.isrunide Then
+        appbasepath = Application.Path &/ "conf"
+        If InStr(Application.Name, "ex", 1, gb.IgnoreCase) < 3 Then
+            filecfgfi = Application.Name & ".conf"
+        Else
+            filecfgfi = "ex" & Application.Name & ".conf"
+        Endif
+    Endif
+    
+    ' a este punto nunca la ruta sera el ejecutable mismo ni rutas relativas, por lo que jamas usaria los empaquetados internos
+    If Not Access(appbasepath &/ filecfgfi, gb.Read) And directoryvalid Then
+        filecfgfi = "exappconfig.conf"
+    Endif
+    
+    If Not Access(appbasepath &/ filecfgfi, gb.Read) And directoryvalid Then
+        dirparentpath = User.Home &/ "." & Application.Name &/ "conf"
+        appbasepath = dirparentpath
+    Endif
+    
+    If Not Access(appbasepath &/ filecfgfi, gb.Read) And directoryvalid Then
+        Error.Raise("cannot handle config")
+    Endif
+End
+
 
 Private Sub preparevalores()
     
@@ -127,109 +176,127 @@ Private Sub preparevalores()
     Dim var001, var002 As String
     Dim sSlot, sKey, value As String = exapp.Null
     
-    apppath = fileconfruta
+'     apppath = fileconfruta
+'     
+'     For Each sSlot In $appconfig.Keys               ' for each section in the config file
+'         If Comp("application", sSlot, gb.IgnoreCase) = 0 Then
+'             $appconfig[sSlot & "/apptype"] = $appconfig[sSlot & "/apptype", "app"]
+'             value = $appconfig[sSlot & "/apptype"]
+'             If Comp(value, "app", gb.IgnoreCase) = 0 Then
+'                 $appconfig[sSlot & "/appbase"] = $appconfig[sSlot & "/appbase", fileconfruta]
+'                 $appconfig[sSlot & "/appurl"] = $appconfig[sSlot & "/appurl", exapp.Null]
+'                 $appconfig[sSlot & "/appindex"] = $appconfig[sSlot & "/appindex", exapp.Null]
+'             Endif
+'             value = $appconfig[sSlot & "/apptype"]
+'             If Comp(value, "web", gb.IgnoreCase) = 0 Then
+'                 $appconfig[sSlot & "/appbase"] = $appconfig[sSlot & "/appbase", fileconfruta]
+'                 $appconfig[sSlot & "/appurl"] = $appconfig[sSlot & "/appurl", exapp.Null]
+'                 $appconfig[sSlot & "/appindex"] = $appconfig[sSlot & "/appindex", exapp.Null]
+'             Endif
+'         Endif
+'         If Comp("ubication", sSlot, gb.IgnoreCase) = 0 Then
+'             $appconfig[sSlot & "/appubiusr"] = $appconfig[sSlot & "/appubiusr", "9997"]
+'             $appconfig[sSlot & "/appubirun"] = $appconfig[sSlot & "/appubirun", "9998"]
+'             $appconfig[sSlot & "/appubiapp"] = $appconfig[sSlot & "/appubiapp", "9999"]
+'         Endif
+'     Next
+'     
+'     $appconfdb["database/activegroup"] = $appconfig["database/activegroup", "default"]
+'     $appconfdb["default/dbdriver"] = $appconfig["default/dbdriver", "sqlite3"]
+'     var001 = $appconfdb["default/dbdriver"]
+'     If Comp(var001, "sqlite3", gb.IgnoreCase) = 0 Then
+'         $appconfdb["default/username"] = $appconfig["default/username", exapp.Null]
+'         $appconfdb["default/password"] = $appconfig["default/password", exapp.Null]
+'         $appconfdb["default/database"] = $appconfig["default/database", exapp.Null] ' db en ram si no se especifica
+'         $appconfdb["default/hostname"] = $appconfig["default/hostname", exapp.Null]
+'     Else
+'         $appconfdb["default/username"] = $appconfig["default/username", "dba"]
+'         $appconfdb["default/password"] = $appconfig["default/password", "sql"]
+'         $appconfdb["default/database"] = $appconfig["default/database", "appdatabase"]
+'         $appconfdb["default/hostname"] = $appconfig["default/hostname", "127.0.0.1"]
+'         If Comp($appconfdb["default/hostname"], exapp.Null) = 0 Or Comp($appconfdb["default/hostname"], Null) Then
+'             $appconfdb["default/dbdriver"] = $appconfig["default/dbdriver", "sqlite3"]
+'             $appconfdb["default/username"] = $appconfig["default/username", exapp.Null]
+'             $appconfdb["default/password"] = $appconfig["default/password", exapp.Null]
+'             $appconfdb["default/database"] = $appconfig["default/database", exapp.Null] ' db en ram si no se especifica
+'             $appconfdb["default/hostname"] = $appconfig["default/hostname", exapp.Null]
+'         Endif
+'     Endif
+'     
+'     For Each sSlot In $appconfig.Keys               ' for each section in the config file
+'         For Each sKey In $appconfig.Keys[sSlot]
+'             Me.Add($appconfig[sSlot &/ sKey], sSlot &/ sKey)
+'         Next
+'     Next
+'     For Each sSlot In $appconfdb.Keys               ' for each section in the config file
+'         For Each sKey In $appconfdb.Keys[sSlot]
+'             If InStr(sSlot, dbprefixconf) > 1 Then
+'                 Me.Add($appconfdb[sSlot &/ sKey], sSlot &/ sKey)
+'             Else
+'                 Me.Add($appconfdb[sSlot &/ sKey], dbprefixconf & sSlot &/ sKey)
+'             Endif
+'         Next
+'     Next
+'     
+' End
+' 
+' ' sobreescritura de get, put y next par admitir null
+' 
+' Public Sub _get(Key As String) As Variant
+'   
+'   Dim vVal As Variant
+'   
+'   vVal = Super[Key]
+'   If TypeOf(vVal) = gb.Pointer And If vVal = exapp.Null Then vVal = Null
+'   Return vVal
+'   
+' End
+' 
+' Public Sub _put(Value As Variant, Key As String)
+'   
+'   If IsNull(Value) Then Value = exapp.Null
+'   Super[Key] = Value
+'   
+' End
+' 
+' Public Sub _next() As Variant
+'   
+'   Super._next()
+'   If Not Enum.Stopped Then Return _get(Me.Key)
+'   
+' End
+' 
+' 
+' ' permite leer configuracion de base de datos como objeto variable directa
+' 
+' Private Function cfgdb_Read() As Settings
+' 
+'     Return $appconfdb
+' 
+' End
+' 
+' ' permite leer configuracion archivo principal como objeto variable directa
+' 
+' Private Function cfgap_Read() As Settings
+
+'     Return $appconfig
+
+End
+
+Private Function cfnm_Read() As Settings
+
     
-    For Each sSlot In $appconfig.Keys               ' for each section in the config file
-        If Comp("application", sSlot, gb.IgnoreCase) = 0 Then
-            $appconfig[sSlot & "/apptype"] = $appconfig[sSlot & "/apptype", "app"]
-            value = $appconfig[sSlot & "/apptype"]
-            If Comp(value, "app", gb.IgnoreCase) = 0 Then
-                $appconfig[sSlot & "/appbase"] = $appconfig[sSlot & "/appbase", fileconfruta]
-                $appconfig[sSlot & "/appurl"] = $appconfig[sSlot & "/appurl", exapp.Null]
-                $appconfig[sSlot & "/appindex"] = $appconfig[sSlot & "/appindex", exapp.Null]
-            Endif
-            value = $appconfig[sSlot & "/apptype"]
-            If Comp(value, "web", gb.IgnoreCase) = 0 Then
-                $appconfig[sSlot & "/appbase"] = $appconfig[sSlot & "/appbase", fileconfruta]
-                $appconfig[sSlot & "/appurl"] = $appconfig[sSlot & "/appurl", exapp.Null]
-                $appconfig[sSlot & "/appindex"] = $appconfig[sSlot & "/appindex", exapp.Null]
-            Endif
-        Endif
-        If Comp("ubication", sSlot, gb.IgnoreCase) = 0 Then
-            $appconfig[sSlot & "/appubiusr"] = $appconfig[sSlot & "/appubiusr", "9997"]
-            $appconfig[sSlot & "/appubirun"] = $appconfig[sSlot & "/appubirun", "9998"]
-            $appconfig[sSlot & "/appubiapp"] = $appconfig[sSlot & "/appubiapp", "9999"]
-        Endif
-    Next
+
+End
+
+Private Function cfap_Read() As Settings
+
     
-    $appconfdb["database/activegroup"] = $appconfig["database/activegroup", "default"]
-    $appconfdb["default/dbdriver"] = $appconfig["default/dbdriver", "sqlite3"]
-    var001 = $appconfdb["default/dbdriver"]
-    If Comp(var001, "sqlite3", gb.IgnoreCase) = 0 Then
-        $appconfdb["default/username"] = $appconfig["default/username", exapp.Null]
-        $appconfdb["default/password"] = $appconfig["default/password", exapp.Null]
-        $appconfdb["default/database"] = $appconfig["default/database", exapp.Null] ' db en ram si no se especifica
-        $appconfdb["default/hostname"] = $appconfig["default/hostname", exapp.Null]
-    Else
-        $appconfdb["default/username"] = $appconfig["default/username", "dba"]
-        $appconfdb["default/password"] = $appconfig["default/password", "sql"]
-        $appconfdb["default/database"] = $appconfig["default/database", "appdatabase"]
-        $appconfdb["default/hostname"] = $appconfig["default/hostname", "127.0.0.1"]
-        If Comp($appconfdb["default/hostname"], exapp.Null) = 0 Or Comp($appconfdb["default/hostname"], Null) Then
-            $appconfdb["default/dbdriver"] = $appconfig["default/dbdriver", "sqlite3"]
-            $appconfdb["default/username"] = $appconfig["default/username", exapp.Null]
-            $appconfdb["default/password"] = $appconfig["default/password", exapp.Null]
-            $appconfdb["default/database"] = $appconfig["default/database", exapp.Null] ' db en ram si no se especifica
-            $appconfdb["default/hostname"] = $appconfig["default/hostname", exapp.Null]
-        Endif
-    Endif
+
+End
+
+Private Function cfdb_Read() As Settings
+
     
-    For Each sSlot In $appconfig.Keys               ' for each section in the config file
-        For Each sKey In $appconfig.Keys[sSlot]
-            Me.Add($appconfig[sSlot &/ sKey], sSlot &/ sKey)
-        Next
-    Next
-    For Each sSlot In $appconfdb.Keys               ' for each section in the config file
-        For Each sKey In $appconfdb.Keys[sSlot]
-            If InStr(sSlot, dbprefixconf) > 1 Then
-                Me.Add($appconfdb[sSlot &/ sKey], sSlot &/ sKey)
-            Else
-                Me.Add($appconfdb[sSlot &/ sKey], dbprefixconf & sSlot &/ sKey)
-            Endif
-        Next
-    Next
-    
-End
-
-' sobreescritura de get, put y next par admitir null
-
-Public Sub _get(Key As String) As Variant
-  
-  Dim vVal As Variant
-  
-  vVal = Super[Key]
-  If TypeOf(vVal) = gb.Pointer And If vVal = exapp.Null Then vVal = Null
-  Return vVal
-  
-End
-
-Public Sub _put(Value As Variant, Key As String)
-  
-  If IsNull(Value) Then Value = exapp.Null
-  Super[Key] = Value
-  
-End
-
-Public Sub _next() As Variant
-  
-  Super._next()
-  If Not Enum.Stopped Then Return _get(Me.Key)
-  
-End
-
-
-' permite leer configuracion de base de datos como objeto variable directa
-
-Private Function cfgdb_Read() As Settings
-
-    Return $appconfdb
-
-End
-
-' permite leer configuracion archivo principal como objeto variable directa
-
-Private Function cfgap_Read() As Settings
-
-    Return $appconfig
 
 End
