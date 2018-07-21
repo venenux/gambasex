@@ -41,6 +41,8 @@ Public Sub _new(Optional filename As String = "conf" &/ Application.Name & ".con
     If Comp(Trim(filename), "", gb.IgnoreCase) <> 0 Then
         appbasepath = filename
     Endif
+
+
     '' las variables se han asignado se preparan en un proceso aparte
     preparefileconf
     
@@ -55,6 +57,12 @@ Public Sub _new(Optional filename As String = "conf" &/ Application.Name & ".con
     preparevalores
     ' en cualquier caso, esto solo es en desarrollo, en produccion, creara un archivo nuevo vacio porque no encontrara cual copiar
     
+    Catch
+        
+        Print Error.Where
+        Print Error.Text
+        Error.Propagate
+    
 End
 
 Private Sub preparefileconf()
@@ -63,7 +71,6 @@ Private Sub preparefileconf()
     Dim appenv As Collection = Null
     Dim dirparentpath, filenameold, fileconfname As String = ""
     Dim pathseppos0, pathseppos1, pathseppos2, countslas, deppinc As Integer = 0
-    
     pathseppos0 = InStr(appbasepath, "/")
     pathseppos1 = RInStr(appbasepath, "/") ' posicion del penultimo separador de ruta antes del nombre de archivo
     pathseppos2 = RInStr(appbasepath, ".conf")
