@@ -35,16 +35,9 @@ Private $apponide As Boolean = Null
 
 
 '' si en el argumento se para la ruta completa la ruta base de la aplicacion sera la del aplicativo, sino sera app.path de la lib
-Public Sub _new(Optional filename As String = "conf" &/ Application.Name & ".conf")
+Public Sub _new()
     
-    filename = "conf/pepe.conf"
-    If Comp(Trim(filename), "", gb.IgnoreCase) <> 0 Then
-        appbasepath = filename
-    Endif
-
-
-    '' las variables se han asignado se preparan en un proceso aparte
-    preparefileconf
+    preparefileconf     '' las variables se han asignado se preparan en un proceso aparte
     
     Component.Load("gb.settings")
 #If Version > "3.2"
@@ -54,17 +47,17 @@ Public Sub _new(Optional filename As String = "conf" &/ Application.Name & ".con
     $appconfig = New Settings(appbasepath &/ filecfgfi)
     $appconfdb = New Settings(appbasepath &/ filecfgdb)
     
-    preparevalores
-    ' en cualquier caso, esto solo es en desarrollo, en produccion, creara un archivo nuevo vacio porque no encontrara cual copiar
+    preparevalores  ' en cualquier caso, esto solo es en desarrollo, en produccion, creara un archivo nuevo vacio porque no encontrara cual copiar
     
     Catch
-        
+    
         Print Error.Where
         Print Error.Text
         Error.Propagate
     
 End
 
+'' prepara tanto el directorio donde estaran los archivos de configuracion asi como los nombres de estos
 Private Sub preparefileconf()
     
     Dim directoryvalid As Boolean = False
@@ -183,127 +176,114 @@ Private Sub preparevalores()
     Dim var001, var002 As String
     Dim sSlot, sKey, value As String = exapp.Null
     
-'     apppath = fileconfruta
-'     
-'     For Each sSlot In $appconfig.Keys               ' for each section in the config file
-'         If Comp("application", sSlot, gb.IgnoreCase) = 0 Then
-'             $appconfig[sSlot & "/apptype"] = $appconfig[sSlot & "/apptype", "app"]
-'             value = $appconfig[sSlot & "/apptype"]
-'             If Comp(value, "app", gb.IgnoreCase) = 0 Then
-'                 $appconfig[sSlot & "/appbase"] = $appconfig[sSlot & "/appbase", fileconfruta]
-'                 $appconfig[sSlot & "/appurl"] = $appconfig[sSlot & "/appurl", exapp.Null]
-'                 $appconfig[sSlot & "/appindex"] = $appconfig[sSlot & "/appindex", exapp.Null]
-'             Endif
-'             value = $appconfig[sSlot & "/apptype"]
-'             If Comp(value, "web", gb.IgnoreCase) = 0 Then
-'                 $appconfig[sSlot & "/appbase"] = $appconfig[sSlot & "/appbase", fileconfruta]
-'                 $appconfig[sSlot & "/appurl"] = $appconfig[sSlot & "/appurl", exapp.Null]
-'                 $appconfig[sSlot & "/appindex"] = $appconfig[sSlot & "/appindex", exapp.Null]
-'             Endif
-'         Endif
-'         If Comp("ubication", sSlot, gb.IgnoreCase) = 0 Then
-'             $appconfig[sSlot & "/appubiusr"] = $appconfig[sSlot & "/appubiusr", "9997"]
-'             $appconfig[sSlot & "/appubirun"] = $appconfig[sSlot & "/appubirun", "9998"]
-'             $appconfig[sSlot & "/appubiapp"] = $appconfig[sSlot & "/appubiapp", "9999"]
-'         Endif
-'     Next
-'     
-'     $appconfdb["database/activegroup"] = $appconfig["database/activegroup", "default"]
-'     $appconfdb["default/dbdriver"] = $appconfig["default/dbdriver", "sqlite3"]
-'     var001 = $appconfdb["default/dbdriver"]
-'     If Comp(var001, "sqlite3", gb.IgnoreCase) = 0 Then
-'         $appconfdb["default/username"] = $appconfig["default/username", exapp.Null]
-'         $appconfdb["default/password"] = $appconfig["default/password", exapp.Null]
-'         $appconfdb["default/database"] = $appconfig["default/database", exapp.Null] ' db en ram si no se especifica
-'         $appconfdb["default/hostname"] = $appconfig["default/hostname", exapp.Null]
-'     Else
-'         $appconfdb["default/username"] = $appconfig["default/username", "dba"]
-'         $appconfdb["default/password"] = $appconfig["default/password", "sql"]
-'         $appconfdb["default/database"] = $appconfig["default/database", "appdatabase"]
-'         $appconfdb["default/hostname"] = $appconfig["default/hostname", "127.0.0.1"]
-'         If Comp($appconfdb["default/hostname"], exapp.Null) = 0 Or Comp($appconfdb["default/hostname"], Null) Then
-'             $appconfdb["default/dbdriver"] = $appconfig["default/dbdriver", "sqlite3"]
-'             $appconfdb["default/username"] = $appconfig["default/username", exapp.Null]
-'             $appconfdb["default/password"] = $appconfig["default/password", exapp.Null]
-'             $appconfdb["default/database"] = $appconfig["default/database", exapp.Null] ' db en ram si no se especifica
-'             $appconfdb["default/hostname"] = $appconfig["default/hostname", exapp.Null]
-'         Endif
-'     Endif
-'     
-'     For Each sSlot In $appconfig.Keys               ' for each section in the config file
-'         For Each sKey In $appconfig.Keys[sSlot]
-'             Me.Add($appconfig[sSlot &/ sKey], sSlot &/ sKey)
-'         Next
-'     Next
-'     For Each sSlot In $appconfdb.Keys               ' for each section in the config file
-'         For Each sKey In $appconfdb.Keys[sSlot]
-'             If InStr(sSlot, dbprefixconf) > 1 Then
-'                 Me.Add($appconfdb[sSlot &/ sKey], sSlot &/ sKey)
-'             Else
-'                 Me.Add($appconfdb[sSlot &/ sKey], dbprefixconf & sSlot &/ sKey)
-'             Endif
-'         Next
-'     Next
-'     
-' End
+     apppath = appbasepath
+     
+     For Each sSlot In $appconfig.Keys               ' for each section in the config file
+        If Comp("application", sSlot, gb.IgnoreCase) = 0 Then
+            $appconfig[sSlot & "/apptype"] = $appconfig[sSlot & "/apptype", "app"]
+            value = $appconfig[sSlot & "/apptype"]
+            If Comp(value, "app", gb.IgnoreCase) = 0 Then
+                $appconfig[sSlot & "/appbase"] = $appconfig[sSlot & "/appbase", exfile.getDirParent(appbasepath)]
+                $appconfig[sSlot & "/appurl"] = $appconfig[sSlot & "/appurl", " "]
+                $appconfig[sSlot & "/appindex"] = $appconfig[sSlot & "/appindex", " "]
+            Endif
+            value = $appconfig[sSlot & "/apptype"]
+            If Comp(value, "web", gb.IgnoreCase) = 0 Then
+                $appconfig[sSlot & "/appbase"] = $appconfig[sSlot & "/appbase", exfile.getDirParent(appbasepath)]
+                $appconfig[sSlot & "/appurl"] = $appconfig[sSlot & "/appurl", " "]
+                $appconfig[sSlot & "/appindex"] = $appconfig[sSlot & "/appindex", " "]
+            Endif
+        Endif
+        If Comp("ubication", sSlot, gb.IgnoreCase) = 0 Then
+            $appconfig[sSlot & "/appubiusr"] = $appconfig[sSlot & "/appubiusr", "9997"]
+            $appconfig[sSlot & "/appubirun"] = $appconfig[sSlot & "/appubirun", "9998"]
+            $appconfig[sSlot & "/appubiapp"] = $appconfig[sSlot & "/appubiapp", "9999"]
+        Endif
+    Next
+    
+    $appconfdb["database/activegroup"] = $appconfig["database/activegroup", "default"]
+    $appconfdb["default/dbdriver"] = $appconfig["default/dbdriver", "sqlite3"]
+    var001 = $appconfdb["default/dbdriver"]
+    If Comp(var001, "sqlite3", gb.IgnoreCase) = 0 Then
+        $appconfdb["default/username"] = $appconfig["default/username", " "]
+        $appconfdb["default/password"] = $appconfig["default/password", ""]
+        $appconfdb["default/database"] = $appconfig["default/database", " "] ' db en ram si no se especifica
+        $appconfdb["default/hostname"] = $appconfig["default/hostname", " "]
+    Else
+        $appconfdb["default/username"] = $appconfig["default/username", "dba"]
+        $appconfdb["default/password"] = $appconfig["default/password", "sql"]
+        $appconfdb["default/database"] = $appconfig["default/database", "appdatabase"]
+        $appconfdb["default/hostname"] = $appconfig["default/hostname", "127.0.0.1"]
+        If Comp($appconfdb["default/hostname"], exapp.Null) = 0 Or Comp($appconfdb["default/hostname"], Null) Then
+            $appconfdb["default/dbdriver"] = $appconfig["default/dbdriver", "sqlite3"]
+            $appconfdb["default/username"] = $appconfig["default/username", exapp.Null]
+            $appconfdb["default/password"] = $appconfig["default/password", exapp.Null]
+            $appconfdb["default/database"] = $appconfig["default/database", exapp.Null] ' db en ram si no se especifica
+            $appconfdb["default/hostname"] = $appconfig["default/hostname", exapp.Null]
+        Endif
+    Endif
+    
+    For Each sSlot In $appconfig.Keys               ' for each section in the config file
+        For Each sKey In $appconfig.Keys[sSlot]
+            Me.Add($appconfig[sSlot &/ sKey], sSlot &/ sKey)
+        Next
+    Next
+    For Each sSlot In $appconfdb.Keys               ' for each section in the config file
+        For Each sKey In $appconfdb.Keys[sSlot]
+            If InStr(sSlot, dbprefixconf) > 1 Then
+                Me.Add($appconfdb[sSlot &/ sKey], sSlot &/ sKey)
+            Else
+                Me.Add($appconfdb[sSlot &/ sKey], dbprefixconf & sSlot &/ sKey)
+            Endif
+        Next
+    Next
+    
+End
 ' 
-' ' sobreescritura de get, put y next par admitir null
-' 
-' Public Sub _get(Key As String) As Variant
-'   
-'   Dim vVal As Variant
-'   
-'   vVal = Super[Key]
-'   If TypeOf(vVal) = gb.Pointer And If vVal = exapp.Null Then vVal = Null
-'   Return vVal
-'   
-' End
-' 
-' Public Sub _put(Value As Variant, Key As String)
-'   
-'   If IsNull(Value) Then Value = exapp.Null
-'   Super[Key] = Value
-'   
-' End
-' 
-' Public Sub _next() As Variant
-'   
-'   Super._next()
-'   If Not Enum.Stopped Then Return _get(Me.Key)
-'   
-' End
-' 
-' 
-' ' permite leer configuracion de base de datos como objeto variable directa
-' 
-' Private Function cfgdb_Read() As Settings
-' 
-'     Return $appconfdb
-' 
-' End
-' 
-' ' permite leer configuracion archivo principal como objeto variable directa
-' 
-' Private Function cfgap_Read() As Settings
+' sobreescritura de get, put y next par admitir null
 
-'     Return $appconfig
+Public Sub _get(Key As String) As Variant
+  
+  Dim vVal As Variant
+  
+  vVal = Super[Key]
+  If TypeOf(vVal) = Null Or If vVal = "" Or If vVal = Null Then 
+    vVal = " "
+  Else 
+    If TypeOf(vVal) = gb.Pointer And If vVal = exapp.Null Then vVal = " "
+  Endif
+  Return vVal
+  
+End
 
+Public Sub _put(Value As Variant, Key As String)
+  
+  If IsNull(Value) Then Value = " "
+  Super[Key] = Value
+  
+End
+
+Public Sub _next() As Variant
+  
+  Super._next()
+  If Not Enum.Stopped Then Return _get(Me.Key)
+  
 End
 
 Private Function cfnm_Read() As Settings
 
-    
+    Return $appconfig
 
 End
 
 Private Function cfap_Read() As Settings
 
-    
+    Return $appconfig
 
 End
 
 Private Function cfdb_Read() As Settings
 
-    
+    Return $appconfdb
 
 End
