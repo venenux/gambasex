@@ -11,7 +11,7 @@ Private outputfunction As String    '' variable interna para resultado ofrecido 
 '' substr_count - Count the number of substring occurrences, default is case sensitive
 Public Function substr_count(strInput As String, pattern As String, Optional compare As Integer = gb.Binary) As Integer 
     
-    Dim i, n As Integer
+    Dim i, n As Integer = 0
     
     While i <= Len(strInput)
         i = InStr(strInput, pattern, i + 1, compare)
@@ -95,13 +95,11 @@ Public Function getstrig(ByRef objinput As Variant) As Variant
         classobj = objinput
     Endif
     
-    For Each simbol In classobj.Symbols
-        If Comp(simbol, "Text") = 0 Then
+    If classobj.Symbols.Exist("Text") Then
             Return objinput.Text
-        Else
+    Else
             Return False    '' si es un control que tiene input texto lo devuelve el string, sino no tiene y es falso
-        Endif
-    Next
+    Endif
     
     
     Return CStr(objinput)
