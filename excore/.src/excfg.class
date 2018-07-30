@@ -34,7 +34,7 @@ Private $appconfdb As Settings = Null
 Private $apponide As Boolean = Null
 
 
-'' si en el argumento se para la ruta completa la ruta base de la aplicacion sera la del aplicativo, sino sera app.path de la lib
+'' colleccion de configuraciones, el argumento es si las llaves seran sensible mayusculas
 Public Sub _new()
     
     preparefileconf     '' las variables se han asignado se preparan en un proceso aparte
@@ -172,6 +172,8 @@ Private Sub preparevalores()
     
     Dim dbdefaultits As Boolean = False
     Dim dbprefixconf As String = "db_"
+    Dim inidefaultdbtype As String = "sqlite3"
+    Dim inidefaultdbgrou As String = "default"
     Dim apppath As String
     Dim var001, var002 As String
     Dim sSlot, sKey, value As String = exapp.Null
@@ -201,25 +203,27 @@ Private Sub preparevalores()
         Endif
     Next
     
-    $appconfdb["database/activegroup"] = $appconfig["database/activegroup", "default"]
-    $appconfdb["default/dbdriver"] = $appconfig["default/dbdriver", "sqlite3"]
+    inidefaultdbtype = "sqlite3"
+    inidefaultdbgrou = "default"
+    $appconfdb["database/activegroup"] = $appconfdb["database/activegroup", inidefaultdbgrou]
+    $appconfdb["default/dbdriver"] = $appconfdb["default/dbdriver", inidefaultdbtype]
     var001 = $appconfdb["default/dbdriver"]
     If Comp(var001, "sqlite3", gb.IgnoreCase) = 0 Then
-        $appconfdb["default/username"] = $appconfig["default/username", " "]
-        $appconfdb["default/password"] = $appconfig["default/password", ""]
-        $appconfdb["default/database"] = $appconfig["default/database", " "] ' db en ram si no se especifica
-        $appconfdb["default/hostname"] = $appconfig["default/hostname", " "]
+        $appconfdb["default/username"] = $appconfdb["default/username", ""]
+        $appconfdb["default/password"] = $appconfdb["default/password", ""]
+        $appconfdb["default/database"] = $appconfdb["default/database", ""] ' db en ram si no se especifica
+        $appconfdb["default/hostname"] = $appconfdb["default/hostname", ""]
     Else
-        $appconfdb["default/username"] = $appconfig["default/username", "dba"]
-        $appconfdb["default/password"] = $appconfig["default/password", "sql"]
-        $appconfdb["default/database"] = $appconfig["default/database", "appdatabase"]
-        $appconfdb["default/hostname"] = $appconfig["default/hostname", "127.0.0.1"]
-        If Comp($appconfdb["default/hostname"], exapp.Null) = 0 Or Comp($appconfdb["default/hostname"], Null) Then
-            $appconfdb["default/dbdriver"] = $appconfig["default/dbdriver", "sqlite3"]
-            $appconfdb["default/username"] = $appconfig["default/username", exapp.Null]
-            $appconfdb["default/password"] = $appconfig["default/password", exapp.Null]
-            $appconfdb["default/database"] = $appconfig["default/database", exapp.Null] ' db en ram si no se especifica
-            $appconfdb["default/hostname"] = $appconfig["default/hostname", exapp.Null]
+        $appconfdb["default/username"] = $appconfdb["default/username", "dba"]
+        $appconfdb["default/password"] = $appconfdb["default/password", "sql"]
+        $appconfdb["default/database"] = $appconfdb["default/database", "appdatabase"]
+        $appconfdb["default/hostname"] = $appconfdb["default/hostname", "127.0.0.1"]
+        If Comp($appconfdb["default/hostname"], exapp.Null) = 0 Or Comp($appconfdb["default/hostname"], Null) Or Comp(Trim($appconfdb["default/hostname"]), "") = 0 Then
+            $appconfdb["default/dbdriver"] = $appconfdb["default/dbdriver", "sqlite3"]
+            $appconfdb["default/username"] = $appconfdb["default/username", ""]
+            $appconfdb["default/password"] = $appconfdb["default/password", ""]
+            $appconfdb["default/database"] = $appconfdb["default/database", ""] ' db en ram si no se especifica
+            $appconfdb["default/hostname"] = $appconfdb["default/hostname", ""]
         Endif
     Endif
     
