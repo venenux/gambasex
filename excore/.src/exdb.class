@@ -10,8 +10,10 @@ Inherits Collection
 Private $appconfig As Settings = Null
 '' abstracion de la configuracion basedatos
 Private $appconfdb As Settings = Null
+'' nombre de la conex a base de datos activa
+Private $dbactive As String = "default"
 
-Property Read set As String         '' configura el objeto connection actual en "db" para trabajar querys directo segun el argumento o devuelve el nombre actual de la conexcion
+Property set As String         '' configura el objeto connection actual en "db" para trabajar querys directo segun el argumento o devuelve el nombre actual de la conexcion
 Property Read dat As Connection     '' connecion db local en ram
 Property Read db As Connection      '' conneccion por defecto en configuracion "default group"
 
@@ -21,25 +23,81 @@ Private $db As Connection
 '' prepara una instancia del pool de las conexciones a las bases de datos, el error si alguno ocurre esta en el ultimo elemento
 Public Sub _new()
     
-    Dim config As New Excfg(gb.IgnoreCase, exapp.exebasepath)
+    Dim config As New Excfg
     
-    $appconfdb = config.cfgdb
-    preparaConexiones
+#If Version > "3.7"
+    Component.Load("gb.logging")
+#Else
+    Print "iniciando logging y config"
+#Endif
+    Print config.cfdb.Path
+    $appconfdb = config.cfdb
+    _conFactory()
+    _conOpenini()
     
 End
 
+Public Sub _free()
+    
+    _conCloseAll()    ' destructor de todas las conexciones al liberarse la clase o recurso
+    
+End
+
+'' destructor de todas las conexciones al liberarse la clase o recurso
+Private Sub _conCloseAll()
+    
+    Dim iterat As Variant
+    
+    For Each iterat In Me
+        If Not IsNull(iterat) Then
+            If TypeOf(iterat) = gb.Object Then
+                If Object.Class(iterat).Symbols.Exist("Opened", gb.IgnoreCase) Then
+                    Try iterat.Close
+                Endif
+            Endif
+        Endif
+    Next
+    
+End
+
+Private Sub _conOpenini()
+    
+    Dim iterat As Variant
+    
+    For Each iterat In Me
+        If Not IsNull(iterat) Then
+            If TypeOf(iterat) = gb.Object Then
+                If Object.Class(iterat).Symbols.Exist("Opened", gb.IgnoreCase) Then
+                    Try iterat.Open
+                    If iterat.Opened Then
+                        iterat.Close
+                        $db = iterat
+                        If Me.key = $dbactive Then
+                            Break    ' si la conex defautl es valida no busquemos mas
+                        Else
+                            $dbactive = Me.Key
+                        Endif
+                    Endif
+                Endif
+            Endif
+        Endif
+    Next
+    
+End
+
+
 '' constructor del pool de las conexciones indicadas en configuracion
-Private Sub preparaConexiones() As Boolean
+Private Sub _conFactory() As Boolean
     
     Dim dbusr, dbnam, dbip, dbpor, dbpas As String = ""
     Dim apploc, appusr, appmac As String = ""
     Dim $con As Connection
-    Dim dbdef, dbram, sSlot, sKey, value As String = exapp.Null
+    Dim sSlot, sKey, value As String = exapp.Null
     
     For Each sSlot In $appconfdb.Keys               ' for each section in the config file
         
         If Comp("database", sKey, gb.IgnoreCase) = 0 Then
-            dbdef = $appconfdb[sSlot &/ "activegroup"]
+            $dbactive = $appconfdb[sSlot &/ "activegroup"]
             Continue
         Endif
         
@@ -67,13 +125,7 @@ Private Sub preparaConexiones() As Boolean
             
         Next
         
-        Try $con.Open()
-        
-        Me.Add($con, sSlot)
-        
-        If Comp(dbdef, sSlot, gb.IgnoreCase) = 0 Then
-            $db = $con
-        Endif
+        Me.Add($con, sSlot) ' lleno el arreglo de conexciones, la por defecto y validaciones estan en _conOpenini
         
     Next
     
@@ -92,8 +144,12 @@ Public Sub _get(Key As String) As Variant
         Endif
     Endif
     
-    If TypeOf(vVal) = gb.Object Then
-        Try vVal.Open
+    If TypeOf(vVal) = gb.Object And Not IsNull(vVal) Then
+        If Object.Class(vVal).Symbols.Exist("Opened", gb.IgnoreCase) Then
+            If Not vVal.Opened Then
+                Try vVal.Open
+            Endif
+        Endif
     Endif
     
     Return vVal
@@ -120,33 +176,7 @@ Public Sub _next() As Variant
     
 End
 
-'' instancia db memoria conexcion hacia '$conexdbram' \ es sqlite en memoria, manejese con cuidado
-Private Sub preparaConexionram()
-    
-    '     If conninmemmavailable And Not IsNull($conexdbram) Then          ' verificar si la conexcion activa y valida
-    '         If $conexdbram.Opened And $conexdbram.Name = "" Then      ' si es valida verificar activa y de memoria
-    '             $conexciones.Add($conexdbram, 0)                       ' si todo bien, reinsertar en el pool como primera
-    '             conninmemmavailable = True              ' reemplazo le index 0 por la activa seguro y devuelvo esta conexcion
-    '         Else
-    '             Goto REINICIARDBMEM
-    '         Endif
-    '     Else
-    ' REINICIARDBMEM:
-    '         $conexdbram = New Connection
-    '         $conexdbram.Type = "sqlite3"             'esto siempre va en minusculas: always must be lowercase
-    '         $conexdbram.Name = Null
-    '         Try $conexdbram.Open
-    '         If Error Then
-    '             $conexdbram = Null
-    '             conninmemmavailable = False
-    '         Endif
-    '         $conexciones.Add($conexdbram, 0)
-    '         conninmemmavailable = True
-    '     Endif
-    '     
-End
-
-
+' instancia db memoria conexcion hacia '$conexdbram' \ es sqlite en memoria, manejese con cuidado
 Private Function dat_Read() As Connection
     
     Try $dat.Open
@@ -155,19 +185,32 @@ Private Function dat_Read() As Connection
     
 End
 
+' instancia db activa y en uso por defecto, aunque cualquier otra se puede usar llamando su llave key
 Private Function db_Read() As Connection
     
-    ' TODO falta sacar la db actual y setear or la defecto, si no existe la defecto setearla por la primera que funcione
+    If IsNull($db) Then
+        Return Null
+    Endif
+    
     Try $db.Open
     ' TODO verificar que todo este en orden antes de retornarla
     Return $db
     
 End
 
+' devuelve el nombre de la conexcion a db activa
 Private Function set_Read() As String
 
-    ' TODO asignar la db segun el nombre dato, pero verificar que este nombre sea valido
+    Return $dbactive
 
 End
 
+' asigna y de paso abre al conexcion de base de datos segun el nombre
+Private Sub set_Write(Value As String)
 
+    If Comp(Trim(value), "", gb.IgnoreCase) = 0 Then
+        value = "default"
+    Endif
+    $db = Me[value]
+
+End
