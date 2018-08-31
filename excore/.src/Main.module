@@ -5,17 +5,17 @@ Public Sub Main()
     Dim ver As String = Application.Path
     Dim cofig As New Excfg
     Dim dbobj As New Exdb
-  '  Dim pepe As New Exlo
-'     Class.Load("pepe")
-    'dbobj["conex0"].Exec("select 'pepe' as ba")
+
+    ' se especifica que conexcion se desea usar, es opcional y si no se hace el la primera funcional o la "default"
+    dbobj.set = "default"
+    ' si no se especifica que nombre/grupo de conexcion a db se usara la primera funcional o la default
+    dbobj.db.Exec("select 'pepe' as ba")
     
     ' obtiene el nombre de dispositivo desde arbol udev
     Print exfile.getFileDev("/home/remoto")
     ' btiene el nombre del formato del sistema de ficheros
     Print exfile.getFileSys("/home/remoto")
     
-    ' ejemplo de obtencion de configuracion
-    Print cofig.cfgdb["conex0/hostname"]
     ' ejemplo de deteccion de rutas desde donde se realiza la invocacion pero no esta la app
     Print exapp.runbasepath
     ' ejemplo de deteccion de rutas desde donde esta la aplicacion que se esta invocando

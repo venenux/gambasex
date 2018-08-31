@@ -217,7 +217,7 @@ End
 
 Public Function SysFile(ruta As String) As String '' migrado: alias de [mf.getFileSys]
     
-    Return msf.getFileSys(ruta)
+    Return emf.getFileSys(ruta)
     
 End
 
@@ -320,7 +320,7 @@ Public Function AddressIP() As String 'devuelve las Ips configuradas en el equip
     
     Dim sIPs As String
     
-    sIPs = msn.getIpdef(msn.getIfdef())
+    sIPs = emn.getIpdef(emn.getIfdef())
     Return RTrim(Replace(sIPs, "\n", " "))
     
 End
@@ -329,7 +329,7 @@ Public Function LastNIP() As String 'devuelve el último digito de la Ip
     
     Dim sIPs As String[]
     
-    sIPs = Split(msn.getIpdef(msn.getIfdef()), ".")
+    sIPs = Split(emn.getIpdef(emn.getIfdef()), ".")
     Return RTrim(Replace(sIPs[sIPs.Max], "\n", " "))
     
 End
