@@ -1,0 +1,10 @@
+[Connection]
+Type="sqlite"
+Path="/home/remoto/Devel/gambasex/excore/excore/data"
+RememberPassword=False
+IgnoreCharset=False
+DisplayMetadata=False
+RememberTemplate=False
+Database="excoredbin.dat"
+Requests=[""]
+

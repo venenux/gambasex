@@ -1,0 +1,348 @@
+#exapp
+
+C
+'System application resources utilities functions \
+'\
+'Se detecta toda informacion de la aplicacion corriendo actualmente, \ ojo: una lib tambien puede ejecutarse como app si tiene un starter modulo/clase
+_requisites
+V
+s
+
+'variable interna para manejar el comando ejecutado en la rutina invocada
+'variable interna para resultado del comando ejecutado en la rutina invocada
+Null
+R
+v
+
+'emulacion de null para que una lib collecion lo admita
+isrunide
+R
+b
+
+'true o -1 si se esta ejecutando en el IDE, por ahora solo probado en linux
+runbasepath
+R
+s
+
+'ruta base detectada, desde donde se invoca el ejecutable principal<br>Example: ./path/app will return /parent
+exebasepath
+R
+s
+
+'ruta base detectada, desde donde se ejecuta el ejecutable principal<br>Example: ./path/app will return /parent/path/
+parbasepath
+R
+s
+
+'ruta superior a base, desde donde se ejecuta el ejecutable principal<br>Example: ./path/app will return ./ or parent
+_init
+M
+
+
+softchk
+M
+b
+(sCommands)s[(bDisplayDialog)b]
+'verifica que los comando pasados separados por comma existan y se puedan ejecutar
+Distron
+M
+s
+
+'nombre de la distro instalada o metadistro <br> @return String
+Distrom
+M
+s
+
+'nombre de la distro madre o raiz <br> @return String
+Procs
+M
+v
+[(nameproc)s]
+'devuelve cadena con los proceso esta ejecutandose actualemnte, que tangan nombre similar, si se pasa el nombre verifica un proceso de ese mismo nombre**OJO: si hay mas de un app ejecutandose obtendra el nombre de los procesos respectivos que implementen esta funcion por la lib**
+ProcPid
+M
+v
+[(nameproc)s]
+'obtener el pid del proceso `nameproc` si no se especifica obtiene el pid del applicatiovo que ejecuta **OJO: si hay mas de un app ejecutandose obtendra el pid de los procesos respectivos que implementen esta funcion por la lib**
+CharSet
+M
+String[]
+
+'deveulve un arreglo con los tipos de codificaciones soportadas por el sistemaoperativo y su softwareinstalado
+#excfg
+Collection
+C
+'clase de configuracion inicial, inicia parametros de la aplicacion sea cliente o servidor y establece a donde se conectara asi como datos de entidad y conectividad
+cfap
+r
+Settings
+
+'propiedad que contiene ya cargado toda la configuraciones de aplicacion
+cfdb
+r
+Settings
+
+'propiedad que contiene ya cargado toda la configuraciones de db
+cfnm
+r
+Settings
+
+'propiedad que contiene archivo de configuracion extra "<appname>config.conf" si existe en la ruta base
+_new
+m
+
+[(filename)s]
+'si en el argumento se para la ruta completa la ruta base de la aplicacion sera la del aplicativo, sino sera app.path de la lib
+#exdb
+Collection
+C
+'clase de manejo de conexciones a base de datos indicadas, tiene dos conexciones, una en memoria y otra remota de db central, TODO: pool de conexciones de n conexciones
+set
+r
+s
+
+'configura el objeto connection actual en "db" para trabajar querys directo segun el argumento o devuelve el nombre actual de la conexcion
+dat
+r
+Connection
+
+'connecion db local en ram
+db
+r
+Connection
+
+'conneccion por defecto en configuracion "default group"
+_new
+m
+
+
+'prepara una instancia del pool de las conexciones a las bases de datos, el error si alguno ocurre esta en el ultimo elemento
+_get
+m
+v
+(Key)s
+_put
+m
+
+(value)v(Key)s
+_next
+m
+v
+
+#exfile
+
+C
+'modulo de utilidades respecto el sistema de ficheros, requiere `libreoffice` para conversiones, `openoffice` solo para visor
+_requisites
+V
+s
+
+'variable interna para manejar el comando ejecutado en la rutina invocada
+'variable interna para resultado del comando ejecutado en la rutina invocada
+getMimeEncoding
+M
+s
+(sFilePath)s[(ruta)s]
+'devuelve el tipo de archivo si es texto plano o binario
+getMimeType
+M
+s
+(sFilePath)s[(ruta)s]
+'devuelve el tipo de archivo en forma mime ambito/tipo la ruta debe ser absoluta, sino entonces asume raiz dcel proyecto
+getFileDev
+M
+s
+[(ruta)s]
+'devuelve el dispositivo o disco, segun ruta, sino el del sistema de ficheros raiz, si es mapeado no devuelve el dispositivo real, solo el mapa
+getFileSys
+M
+s
+[(directorio)s]
+'devuelve el sistema de ficheros, segun `directorio`, sino el sistema de ficheros raiz, si no es valido/montado no devuelve nada
+getDirParent
+M
+s
+[(directorio)s(levelparent)i]
+'retorna el directorio padre unos `levelparent` arriba del argumento `directorio`, si son muchos niveles devuelve la raiz
+getDirExist
+M
+v
+[(busca)s(directorio)s(levelparent)i]
+'verifica que un directorio existe dentro de la ruta segun la profundidad padre, ejemplo buscar por encima del directorio padre otros directorios, ejemplo `pepe/log` dentro de `/home/pablo` retorna `/home/pablo/pepe/log` o `False` si no existe \ @See exapp.ambito para ver ambito de application.name
+caltoods
+M
+s
+[(namefile)s(pathfile)s]
+'exporta un archivo csv o excel a ods en donde se ejecute el modulo, @return: ruta de donde se guarda el resultado
+#exini
+
+C
+appname
+r
+s
+
+appconfig
+p
+Settings
+
+#exlog
+
+C
+' generacion de trazas para el seguimiento de los sucesos de un aplicativo. \ gambas > 3.5 ya tiene uan pero esta es generica para todos los versiones 3.1 a 3.4 \ \
+'niveles de mensages : \
+'* 0(ninguno), 1(Debug, 2(Informativo), 3(Alerta), 4(Error), 5(Fatal) \
+'Tipos de salida son \
+'* 0(Ninguno), 1(Archivo), 2(Consola)
+$aNivel
+v
+String[]
+
+level
+p
+i
+
+'asignar el nivel de error: \ * 0(ninguno), 1(Debug, 2(Informativo), 3(Alerta), 4(Error), 5(Fatal) \
+medio
+p
+i
+
+'medio de la salida del log: \  * 0(ninguno), 1(Archivo), 2(Consola), 3(ambos) \
+Stdout
+C
+s
+":stdout"
+Stderr
+C
+s
+":stderr"
+_new
+m
+
+[(sNombre)s]
+#exmail
+
+C
+Send
+m
+b
+(sSubject)s(sBody)s[(sTo)s]
+#exnet
+
+C
+'Se detecta toda informacion de red usando `/sbin/ifconfig` y `netstat` esto es estandar en Linux, FreeBSD y MacOS por ende es seguro usar ruta absoluta `/sbin/` y los comandos aqui son unix agnostic. Las llamadas de las funciones necesitan `netstat`, `ifconfig`, `awk`, `grep` y `head`.
+_requisites
+V
+s
+
+'variable interna para manejar el comando ejecutado en la rutina invocada
+'variable interna para resultado del comando ejecutado en la rutina invocada
+getImdef
+M
+s
+[(defIf)s]
+'obtener la mac que se usa para enviar y recibir datos en la red/internet de todas las activas<br> si @param defif se provee se usara este dispositivo de red como el activo para optener la ip
+getIfdef
+M
+s
+
+'obtener la interfaz que se usa para enviar y recibir datos en la red/internet de todas las activas
+getIpdef
+M
+s
+[(defIf)s]
+'obtener la ip que se usa para enviar y recibir datos en la red/internet de todas las activas<br> si @param defif se provee se usara este dispositivo de red como el activo para optener la ip
+getIfall
+M
+String[]
+
+'obtener todas las interfaces de red activas de las disponibles
+getIpall
+M
+String[]
+
+'obtener todas las ip/direcciones de red activas de las configuradas
+gethttpbuf
+M
+s
+[(urltogetinfo)s]
+'obtiene todo el contenido de una url en una cadena/buffer para analizar **en crudo**, util para json, xml o para descargar binarios<br>@parameter url : la uri<br>@return string html de la respuesta, o string "" si invalido o no hay nada, string "-1" si invalido o agotado en server
+#exu
+
+C
+substr_count
+M
+i
+(strInput)s(pattern)s[(compare)i]
+'variable interna para resultado ofrecido por cada funcion
+'substr_count - Count the number of substring occurrences, default is case sensitive
+nprocgrep
+M
+s
+(nameproc)s[(cual)i]
+'encapsula la primera letra entre corchetes/parentesis, o el parametro dado de segundo \ @return String
+ucfirst
+M
+s
+(strInput)s
+'Devuelve un texto con la primera letra en mayusculas y todas las siguientes en minúsculas.
+ucwords
+M
+s
+(strInput)s[(strDiv)s]
+getstrig
+M
+v
+(objinput)v
+'verifica si es string el objeto o extrae su simbolo texto si es control, ejemplo si tiene un textbox retorna el .Text de este o si es un Integer retorna el valor como string \ @return FALSE si no tiene string valido, string si tiene .Text o es string valido
+required
+M
+v
+(objinput)v
+'segun el obj o string recibido deveulve true si no es vacio, no es nulo o tiene al menos una letra o algo
+alphabetical
+M
+v
+(objinput)v
+'validacion de un texto/input sea solo letras, sin numeros o simbolos ni latinas ni espacios <br> @return False si no es valido
+alphabeticalatin
+M
+v
+(objinput)v
+'validacion de un texto/input sea solo letras pero incluye acentos y latinas, sin numeros ni espacios \ @return FALSE si no cumple o el texto original
+alphanumeric
+M
+v
+(objinput)v
+'validacion de un texto/input letras y numeros sin simbolos o acentos ni espacios \ @return FALSE si no cumple o el texto original
+alphanumericlatin
+M
+s
+(strInput)s
+'Validacion de si solo letras y números, con acentos y letras latinas. \ @return FALSE si no cumple o el texto original
+alphaparenthesis
+M
+v
+(objinput)v
+'Validación de solo texto, espacio, punto y coma entre parentesis \ @return FALSE si no cumple o el texto original
+email
+M
+v
+(objinput)v
+'Validación de una direccion de correo electrónico \ @return FALSE si no es valida, string con la direccion si es valida
+numerical
+M
+v
+(objinput)v
+OnlyCyrilic
+M
+s
+(strInput)s
+'solo texto cyrilico nada de latino o texto normal romanico ni numeros
+urisegment
+M
+s
+(strInput)s[(segment)i]
+urifilepath
+M
+s
+(strInput)s

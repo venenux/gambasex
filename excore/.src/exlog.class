@@ -1,0 +1,116 @@
+' Gambas class file
+
+'  Basado en el trabajo de Marcos Sepulveda: EntornoLinux.blogspot.cl: <sepulvedamarcos@gmail.com> Telegram : @sepulvedamarcos
+
+'''  generacion de trazas para el seguimiento de los sucesos de un aplicativo. \ gambas > 3.5 ya tiene uan pero esta es generica para todos los versiones 3.1 a 3.4 \ \
+''' niveles de mensages : \
+''' * 0(ninguno), 1(Debug, 2(Informativo), 3(Alerta), 4(Error), 5(Fatal) \
+''' Tipos de salida son \
+''' * 0(Ninguno), 1(Archivo), 2(Consola)
+
+Export
+
+'   Global/NivelLog  = La key debe ser un valor constante de niveles de error -> Por defecto Ninguno
+'   Global/SalidaLog = La key debe ser un valor constante de salidas del log  -> Por defecto Ninguno
+'   Global/TamanoLog = La Key debe tener un valor numerico expresado en Megas -> Por defecto 1 = 1 Mega
+
+' segun el nivel de error este es la traducion en dicho orden: 0(ninguno), 1(Debug, 2(Informativo), 3(Alerta), 4(Error), 5(Fatal)
+Public $aNivel As String[] = ["Ninguno", "Debug", "Informativo", "Alerta", "Error", "Fatal"]
+
+Private $level As Integer = 0                          '' Nivel de salida, vease propiedad level
+' nivel de error
+Property level As Integer '' asignar el nivel de error: \ * 0(ninguno), 1(Debug, 2(Informativo), 3(Alerta), 4(Error), 5(Fatal) \
+
+Private $medio As Integer = 0                        '' Tipo de Salida, vease propiedad medio
+' salida del log
+Property medio As Integer '' medio de la salida del log: \  * 0(ninguno), 1(Archivo), 2(Consola), 3(ambos) \
+
+Static Public Const Stdout As String = ":stdout"
+Static Public Const Stderr As String = ":stderr"
+
+Private $sMensaje As String = ("log handler para gambasex, simplificacion del loghandler de gambas 3.5 para 3.1 a 3.4")
+Private $sLogFile As Stream
+Private $bLogRotateAble As Boolean = False
+Private $lLogRotateSize As Long = 1024
+
+Public Sub _new(Optional sNombre As String = Application.name) ''al inicializar se toma por defecto el nombre del aplicativo, usa la clase config y busca la ruta basado en la misma logica que el archivo config
+    
+    Dim $sPath As String = Application.Path
+    
+    $sPath = exfile.getDirParent($sPath, 1)
+    $sPath = exfile.getDirExist(Application.name & "log")
+    
+    ' sobreescribir si esta bajo el ide, automaticamente si corre bajo desarrollo saca toda la info posible a menos se sobreescriba
+    If exapp.isrunide Then
+        $sPath = Application.Path
+        $level = 1
+        $medio = 3
+    Endif
+    
+    ' TODO tomar el string spath y extraer uno a uno directorio padre arriba, y donde este un directorio log escribir, sino escribir solo en path si esta en ide
+    If Exist($sPath) Then
+        $sLogFile = Open $sPath For Write Append
+    Else
+        $sLogFile = Open $sPath For Write Create
+    Endif
+    
+End
+
+Private Sub writeloger(mess As String) ''Metodo privado que verfica donde enviar el log y lo ejecuta
+    
+    If exapp.isrunide Then
+        Print mess
+    Endif
+    If $medio > 0 Then
+        Print #$sLogFile, mess
+    Endif
+    If $medio > 1 Then
+        Print #File.Err, mess ' si stdout en consola, imprime a la salida de error estandar
+    Endif
+    
+Catch
+    Error.Raise($sMensaje & "[" & Error.Text & "]")
+    
+End
+
+
+
+' retorna nivel de detalle, valor entre 0 y 6 sino se pone a 6, por defecto es 0 no escribe a ningun lado, vease propiedad level
+Private Function level_Read() As Integer
+    
+    Return $level
+    
+End
+
+' asigna el nivel de detalle, valor entre 0 y 6 sino se pone a 6, por defecto es 0 no escribe a ningun lado, vease propiedad level
+Private Sub level_Write(Value As Integer)
+    
+    If IsInteger(Value) Then
+        If Value > -1 And Value < 6 Then
+            $level = Value
+        Else
+            $level = 6
+        Endif
+    Endif
+    
+End
+
+' asigna el tipo de medio, valor entre 0 y 3 sino se pone a 3, por defecto es 0 no escribe a ningun lado, vease propiedad medio
+Private Function medio_Read() As Integer
+    
+    Return $medio
+    
+End
+
+' asigna el tipo de medio, valor entre 0 y 3 sino se pone a 3, por defecto es 0 no escribe a ningun lado, vease propiedad medio
+Private Sub medio_Write(Value As Integer)
+    
+    If IsInteger(Value) Then
+        If Value > -1 And Value < 4 Then
+            $medio = Value
+        Else
+            $medio = 3
+        Endif
+    Endif
+    
+End
